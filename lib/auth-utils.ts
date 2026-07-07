@@ -87,7 +87,7 @@ export async function getRsiProfileData(handle: string): Promise<RsiProfileData 
 
         return {
             bio: data.data.bio || '',
-            organizationId: data.organization.sid || '',
+            organizationId: data.data.organization.sid || '',
         };
     } catch (error) {
         console.error('Fehler beim Abruf der RSI-Profildaten:', error);
