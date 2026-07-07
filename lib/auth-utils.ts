@@ -3,6 +3,11 @@ import crypto from 'crypto';
 const ORGA_API_BASE = process.env.ORGA_API_BASE_URL;
 const ORGA_API_KEY = process.env.ORGA_API_KEY;
 
+interface RsiProfileData {
+    bio: string;
+    organizationId: string;
+}
+
 /**
  * Generiert einen eindeutigen Token im Format SC-XXXX-XXXX
  */
@@ -49,5 +54,43 @@ export async function checkRsiHandleExists(handle: string): Promise<boolean> {
     } catch (error) {
         console.error('Fehler beim Aufruf der Orga-API:', error);
         return false;
+    }
+}
+
+/**
+ * Holt die Profildaten (Bio & Orga-ID) eines RSI-Handles von der Orga-API
+ */
+export async function getRsiProfileData(handle: string): Promise<RsiProfileData | null> {
+    const url = `${ORGA_API_BASE}/user/${encodeURIComponent(handle)}`;
+
+    try {
+        const headers: Record<string, string> = {
+            Accept: 'application/json',
+        };
+
+        if (ORGA_API_KEY) {
+            headers['Authorization'] = `Bearer ${ORGA_API_KEY}`;
+        }
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: headers,
+            next: { revalidate: 0 },
+        });
+
+        if (response.status !== 200) {
+            console.warn(`Orga-API lieferte Status ${response.status} beim Abruf der Profildaten.`);
+            return null;
+        }
+
+        const data = await response.json();
+
+        return {
+            bio: data.data.bio || '',
+            organizationId: data.organization.sid || '',
+        };
+    } catch (error) {
+        console.error('Fehler beim Abruf der RSI-Profildaten:', error);
+        return null;
     }
 }
