@@ -8,12 +8,29 @@ datasource db {
   provider = "mysql"
 }
 
+enum UserStatus {
+  PENDING
+  VERIFIED
+  ACTIVE
+  REJECTED
+}
+
+enum Role {
+  GUEST
+  MEMBER
+  ADMIN
+}
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String     @id @default(uuid())
+  sc_handle          String     @unique
+  password           String     // Gehashtes Passwort
+  status             UserStatus @default(PENDING)
+  role               Role       @default(GUEST)
+  verification_token String     @unique // Wird im Code als "SC-XXXXXX" generiert
+  failed_attempts    Int        @default(0)
+  created_at         DateTime   @default(now())
+  updated_at         DateTime   @updatedAt
 
   @@map("users")
 }
