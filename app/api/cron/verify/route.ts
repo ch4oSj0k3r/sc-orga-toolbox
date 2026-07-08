@@ -43,20 +43,24 @@ export async function POST() {
 
         // 2. Alle Pending-User sequenziell prüfen
         for (const user of pendingUsers) {
-            const rsiData = await getRsiProfileData(user.sc_handle);
+            const rsiResult = await getRsiProfileData(user.sc_handle);
 
-            // Falls die API z.B. temporär offline ist, überspringen wir den User, statt ihn direkt zu rejecten
-            if (!rsiData) {
+            // API-Fehler / Timeout -> User nicht bestrafen, einfach überspringen
+            if (rsiResult.kind === 'error') {
                 console.warn(
                     `Verifizierung für ${user.sc_handle} temporär übersprungen (API-Fehler).`
                 );
                 continue;
             }
 
-            const hasToken = rsiData.bio.includes(user.verification_token);
-            const isIndOrga = rsiData.organizationId.toUpperCase() === targetOrgSid.toUpperCase();
+            // Handle nicht gefunden ODER Token/Orga passt nicht -> beides zählt als Fehlversuch
+            const hasToken =
+                rsiResult.kind === 'found' && rsiResult.data.bio.includes(user.verification_token);
+            const isInOrga =
+                rsiResult.kind === 'found' &&
+                rsiResult.data.organizationId.toUpperCase() === targetOrgSid.toUpperCase();
 
-            if (hasToken && isIndOrga) {
+            if (hasToken && isInOrga) {
                 // Erfolg: Wechselt auf VERIFIED (wird im Admin-Dashboard sichtbar)
                 await prisma.user.update({
                     where: { id: user.id },

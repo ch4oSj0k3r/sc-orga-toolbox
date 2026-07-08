@@ -8,6 +8,9 @@ interface RsiProfileData {
     organizationId: string;
 }
 
+type RsiLookupResult =
+    { kind: 'found'; data: RsiProfileData } | { kind: 'not_found' } | { kind: 'error' };
+
 /**
  * Generiert einen eindeutigen Token im Format SC-XXXX-XXXX
  */
@@ -60,38 +63,41 @@ export async function checkRsiHandleExists(handle: string): Promise<boolean> {
 /**
  * Holt die Profildaten (Bio & Orga-ID) eines RSI-Handles von der Orga-API
  */
-export async function getRsiProfileData(handle: string): Promise<RsiProfileData | null> {
+export async function getRsiProfileData(handle: string): Promise<RsiLookupResult> {
     const url = `${ORGA_API_BASE}/user/${encodeURIComponent(handle)}`;
 
     try {
-        const headers: Record<string, string> = {
-            Accept: 'application/json',
-        };
-
-        if (ORGA_API_KEY) {
-            headers['Authorization'] = `Bearer ${ORGA_API_KEY}`;
-        }
+        const headers: Record<string, string> = { Accept: 'application/json' };
+        if (ORGA_API_KEY) headers['Authorization'] = `Bearer ${ORGA_API_KEY}`;
 
         const response = await fetch(url, {
             method: 'GET',
-            headers: headers,
+            headers,
             next: { revalidate: 0 },
+            signal: AbortSignal.timeout(5000),
         });
+
+        if (response.status === 404) {
+            return { kind: 'not_found' };
+        }
 
         if (response.status !== 200) {
             console.warn(`Orga-API lieferte Status ${response.status} beim Abruf der Profildaten.`);
-            return null;
+            return { kind: 'error' };
         }
 
         const data = await response.json();
 
         return {
-            bio: data.data.bio || '',
-            organizationId: data.data.organization.sid || '',
+            kind: 'found',
+            data: {
+                bio: data.data.bio || '',
+                organizationId: data.data.organization.sid || '',
+            },
         };
     } catch (error) {
         console.error('Fehler beim Abruf der RSI-Profildaten:', error);
-        return null;
+        return { kind: 'error' };
     }
 }
 
