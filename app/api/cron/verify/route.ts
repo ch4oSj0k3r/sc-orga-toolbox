@@ -20,8 +20,11 @@ export async function POST() {
         }
 
         const targetOrgSid = process.env.VALID_ORGA_ID || 'KNEBELARMY'; // Default-Wert, falls nicht gesetzt
+        const MAX_ATTEMPTS = process.env.MAX_ATTEMPTS ? parseInt(process.env.MAX_ATTEMPTS) : 18; // 18 Versuche * 10 Minuten = 3 Stunden Puffer
+
         let verifiedCount = 0;
         let rejectedCount = 0;
+        let incrementedCount = 0;
 
         // 2. Alle Pending-User sequenziell prüfen
         for (const user of pendingUsers) {
@@ -45,6 +48,7 @@ export async function POST() {
                     data: {
                         status: 'VERIFIED',
                         role: 'GUEST', // Standard-Rolle nach dem Token-Check
+                        failed_attempts: 0, // Reset der Fehlversuche nach erfolgreicher Verifizierung
                     },
                 });
                 verifiedCount++;
@@ -52,12 +56,35 @@ export async function POST() {
                     `✅ User ${user.sc_handle} erfolgreich verifiziert (Status: VERIFIED).`
                 );
             } else {
-                // Fehlschlag: Hier könnte man ein 'attempts'-Feld hochzählen
-                // oder nach X Versuchen auf REJECTED setzen. Fürs Erste loggen wir es:
-                console.log(
-                    `❌ Validierung für ${user.sc_handle} fehlgeschlagen. (Token da: ${hasToken}, Orga passt: ${isIndOrga})`
-                );
-                rejectedCount++;
+                // FEHLSCHLAG: Versuche hochzählen
+                const nextAttempts = user.failed_attempts + 1;
+
+                if (nextAttempts >= MAX_ATTEMPTS) {
+                    // Limit erreicht -> REJECTED
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: {
+                            status: 'REJECTED',
+                            failed_attempts: nextAttempts,
+                        },
+                    });
+                    rejectedCount++;
+                    console.log(
+                        `🚫 User ${user.sc_handle} hat das Limit von ${MAX_ATTEMPTS} Versuchen erreicht. Status: REJECTED.`
+                    );
+                } else {
+                    // Limit noch nicht erreicht -> Nur Counter erhöhen
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: {
+                            failed_attempts: nextAttempts,
+                        },
+                    });
+                    incrementedCount++;
+                    console.log(
+                        `❌ Validierung für ${user.sc_handle} fehlgeschlagen. Versuch ${nextAttempts}/${MAX_ATTEMPTS}.`
+                    );
+                }
             }
         }
 
@@ -67,6 +94,7 @@ export async function POST() {
                 processed: pendingUsers.length,
                 verified: verifiedCount,
                 failed_or_skipped: rejectedCount,
+                attempts_incremented: incrementedCount,
             },
             { status: 200 }
         );
