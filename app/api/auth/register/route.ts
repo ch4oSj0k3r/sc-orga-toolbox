@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@/lib/generated/client';
 import { generateVerificationToken, checkRsiHandleExists } from '@/lib/auth-utils';
 
 export async function POST(request: Request) {
@@ -56,21 +57,41 @@ export async function POST(request: Request) {
         const verificationToken = generateVerificationToken();
 
         // 6. User in der MariaDB anlegen (Standard: PENDING & GUEST über das Schema geregelt)
-        const newUser = await prisma.user.create({
-            data: {
-                sc_handle,
-                password: hashedPassword,
-                verification_token: verificationToken,
-            },
-            // Wir wählen nur die Felder aus, die wir sicher ans Frontend zurückgeben können
-            select: {
-                id: true,
-                sc_handle: true,
-                status: true,
-                verification_token: true,
-                createdAt: true,
-            },
-        });
+        let newUser;
+        try {
+            newUser = await prisma.user.create({
+                data: {
+                    sc_handle,
+                    password: hashedPassword,
+                    verification_token: verificationToken,
+                },
+                select: {
+                    id: true,
+                    sc_handle: true,
+                    status: true,
+                    verification_token: true,
+                    createdAt: true,
+                },
+            });
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+                const target = error.meta?.target as string[] | undefined;
+
+                if (target?.includes('sc_handle')) {
+                    return NextResponse.json(
+                        { error: 'Dieser RSI-Handle ist bereits in unserem System registriert.' },
+                        { status: 409 }
+                    );
+                }
+
+                // Kollision beim verification_token (extrem unwahrscheinlich) -> einmal neu versuchen
+                return NextResponse.json(
+                    { error: 'Registrierung fehlgeschlagen, bitte versuche es erneut.' },
+                    { status: 409 }
+                );
+            }
+            throw error; // unerwarteter Fehler -> äußerer catch-Block übernimmt (500)
+        }
 
         // 7. Erfolgreiche Antwort zurückgeben
         return NextResponse.json(
