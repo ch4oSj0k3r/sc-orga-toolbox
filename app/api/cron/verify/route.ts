@@ -66,6 +66,7 @@ export async function POST() {
                         data: {
                             status: 'REJECTED',
                             failed_attempts: nextAttempts,
+                            rejectedAt: new Date(),
                         },
                     });
                     rejectedCount++;

@@ -13,11 +13,11 @@
 
 _Hinweis: Jede dieser Actions muss intern prüfen, ob die aufrufende Session die Rolle `ADMIN` besitzt._
 
-- [ ] `getAdminDashboardData()`: Holt aggregierte Daten und trennt sie in fünf saubere Listen: `PENDING`, `VERIFIED`, `ACTIVE`, `REJECTED` und `BANNED`.
-- [ ] `activateUser(userId)`: Setzt den Status eines Users auf `ACTIVE` und die Rolle auf `MEMBER`.
-- [ ] `banUser(userId)`: Setzt den Status eines aktiven Users auf `BANNED` und befüllt `bannedAt` mit der aktuellen Zeit, um ihn sofort auszuschließen.
-- [ ] `resetUserAttempts(userId)`: Setzt bei einem abgelehnten User die `failed_attempts` zurück auf `0`, den Status auf `PENDING` und leert das Feld `rejectedAt` (`null`).
-- [ ] `deleteUser(userId)`: Löscht den User-Datensatz vollständig aus der MariaDB (verfügbar als universelle Aktion in allen Tabellen).
+- [x] `getAdminDashboardData()`: Holt aggregierte Daten und trennt sie in fünf saubere Listen: `PENDING`, `VERIFIED`, `ACTIVE`, `REJECTED` und `BANNED`.
+- [x] `activateUser(userId)`: Setzt den Status eines Users auf `ACTIVE` und die Rolle auf `MEMBER`.
+- [x] `banUser(userId)`: Setzt den Status eines aktiven Users auf `BANNED` und befüllt `bannedAt` mit der aktuellen Zeit, um ihn sofort auszuschließen.
+- [x] `resetUserAttempts(userId)`: Setzt bei einem abgelehnten User die `failed_attempts` zurück auf `0`, den Status auf `PENDING` und leert das Feld `rejectedAt` (`null`).
+- [x] `deleteUser(userId)`: Löscht den User-Datensatz vollständig aus der MariaDB (verfügbar als universelle Aktion in allen Tabellen).
 
 ## 🖥️ 3. UI/UX Komponenten (Funktionales Tabellen-Layout)
 
