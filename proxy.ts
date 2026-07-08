@@ -10,11 +10,12 @@ const authProxyHandler = withAuth(
         if (!token) return;
 
         const userStatus = token.status as string;
+        const userRole = token.role as string;
 
-        // 1. SCHUTZ-LOGIK: User ist PENDING oder VERIFIED
-        if (userStatus === 'PENDING' || userStatus === 'VERIFIED') {
-            if (pathname !== '/waiting') {
-                return NextResponse.redirect(new URL('/waiting', req.url));
+        // 1. SCHUTZ-LOGIK: User ist permanent gesperrt (BANNED)
+        if (userStatus === 'BANNED') {
+            if (pathname !== '/login') {
+                return NextResponse.redirect(new URL('/login?error=Banned', req.url));
             }
             return NextResponse.next();
         }
@@ -24,11 +25,27 @@ const authProxyHandler = withAuth(
             if (pathname !== '/login') {
                 return NextResponse.redirect(new URL('/login?error=Rejected', req.url));
             }
+            return NextResponse.next();
         }
 
-        // 3. SCHUTZ-LOGIK: Wenn ein ACTIVE-User versucht, auf /waiting zuzugreifen
+        // 3. SCHUTZ-LOGIK: User ist PENDING oder VERIFIED
+        if (userStatus === 'PENDING' || userStatus === 'VERIFIED') {
+            if (pathname !== '/waiting') {
+                return NextResponse.redirect(new URL('/waiting', req.url));
+            }
+            return NextResponse.next();
+        }
+
+        // 4. SCHUTZ-LOGIK: Wenn ein ACTIVE-User versucht, auf /waiting zuzugreifen
         if (userStatus === 'ACTIVE' && pathname === '/waiting') {
             return NextResponse.redirect(new URL('/dashboard', req.url));
+        }
+
+        // 5. ADMIN-ROUTEN-SCHUTZ: Nur User mit Role.ADMIN dürfen auf /admin zugreifen
+        if (pathname.startsWith('/admin')) {
+            if (userRole !== 'ADMIN') {
+                return NextResponse.redirect(new URL('/dashboard', req.url));
+            }
         }
 
         return NextResponse.next();
@@ -46,7 +63,6 @@ export default async function proxy(req: NextRequest, event: NextFetchEvent) {
     return authProxyHandler(req as NextRequestWithAuth, event);
 }
 
-// Der Matcher bleibt exakt gleich
 export const config = {
     matcher: ['/((?!api|_next/static|_next/image|favicon.ico|login|register).*)'],
 };
