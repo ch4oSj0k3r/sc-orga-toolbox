@@ -47,8 +47,9 @@ Um Fake-Accounts zu verhindern und gleichzeitig den Administrationsaufwand zu mi
 3. In-App Hintergrund-Prüfung & Manueller Trigger (Out of the Box):
     - **Automatisch:** Sobald die Next.js App im Docker-Container startet, initialisiert sie über die zentrale `app/instrumentation.ts` einen Hintergrund-Task (via node-cron). Dieser Task läuft alle 10 Minuten isoliert im Node.js-Prozess und prüft alle PENDING-User gegen die Orga-API.
     - **Manuell (Admin-Trigger):** Parallel dazu existiert der API-Endpunkt `/api/cron/verify`. Ein Admin kann im Dashboard per Button-Klick diesen Endpunkt triggern, um eine Verifizierung sofort manuell zu erzwingen (z. B. wenn ein User im Discord auf seine Freischaltung wartet).
-    - **Ergebnis:** Bei Erfolg wechselt der Status auf VERIFIED (Rolle Guest). Bei Fehlschlag wechselt er nach X Versuchen auf REJECTED und wird nach 24 Stunden gelöscht.
+    - **Ergebnis:** Bei Erfolg wechselt der Status auf VERIFIED (Rolle Guest). Bei Fehlschlag wechselt er nach X Versuchen auf REJECTED.
 4. Admin-Aktivierung: Ein Admin sieht alle VERIFIED-User im Dashboard und schaltet sie mit einem Klick auf ACTIVE frei (Zuweisung der Rolle Member). Erst jetzt erlaubt NextAuth.js den erfolgreichen Login.
+5. Admin-Löschung: Ein Admin sieht alle REJECTED-User im Dashboard und kann die Prüfung mit einem Klick resetten oder den User mit einem Klick löschen.
 
 ---
 
