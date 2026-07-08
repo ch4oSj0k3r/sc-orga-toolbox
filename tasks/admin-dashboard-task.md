@@ -2,7 +2,7 @@
 
 ## 🔒 1. Absicherung & Routing
 
-- [ ] **Datenbank-Migration:** `schema.prisma` erweitern und via `npx prisma migrate dev --name add_banned_and_timestamps` in die MariaDB einspielen:
+- [x] **Datenbank-Migration:** `schema.prisma` erweitern und via `npx prisma migrate dev --name add_banned_and_timestamps` in die MariaDB einspielen:
     - `UserStatus`-Enum um `BANNED` erweitern.
     - `User`-Model um `rejectedAt DateTime?` erweitern.
     - `User`-Model um `bannedAt DateTime?` erweitern.
