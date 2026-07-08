@@ -4,7 +4,7 @@ declare module 'next-auth' {
     interface Session {
         user: {
             id: string;
-            status: 'PENDING' | 'VERIFIED' | 'ACTIVE' | 'REJECTED';
+            status: 'PENDING' | 'VERIFIED' | 'ACTIVE' | 'REJECTED' | 'BANNED';
             role: 'GUEST' | 'MEMBER' | 'ADMIN';
             verification_token: string;
         } & DefaultSession['user'];

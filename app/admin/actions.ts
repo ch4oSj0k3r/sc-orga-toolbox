@@ -14,6 +14,23 @@ async function assertAdmin() {
     return session;
 }
 
+async function assertNotLastAdmin(userId: string) {
+    const target = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { role: true },
+    });
+
+    if (target?.role !== 'ADMIN') return;
+
+    const otherAdmins = await prisma.user.count({
+        where: { role: 'ADMIN', id: { not: userId } },
+    });
+
+    if (otherAdmins === 0) {
+        throw new Error('Aktion abgelehnt: Es muss mindestens ein Admin-Account bestehen bleiben.');
+    }
+}
+
 /**
  * 1. Holt alle User aus der DB und gruppiert sie nach Status
  */
@@ -65,14 +82,16 @@ export async function activateUser(userId: string) {
  * 3. Bannt einen aktiven User permanent
  */
 export async function banUser(userId: string) {
-    await assertAdmin();
+    const session = await assertAdmin();
+
+    if (session.user.id === userId) {
+        throw new Error('Du kannst dich nicht selbst sperren.');
+    }
+    await assertNotLastAdmin(userId);
 
     await prisma.user.update({
         where: { id: userId },
-        data: {
-            status: 'BANNED',
-            bannedAt: new Date(), // Sperrzeitpunkt festhalten
-        },
+        data: { status: 'BANNED', bannedAt: new Date() },
     });
 
     revalidatePath('/admin');
@@ -100,11 +119,13 @@ export async function resetUserAttempts(userId: string) {
  * 5. Löscht einen User-Datensatz permanent (Universell)
  */
 export async function deleteUser(userId: string) {
-    await assertAdmin();
+    const session = await assertAdmin();
 
-    await prisma.user.delete({
-        where: { id: userId },
-    });
+    if (session.user.id === userId) {
+        throw new Error('Du kannst deinen eigenen Account nicht löschen.');
+    }
+    await assertNotLastAdmin(userId);
 
+    await prisma.user.delete({ where: { id: userId } });
     revalidatePath('/admin');
 }
