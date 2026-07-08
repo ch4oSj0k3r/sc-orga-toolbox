@@ -13,6 +13,10 @@ export function CronTrigger() {
         try {
             const response = await fetch('/api/cron/verify', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-cron-secret': process.env.CRON_SECRET || '',
+                },
             });
 
             if (!response.ok) {

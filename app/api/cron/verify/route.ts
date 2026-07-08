@@ -1,11 +1,26 @@
 import { NextResponse } from 'next/server';
+import { headers } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import crypto from 'crypto';
 import { getRsiProfileData } from '@/lib/auth-utils';
+
+function isAuthorizedCronRequest(providedSecret: string | null): boolean {
+    const expectedSecret = process.env.CRON_SECRET;
+
+    if (!expectedSecret || !providedSecret) return false;
+    if (providedSecret.length !== expectedSecret.length) return false;
+
+    return crypto.timingSafeEqual(Buffer.from(providedSecret), Buffer.from(expectedSecret));
+}
 
 export async function POST() {
     try {
-        // Optional: Hier könnte man noch einen Secret-Token-Abgleich einbauen,
-        // damit nicht Hinz und Kunst den Cron-Job von außen triggern können.
+        const headerList = await headers();
+        const providedSecret = headerList.get('x-cron-secret');
+
+        if (!isAuthorizedCronRequest(providedSecret)) {
+            return NextResponse.json({ error: 'Nicht autorisiert.' }, { status: 401 });
+        }
 
         // 1. Alle User holen, die noch auf die Verifizierung warten
         const pendingUsers = await prisma.user.findMany({
