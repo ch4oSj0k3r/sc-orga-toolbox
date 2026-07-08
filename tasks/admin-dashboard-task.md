@@ -7,7 +7,7 @@
     - `User`-Model um `rejectedAt DateTime?` erweitern.
     - `User`-Model um `bannedAt DateTime?` erweitern.
 - [x] **Middleware-Schutz:** Die `proxy.ts` (oder `middleware.ts`) erweitern, um die Route `/admin` strikt für alle User zu sperren, die nicht die Rolle `Role.ADMIN` besitzen.
-- [ ] **Routen-Basis:** Erstellung der Datei `app/admin/page.tsx` inklusive einer serverseitigen Session-Überprüfung (`getServerSession`) als doppelter Boden gegen unbefugte Aufrufe.
+- [x] **Routen-Basis:** Erstellung der Datei `app/admin/page.tsx` inklusive einer serverseitigen Session-Überprüfung (`getServerSession`) als doppelter Boden gegen unbefugte Aufrufe.
 
 ## ⚙️ 2. Server Actions (Backend mit Admin-Schutzzaun)
 
