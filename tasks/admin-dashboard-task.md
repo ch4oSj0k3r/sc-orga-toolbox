@@ -23,26 +23,26 @@ _Hinweis: Jede dieser Actions muss intern prüfen, ob die aufrufende Session die
 
 _Hinweis: Das Design wird rein funktional gehalten, da das visuelle Framework später im Zuge des "MobiGlas"-Themes global überarbeitet wird._
 
-- [ ] **Sektion 1: Warteschlange (`PENDING`)**
+- [x] **Sektion 1: Warteschlange (`PENDING`)**
     - Tabelle der User im Validierungs-Loop.
     - Spalten: RSI-Handle, Registrierungsdatum (`createdAt`), Fehlversuche (z. B. `4/18`).
     - Aktionen: [Löschen]
-- [ ] **Sektion 2: Freischaltungen (`VERIFIED`)**
+- [x] **Sektion 2: Freischaltungen (`VERIFIED`)**
     - Tabelle der User, die den Token-Check erfolgreich bestanden haben.
     - Spalten: RSI-Handle, Verifizierungsdatum (`updatedAt` beim Wechsel auf VERIFIED).
     - Aktionen: **[Aktivieren]** (wird zum Member), [Löschen]
-- [ ] **Sektion 3: Aktive Mitglieder (`ACTIVE`)**
+- [x] **Sektion 3: Aktive Mitglieder (`ACTIVE`)**
     - Übersicht der freigeschalteten Organisation-Mitglieder.
     - Spalten: RSI-Handle, Rolle, Beitrittsdatum.
     - Aktionen: **[Sperren]** (wird Banned), [Löschen]
-- [ ] **Sektion 4: Problemfälle (`REJECTED`)**
+- [x] **Sektion 4: Problemfälle (`REJECTED`)**
     - Tabelle der Accounts, bei denen der automatische Token-Check fehlgeschlagen ist.
     - Spalten: RSI-Handle, Abbruchdatum (`rejectedAt`).
     - Aktionen: **[Reset]** (zurück zu Pending), [Löschen]
-- [ ] **Sektion 5: Gesperrt (`BANNED`)**
+- [x] **Sektion 5: Gesperrt (`BANNED`)**
     - Liste der permanent ausgeschlossenen Accounts.
     - Spalten: RSI-Handle, Sperrdatum (`bannedAt`).
     - Aktionen: [Löschen] (hebt die Sperre/Blockierung des Handles wieder auf)
-- [ ] **Globaler Steuerungs-Trigger**
+- [x] **Globaler Steuerungs-Trigger**
     - Button am oberen Bildschirmrand, um den bestehenden Cron-Job `/api/cron/verify` manuell per `fetch` anzustoßen.
     - Implementierung eines globalen Lade-Zustands (`loading`), der die gesamte UI während der asynchronen RSI-API-Abfragen blockiert, um Mehrfach-Klicks zu verhindern.

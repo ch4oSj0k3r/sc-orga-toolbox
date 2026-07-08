@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 import { activateUser, banUser, resetUserAttempts, deleteUser } from '@/app/admin/actions';
 import { FormatDate } from './FormatDate';
 import { ConfirmationModal } from './ConfirmationModal';
+import { toast } from 'sonner';
 
 interface User {
     id: string;
@@ -58,16 +59,17 @@ export function UserTable({ users, type }: UserTableProps) {
     };
 
     const handleConfirm = () => {
-        const { action, userId } = modalConfig;
+        const { action, userId, title } = modalConfig;
 
         if (!action || !userId) return;
 
         startTransition(async () => {
             try {
                 await action(userId);
+                toast.success(`${title} erfolgreich durchgeführt!`);
                 closeModal();
             } catch (error) {
-                alert(error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten');
+                toast.error(error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten');
             }
         });
     };

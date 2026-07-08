@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import AuthProvider from '@/components/AuthProvider';
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -25,6 +26,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
         >
             <body className="min-h-full flex flex-col bg-slate-950 text-white">
+                {/* Sonner Toaster für robuste Next.js App-Router Performance */}
+                <Toaster theme="dark" position="bottom-right" closeButton richColors />
                 <AuthProvider>{children}</AuthProvider>
             </body>
         </html>

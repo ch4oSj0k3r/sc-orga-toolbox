@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getAdminDashboardData } from './actions';
 import { UserTable } from '@/components/UserTable';
+import { CronTrigger } from '@/components/CronTrigger';
 
 export default async function AdminPage() {
     const session = await getServerSession(authOptions);
@@ -16,12 +17,15 @@ export default async function AdminPage() {
 
     return (
         <div className="p-8 text-white max-w-7xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex justify-between items-center mb-12 border-b border-zinc-800 pb-6">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Orga Admin-Dashboard</h1>
                     <p className="text-gray-400 mt-1">
                         Verwaltung der Benutzerregistrierungen und Sicherheitsstufen.
                     </p>
+                </div>
+                <div>
+                    <CronTrigger />
                 </div>
             </div>
 
