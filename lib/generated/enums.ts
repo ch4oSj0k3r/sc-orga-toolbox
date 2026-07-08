@@ -13,6 +13,7 @@ export const UserStatus = {
     VERIFIED: 'VERIFIED',
     ACTIVE: 'ACTIVE',
     REJECTED: 'REJECTED',
+    BANNED: 'BANNED',
 } as const;
 
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus];

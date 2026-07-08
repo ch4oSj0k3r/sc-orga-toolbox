@@ -68,7 +68,7 @@ export async function POST(request: Request) {
                 sc_handle: true,
                 status: true,
                 verification_token: true,
-                created_at: true,
+                createdAt: true,
             },
         });
 

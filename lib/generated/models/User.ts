@@ -41,8 +41,10 @@ export type UserMinAggregateOutputType = {
     role: $Enums.Role | null;
     verification_token: string | null;
     failed_attempts: number | null;
-    created_at: Date | null;
-    updated_at: Date | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+    rejectedAt: Date | null;
+    bannedAt: Date | null;
 };
 
 export type UserMaxAggregateOutputType = {
@@ -53,8 +55,10 @@ export type UserMaxAggregateOutputType = {
     role: $Enums.Role | null;
     verification_token: string | null;
     failed_attempts: number | null;
-    created_at: Date | null;
-    updated_at: Date | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+    rejectedAt: Date | null;
+    bannedAt: Date | null;
 };
 
 export type UserCountAggregateOutputType = {
@@ -65,8 +69,10 @@ export type UserCountAggregateOutputType = {
     role: number;
     verification_token: number;
     failed_attempts: number;
-    created_at: number;
-    updated_at: number;
+    createdAt: number;
+    updatedAt: number;
+    rejectedAt: number;
+    bannedAt: number;
     _all: number;
 };
 
@@ -86,8 +92,10 @@ export type UserMinAggregateInputType = {
     role?: true;
     verification_token?: true;
     failed_attempts?: true;
-    created_at?: true;
-    updated_at?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    rejectedAt?: true;
+    bannedAt?: true;
 };
 
 export type UserMaxAggregateInputType = {
@@ -98,8 +106,10 @@ export type UserMaxAggregateInputType = {
     role?: true;
     verification_token?: true;
     failed_attempts?: true;
-    created_at?: true;
-    updated_at?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    rejectedAt?: true;
+    bannedAt?: true;
 };
 
 export type UserCountAggregateInputType = {
@@ -110,8 +120,10 @@ export type UserCountAggregateInputType = {
     role?: true;
     verification_token?: true;
     failed_attempts?: true;
-    created_at?: true;
-    updated_at?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    rejectedAt?: true;
+    bannedAt?: true;
     _all?: true;
 };
 
@@ -210,8 +222,10 @@ export type UserGroupByOutputType = {
     role: $Enums.Role;
     verification_token: string;
     failed_attempts: number;
-    created_at: Date;
-    updated_at: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    rejectedAt: Date | null;
+    bannedAt: Date | null;
     _count: UserCountAggregateOutputType | null;
     _avg: UserAvgAggregateOutputType | null;
     _sum: UserSumAggregateOutputType | null;
@@ -242,8 +256,10 @@ export type UserWhereInput = {
     role?: Prisma.EnumRoleFilter<'User'> | $Enums.Role;
     verification_token?: Prisma.StringFilter<'User'> | string;
     failed_attempts?: Prisma.IntFilter<'User'> | number;
-    created_at?: Prisma.DateTimeFilter<'User'> | Date | string;
-    updated_at?: Prisma.DateTimeFilter<'User'> | Date | string;
+    createdAt?: Prisma.DateTimeFilter<'User'> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<'User'> | Date | string;
+    rejectedAt?: Prisma.DateTimeNullableFilter<'User'> | Date | string | null;
+    bannedAt?: Prisma.DateTimeNullableFilter<'User'> | Date | string | null;
 };
 
 export type UserOrderByWithRelationInput = {
@@ -254,8 +270,10 @@ export type UserOrderByWithRelationInput = {
     role?: Prisma.SortOrder;
     verification_token?: Prisma.SortOrder;
     failed_attempts?: Prisma.SortOrder;
-    created_at?: Prisma.SortOrder;
-    updated_at?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    rejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    bannedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
     _relevance?: Prisma.UserOrderByRelevanceInput;
 };
 
@@ -271,8 +289,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
         status?: Prisma.EnumUserStatusFilter<'User'> | $Enums.UserStatus;
         role?: Prisma.EnumRoleFilter<'User'> | $Enums.Role;
         failed_attempts?: Prisma.IntFilter<'User'> | number;
-        created_at?: Prisma.DateTimeFilter<'User'> | Date | string;
-        updated_at?: Prisma.DateTimeFilter<'User'> | Date | string;
+        createdAt?: Prisma.DateTimeFilter<'User'> | Date | string;
+        updatedAt?: Prisma.DateTimeFilter<'User'> | Date | string;
+        rejectedAt?: Prisma.DateTimeNullableFilter<'User'> | Date | string | null;
+        bannedAt?: Prisma.DateTimeNullableFilter<'User'> | Date | string | null;
     },
     'id' | 'sc_handle' | 'verification_token'
 >;
@@ -285,8 +305,10 @@ export type UserOrderByWithAggregationInput = {
     role?: Prisma.SortOrder;
     verification_token?: Prisma.SortOrder;
     failed_attempts?: Prisma.SortOrder;
-    created_at?: Prisma.SortOrder;
-    updated_at?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    rejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    bannedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
     _count?: Prisma.UserCountOrderByAggregateInput;
     _avg?: Prisma.UserAvgOrderByAggregateInput;
     _max?: Prisma.UserMaxOrderByAggregateInput;
@@ -305,8 +327,10 @@ export type UserScalarWhereWithAggregatesInput = {
     role?: Prisma.EnumRoleWithAggregatesFilter<'User'> | $Enums.Role;
     verification_token?: Prisma.StringWithAggregatesFilter<'User'> | string;
     failed_attempts?: Prisma.IntWithAggregatesFilter<'User'> | number;
-    created_at?: Prisma.DateTimeWithAggregatesFilter<'User'> | Date | string;
-    updated_at?: Prisma.DateTimeWithAggregatesFilter<'User'> | Date | string;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<'User'> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<'User'> | Date | string;
+    rejectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<'User'> | Date | string | null;
+    bannedAt?: Prisma.DateTimeNullableWithAggregatesFilter<'User'> | Date | string | null;
 };
 
 export type UserCreateInput = {
@@ -317,8 +341,10 @@ export type UserCreateInput = {
     role?: $Enums.Role;
     verification_token: string;
     failed_attempts?: number;
-    created_at?: Date | string;
-    updated_at?: Date | string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    rejectedAt?: Date | string | null;
+    bannedAt?: Date | string | null;
 };
 
 export type UserUncheckedCreateInput = {
@@ -329,8 +355,10 @@ export type UserUncheckedCreateInput = {
     role?: $Enums.Role;
     verification_token: string;
     failed_attempts?: number;
-    created_at?: Date | string;
-    updated_at?: Date | string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    rejectedAt?: Date | string | null;
+    bannedAt?: Date | string | null;
 };
 
 export type UserUpdateInput = {
@@ -341,8 +369,10 @@ export type UserUpdateInput = {
     role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
     verification_token?: Prisma.StringFieldUpdateOperationsInput | string;
     failed_attempts?: Prisma.IntFieldUpdateOperationsInput | number;
-    created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-    updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
 };
 
 export type UserUncheckedUpdateInput = {
@@ -353,8 +383,10 @@ export type UserUncheckedUpdateInput = {
     role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
     verification_token?: Prisma.StringFieldUpdateOperationsInput | string;
     failed_attempts?: Prisma.IntFieldUpdateOperationsInput | number;
-    created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-    updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
 };
 
 export type UserCreateManyInput = {
@@ -365,8 +397,10 @@ export type UserCreateManyInput = {
     role?: $Enums.Role;
     verification_token: string;
     failed_attempts?: number;
-    created_at?: Date | string;
-    updated_at?: Date | string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    rejectedAt?: Date | string | null;
+    bannedAt?: Date | string | null;
 };
 
 export type UserUpdateManyMutationInput = {
@@ -377,8 +411,10 @@ export type UserUpdateManyMutationInput = {
     role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
     verification_token?: Prisma.StringFieldUpdateOperationsInput | string;
     failed_attempts?: Prisma.IntFieldUpdateOperationsInput | number;
-    created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-    updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
 };
 
 export type UserUncheckedUpdateManyInput = {
@@ -389,8 +425,10 @@ export type UserUncheckedUpdateManyInput = {
     role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
     verification_token?: Prisma.StringFieldUpdateOperationsInput | string;
     failed_attempts?: Prisma.IntFieldUpdateOperationsInput | number;
-    created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-    updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
 };
 
 export type UserOrderByRelevanceInput = {
@@ -407,8 +445,10 @@ export type UserCountOrderByAggregateInput = {
     role?: Prisma.SortOrder;
     verification_token?: Prisma.SortOrder;
     failed_attempts?: Prisma.SortOrder;
-    created_at?: Prisma.SortOrder;
-    updated_at?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    rejectedAt?: Prisma.SortOrder;
+    bannedAt?: Prisma.SortOrder;
 };
 
 export type UserAvgOrderByAggregateInput = {
@@ -423,8 +463,10 @@ export type UserMaxOrderByAggregateInput = {
     role?: Prisma.SortOrder;
     verification_token?: Prisma.SortOrder;
     failed_attempts?: Prisma.SortOrder;
-    created_at?: Prisma.SortOrder;
-    updated_at?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    rejectedAt?: Prisma.SortOrder;
+    bannedAt?: Prisma.SortOrder;
 };
 
 export type UserMinOrderByAggregateInput = {
@@ -435,8 +477,10 @@ export type UserMinOrderByAggregateInput = {
     role?: Prisma.SortOrder;
     verification_token?: Prisma.SortOrder;
     failed_attempts?: Prisma.SortOrder;
-    created_at?: Prisma.SortOrder;
-    updated_at?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    rejectedAt?: Prisma.SortOrder;
+    bannedAt?: Prisma.SortOrder;
 };
 
 export type UserSumOrderByAggregateInput = {
@@ -467,6 +511,10 @@ export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string;
 };
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null;
+};
+
 export type UserSelect<
     ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -478,8 +526,10 @@ export type UserSelect<
         role?: boolean;
         verification_token?: boolean;
         failed_attempts?: boolean;
-        created_at?: boolean;
-        updated_at?: boolean;
+        createdAt?: boolean;
+        updatedAt?: boolean;
+        rejectedAt?: boolean;
+        bannedAt?: boolean;
     },
     ExtArgs['result']['user']
 >;
@@ -492,8 +542,10 @@ export type UserSelectScalar = {
     role?: boolean;
     verification_token?: boolean;
     failed_attempts?: boolean;
-    created_at?: boolean;
-    updated_at?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    rejectedAt?: boolean;
+    bannedAt?: boolean;
 };
 
 export type UserOmit<
@@ -506,8 +558,10 @@ export type UserOmit<
     | 'role'
     | 'verification_token'
     | 'failed_attempts'
-    | 'created_at'
-    | 'updated_at',
+    | 'createdAt'
+    | 'updatedAt'
+    | 'rejectedAt'
+    | 'bannedAt',
     ExtArgs['result']['user']
 >;
 
@@ -525,8 +579,10 @@ export type $UserPayload<
             role: $Enums.Role;
             verification_token: string;
             failed_attempts: number;
-            created_at: Date;
-            updated_at: Date;
+            createdAt: Date;
+            updatedAt: Date;
+            rejectedAt: Date | null;
+            bannedAt: Date | null;
         },
         ExtArgs['result']['user']
     >;
@@ -1028,8 +1084,10 @@ export interface UserFieldRefs {
     readonly role: Prisma.FieldRef<'User', 'Role'>;
     readonly verification_token: Prisma.FieldRef<'User', 'String'>;
     readonly failed_attempts: Prisma.FieldRef<'User', 'Int'>;
-    readonly created_at: Prisma.FieldRef<'User', 'DateTime'>;
-    readonly updated_at: Prisma.FieldRef<'User', 'DateTime'>;
+    readonly createdAt: Prisma.FieldRef<'User', 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<'User', 'DateTime'>;
+    readonly rejectedAt: Prisma.FieldRef<'User', 'DateTime'>;
+    readonly bannedAt: Prisma.FieldRef<'User', 'DateTime'>;
 }
 
 // Custom InputTypes

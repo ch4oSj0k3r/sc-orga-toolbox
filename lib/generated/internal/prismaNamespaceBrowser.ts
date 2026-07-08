@@ -75,8 +75,10 @@ export const UserScalarFieldEnum = {
     role: 'role',
     verification_token: 'verification_token',
     failed_attempts: 'failed_attempts',
-    created_at: 'created_at',
-    updated_at: 'updated_at',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    rejectedAt: 'rejectedAt',
+    bannedAt: 'bannedAt',
 } as const;
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
@@ -87,6 +89,13 @@ export const SortOrder = {
 } as const;
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
+
+export const NullsOrder = {
+    first: 'first',
+    last: 'last',
+} as const;
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
 
 export const UserOrderByRelevanceFieldEnum = {
     id: 'id',
