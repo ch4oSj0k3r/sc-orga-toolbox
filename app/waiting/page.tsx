@@ -9,11 +9,16 @@ export default function WaitingPage() {
     const router = useRouter();
 
     // Sicherheits-Check: Wenn der Status des Users im Hintergrund auf ACTIVE springt,
-    // leiten wir ihn sofort ins Dashboard weiter.
+    // leiten wir ihn sofort ins Dashboard weiter. Wenn der Status auf REJECTED springt,
+    // loggen wir ihn aus und schicken ihn zurück auf die Login-Seite.
     useEffect(() => {
         if (status === 'authenticated' && session?.user?.status === 'ACTIVE') {
             router.push('/dashboard');
             router.refresh();
+        }
+
+        if (session?.user?.status === 'REJECTED') {
+            signOut({ callbackUrl: '/login?error=Rejected' });
         }
     }, [session, status, router]);
 

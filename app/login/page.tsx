@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { getAuthErrorMessage } from '@/lib/auth-utils';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -15,13 +16,14 @@ export default function LoginPage() {
 
     const [scHandle, setScHandle] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState<string | null>(errorParam ? `Fehler: ${errorParam}` : null);
+    const [localError, setLocalError] = useState<string | null>(null);
+    const error = localError || getAuthErrorMessage(errorParam);
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
+        setLocalError(null);
 
         // Aufruf des NextAuth Credentials-Providers
         const result = await signIn('credentials', {
@@ -31,7 +33,7 @@ export default function LoginPage() {
         });
 
         if (result?.error) {
-            setError('RSI Handle oder Passwort falsch.');
+            setLocalError('RSI Handle oder Passwort falsch.');
             setLoading(false);
         } else {
             // Login erfolgreich -> Weiterleitung an die Callback-URL oder das Dashboard
