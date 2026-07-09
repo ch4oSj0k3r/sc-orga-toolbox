@@ -1,18 +1,10 @@
-import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getAdminDashboardData } from './actions';
 import { UserTable } from '@/components/UserTable';
 import { CronTrigger } from '@/components/CronTrigger';
+import { requireAdminSession } from '@/lib/auth/require-session';
 
 export default async function AdminPage() {
-    const session = await getServerSession(authOptions);
-
-    if (!session || session.user?.role !== 'ADMIN') {
-        redirect('/dashboard');
-    }
-
-    // Daten frisch vom Server laden
+    await requireAdminSession();
     const data = await getAdminDashboardData();
 
     return (
