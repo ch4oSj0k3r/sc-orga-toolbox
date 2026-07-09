@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { env } from '@/lib/env';
 
 // Hilfsfunktionen zur Absicherung der Actions
 async function assertAdmin() {
@@ -150,4 +151,21 @@ export async function deleteUser(userId: string) {
 
     await prisma.user.delete({ where: { id: userId } });
     revalidatePath('/admin');
+}
+
+export async function triggerCronVerification() {
+    await assertAdmin();
+
+    const response = await fetch(`${env.NEXTAUTH_URL}/api/cron/verify`, {
+        method: 'POST',
+        headers: { 'x-cron-secret': env.CRON_SECRET },
+    });
+
+    if (!response.ok) {
+        throw new Error('Verifizierungs-Lauf fehlgeschlagen.');
+    }
+
+    const result = await response.json();
+    revalidatePath('/admin');
+    return result;
 }

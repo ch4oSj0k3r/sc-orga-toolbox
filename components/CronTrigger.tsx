@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { triggerCronVerification } from '@/app/admin/actions';
 
 export function CronTrigger() {
     const [isLoading, setIsLoading] = useState(false);
@@ -11,20 +12,9 @@ export function CronTrigger() {
     const handleTrigger = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch('/api/cron/verify', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-cron-secret': process.env.CRON_SECRET || '',
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Fehler beim Ausführen des Verifizierungs-Laufs.');
-            }
-
+            await triggerCronVerification();
             toast.success('Verifizierungs-Lauf erfolgreich abgeschlossen!');
-            router.refresh(); // Aktualisiert die Server-Daten im Dashboard
+            router.refresh();
         } catch (error) {
             toast.error(
                 error instanceof Error ? error.message : 'Ein unerwarteter Fehler ist aufgetreten'
