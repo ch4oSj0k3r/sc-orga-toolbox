@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getAuthErrorMessage } from '@/lib/auth-utils';
+import { getAuthErrorMessage } from '@/lib/auth/auth-errors';
 
 export default function LoginPage() {
     const router = useRouter();
