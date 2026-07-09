@@ -4,14 +4,13 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/lib/generated/client';
 import { generateVerificationToken, checkRsiHandleExists } from '@/lib/auth/auth-utils';
-import { checkRateLimit } from '@/lib/rate-limit';
+import { checkRegisterRateLimit } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
     const headerList = await headers();
     const ip = headerList.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown';
 
-    const { success } = checkRateLimit(`register:${ip}`, 5, 15 * 60 * 1000); // 5 Versuche / 15 Min
-
+    const { success } = checkRegisterRateLimit(ip);
     if (!success) {
         return NextResponse.json(
             { error: 'Zu viele Registrierungsversuche. Bitte versuche es später erneut.' },

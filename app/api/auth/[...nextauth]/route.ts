@@ -4,6 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { env } from '@/lib/env';
+import { checkLoginRateLimit } from '@/lib/rate-limit';
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -20,6 +21,11 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 const { sc_handle, password } = credentials;
+
+                const { success } = checkLoginRateLimit(sc_handle);
+                if (!success) {
+                    throw new Error('TooManyAttempts');
+                }
 
                 const user = await prisma.user.findUnique({
                     where: { sc_handle },

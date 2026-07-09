@@ -11,6 +11,8 @@ export function getAuthErrorMessage(err: string | null): string | null {
             return 'RSI Handle oder Passwort falsch.';
         case 'configuration':
             return 'Es gibt ein Konfigurationsproblem mit dem Server. Bitte versuche es später noch einmal.';
+        case 'toomanyattempts':
+            return 'Zu viele fehlgeschlagene Anmeldeversuche. Bitte versuche es später erneut.';
         default:
             return `Ein unerwarteter Fehler ist aufgetreten (${err}).`;
     }
