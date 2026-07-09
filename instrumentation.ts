@@ -1,4 +1,5 @@
 import type { ScheduledTask } from 'node-cron';
+import { env } from './lib/env';
 
 declare global {
     var rsiVerificationJob: ScheduledTask | undefined;
@@ -6,6 +7,7 @@ declare global {
 
 export async function register() {
     if (process.env.NEXT_RUNTIME === 'nodejs') {
+        await import('@/lib/env'); // wirft Error beim Import, falls Env unvollständig -> App startet gar nicht
         const cron = await import('node-cron');
 
         console.log('🚀 [Instrumentation] Hintergrund-Tasks werden initialisiert...');
@@ -17,13 +19,13 @@ export async function register() {
                 );
 
                 try {
-                    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+                    const baseUrl = env.NEXTAUTH_URL;
 
                     const response = await fetch(`${baseUrl}/api/cron/verify`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'x-cron-secret': process.env.CRON_SECRET || '',
+                            'x-cron-secret': env.CRON_SECRET,
                         },
                     });
 

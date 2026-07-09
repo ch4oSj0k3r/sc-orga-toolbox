@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/lib/generated/client';
-import { generateVerificationToken, checkRsiHandleExists } from '@/lib/auth-utils';
+import { generateVerificationToken, checkRsiHandleExists } from '@/lib/auth/auth-utils';
 
 export async function POST(request: Request) {
     try {

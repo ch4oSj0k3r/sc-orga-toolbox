@@ -3,6 +3,7 @@ import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { env } from '@/lib/env';
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -66,8 +67,8 @@ export const authOptions: NextAuthOptions = {
             // Daten für das Frontend (useSession) verfügbar machen
             if (token && session.user) {
                 session.user.id = token.id as string;
-                session.user.status = token.status as string;
-                session.user.role = token.role as string;
+                session.user.status = token.status;
+                session.user.role = token.role;
                 session.user.verification_token = token.verification_token as string;
             }
             return session;
@@ -78,10 +79,8 @@ export const authOptions: NextAuthOptions = {
     },
     session: {
         strategy: 'jwt',
-        maxAge: process.env.SESSION_MAX_AGE ? parseInt(process.env.SESSION_MAX_AGE) : 60 * 60 * 24, // 24h
-        updateAge: process.env.SESSION_UPDATE_AGE
-            ? parseInt(process.env.SESSION_UPDATE_AGE)
-            : 60 * 15, // 15min
+        maxAge: env.SESSION_MAX_AGE,
+        updateAge: env.SESSION_UPDATE_AGE,
     },
 };
 

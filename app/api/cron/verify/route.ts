@@ -2,10 +2,11 @@ import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
-import { getRsiProfileData } from '@/lib/auth-utils';
+import { getRsiProfileData } from '@/lib/auth/auth-utils';
+import { env } from '@/lib/env';
 
 function isAuthorizedCronRequest(providedSecret: string | null): boolean {
-    const expectedSecret = process.env.CRON_SECRET;
+    const expectedSecret = env.CRON_SECRET;
 
     if (!expectedSecret || !providedSecret) return false;
     if (providedSecret.length !== expectedSecret.length) return false;
@@ -34,8 +35,8 @@ export async function POST() {
             );
         }
 
-        const targetOrgSid = process.env.VALID_ORGA_ID || 'KNEBELARMY'; // Default-Wert, falls nicht gesetzt
-        const MAX_ATTEMPTS = process.env.MAX_ATTEMPTS ? parseInt(process.env.MAX_ATTEMPTS) : 18; // 18 Versuche * 10 Minuten = 3 Stunden Puffer
+        const targetOrgSid = env.VALID_ORGA_ID; // Die gültige Orga-ID aus den Umgebungsvariablen
+        const MAX_ATTEMPTS = env.MAX_ATTEMPTS; // 18 Versuche * 10 Minuten = 3 Stunden Puffer
 
         let verifiedCount = 0;
         let rejectedCount = 0;
