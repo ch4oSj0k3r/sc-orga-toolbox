@@ -7,7 +7,6 @@ interface RateLimitEntry {
 
 const store = new Map<string, RateLimitEntry>();
 
-// Verhindert unbegrenztes Wachstum des Map über Zeit
 function cleanupExpired() {
     const now = Date.now();
     for (const [key, entry] of store) {
@@ -20,21 +19,13 @@ interface RateLimitResult {
     remaining: number;
 }
 
-/**
- * Simpler Fixed-Window Rate Limiter, In-Memory.
- * Nur für Single-Container-Deployments geeignet (kein shared State).
- */
-export function checkRateLimit(
-    identifier: string,
-    limit: number,
-    windowMs: number
-): RateLimitResult {
+function checkRateLimit(identifier: string, limit: number, windowMs: number): RateLimitResult {
     const now = Date.now();
     const entry = store.get(identifier);
 
     if (!entry || entry.resetAt < now) {
         store.set(identifier, { count: 1, resetAt: now + windowMs });
-        if (Math.random() < 0.01) cleanupExpired(); // gelegentliches Aufräumen, kein Cron nötig
+        if (Math.random() < 0.01) cleanupExpired();
         return { success: true, remaining: limit - 1 };
     }
 
@@ -44,4 +35,19 @@ export function checkRateLimit(
 
     entry.count++;
     return { success: true, remaining: limit - entry.count };
+}
+
+/**
+ * Rate-Limit für Registrierungsversuche, IP-basiert.
+ */
+export function checkRegisterRateLimit(ip: string): RateLimitResult {
+    return checkRateLimit(`register:${ip}`, 5, 15 * 60 * 1000);
+}
+
+/**
+ * Rate-Limit für Login-Versuche, sc_handle-basiert (schützt den Account,
+ * nicht die Quelle – bewusst kein IP-Schutz, s. Kommentar bei der Nutzung).
+ */
+export function checkLoginRateLimit(scHandle: string): RateLimitResult {
+    return checkRateLimit(`login:${scHandle}`, 5, 15 * 60 * 1000);
 }

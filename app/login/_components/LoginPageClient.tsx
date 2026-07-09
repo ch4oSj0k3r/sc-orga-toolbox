@@ -33,7 +33,7 @@ export default function LoginPageClient() {
         });
 
         if (result?.error) {
-            setLocalError('RSI Handle oder Passwort falsch.');
+            setLocalError(getAuthErrorMessage(result.error));
             setLoading(false);
         } else {
             // Login erfolgreich -> Weiterleitung an die Callback-URL oder das Dashboard
