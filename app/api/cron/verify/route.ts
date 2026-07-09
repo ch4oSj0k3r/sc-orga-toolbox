@@ -1,0 +1,129 @@
+import { NextResponse } from 'next/server';
+import { headers } from 'next/headers';
+import { prisma } from '@/lib/prisma';
+import crypto from 'crypto';
+import { getRsiProfileData } from '@/lib/auth/auth-utils';
+import { env } from '@/lib/env';
+
+function isAuthorizedCronRequest(providedSecret: string | null): boolean {
+    const expectedSecret = env.CRON_SECRET;
+
+    if (!expectedSecret || !providedSecret) return false;
+    if (providedSecret.length !== expectedSecret.length) return false;
+
+    return crypto.timingSafeEqual(Buffer.from(providedSecret), Buffer.from(expectedSecret));
+}
+
+export async function POST() {
+    try {
+        const headerList = await headers();
+        const providedSecret = headerList.get('x-cron-secret');
+
+        if (!isAuthorizedCronRequest(providedSecret)) {
+            return NextResponse.json({ error: 'Nicht autorisiert.' }, { status: 401 });
+        }
+
+        // 1. Alle User holen, die noch auf die Verifizierung warten
+        const pendingUsers = await prisma.user.findMany({
+            where: { status: 'PENDING' },
+        });
+
+        if (pendingUsers.length === 0) {
+            return NextResponse.json(
+                { message: 'Keine ausstehenden Registrierungen gefunden.' },
+                { status: 200 }
+            );
+        }
+
+        const targetOrgSid = env.VALID_ORGA_ID; // Die gültige Orga-ID aus den Umgebungsvariablen
+        const MAX_ATTEMPTS = env.MAX_ATTEMPTS; // 18 Versuche * 10 Minuten = 3 Stunden Puffer
+
+        let verifiedCount = 0;
+        let rejectedCount = 0;
+        let incrementedCount = 0;
+
+        // 2. Alle Pending-User sequenziell prüfen
+        for (const user of pendingUsers) {
+            const rsiResult = await getRsiProfileData(user.sc_handle);
+
+            // API-Fehler / Timeout -> User nicht bestrafen, einfach überspringen
+            if (rsiResult.kind === 'error') {
+                console.warn(
+                    `Verifizierung für ${user.sc_handle} temporär übersprungen (API-Fehler).`
+                );
+                continue;
+            }
+
+            // Handle nicht gefunden ODER Token/Orga passt nicht -> beides zählt als Fehlversuch
+            const hasToken =
+                rsiResult.kind === 'found' && rsiResult.data.bio.includes(user.verification_token);
+            const isInOrga =
+                rsiResult.kind === 'found' &&
+                rsiResult.data.organizationId.toUpperCase() === targetOrgSid.toUpperCase();
+
+            if (hasToken && isInOrga) {
+                // Erfolg: Wechselt auf VERIFIED (wird im Admin-Dashboard sichtbar)
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: {
+                        status: 'VERIFIED',
+                        role: 'GUEST', // Standard-Rolle nach dem Token-Check
+                        failed_attempts: 0, // Reset der Fehlversuche nach erfolgreicher Verifizierung
+                    },
+                });
+                verifiedCount++;
+                console.log(
+                    `✅ User ${user.sc_handle} erfolgreich verifiziert (Status: VERIFIED).`
+                );
+            } else {
+                // FEHLSCHLAG: Versuche hochzählen
+                const nextAttempts = user.failed_attempts + 1;
+
+                if (nextAttempts >= MAX_ATTEMPTS) {
+                    // Limit erreicht -> REJECTED
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: {
+                            status: 'REJECTED',
+                            failed_attempts: nextAttempts,
+                            rejectedAt: new Date(),
+                        },
+                    });
+                    rejectedCount++;
+                    console.log(
+                        `🚫 User ${user.sc_handle} hat das Limit von ${MAX_ATTEMPTS} Versuchen erreicht. Status: REJECTED.`
+                    );
+                } else {
+                    // Limit noch nicht erreicht -> Nur Counter erhöhen
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: {
+                            failed_attempts: nextAttempts,
+                        },
+                    });
+                    incrementedCount++;
+                    console.log(
+                        `❌ Validierung für ${user.sc_handle} fehlgeschlagen. Versuch ${nextAttempts}/${MAX_ATTEMPTS}.`
+                    );
+                }
+            }
+        }
+
+        return NextResponse.json(
+            {
+                message: 'Cron-Job erfolgreich ausgeführt.',
+                processed: pendingUsers.length,
+                verified: verifiedCount,
+                failed_or_skipped: rejectedCount,
+                attempts_incremented: incrementedCount,
+            },
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error('Fehler im Cron-Verifizierungs-Endpunkt:', error);
+        return NextResponse.json(
+            { error: 'Interner Server-Fehler beim Ausführen des Cron-Jobs.' },
+            { status: 500 }
+        );
+    }
+}
