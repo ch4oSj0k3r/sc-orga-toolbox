@@ -49,15 +49,7 @@ export default function RegisterPage() {
     // Wenn die Registrierung erfolgreich war, zeigen wir den Verifizierungstoken an
     if (successData) {
         return (
-            <div
-                style={{
-                    maxWidth: '400px',
-                    margin: '40px auto',
-                    padding: '20px',
-                    border: '1px solid #ccc',
-                    borderRadius: '8px',
-                }}
-            >
+            <div>
                 <h2>Registrierung erfolgreich! 🚀</h2>
                 <p>
                     Hallo <strong>{successData.handle}</strong>, dein Account wurde im System

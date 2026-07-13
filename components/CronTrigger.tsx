@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { triggerCronVerification } from '@/app/admin/actions';
+import { triggerCronVerification } from '@/app/(app)/admin/actions';
 
 export function CronTrigger() {
     const [isLoading, setIsLoading] = useState(false);

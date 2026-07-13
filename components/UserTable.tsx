@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { activateUser, banUser, resetUserAttempts, deleteUser } from '@/app/admin/actions';
+import { activateUser, banUser, resetUserAttempts, deleteUser } from '@/app/(app)/admin/actions';
 import { FormatDate } from './FormatDate';
 import { ConfirmationModal } from './ConfirmationModal';
 import { toast } from 'sonner';
