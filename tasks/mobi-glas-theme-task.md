@@ -172,13 +172,13 @@ Breaking Change für bestehende Links/Redirects.
 
 ### M2 – Login & Register Reskin
 
-- [ ] `LoginForm.tsx` auf `TerminalPanel`/`TerminalInput`/`TerminalButton` umstellen
-- [ ] Copy anpassen: kein Discord-Button, Feld-Label `RSI Handle` statt `E-Mail`
-- [ ] Bestehendes Error-Mapping (`getAuthErrorMessage`) unverändert weiternutzen, nur visuell neu verpackt
-- [ ] Gleiches für Register-Form
-- [ ] `LoginFormFallback`/Suspense-Fallback (aus dem `useSearchParams`-Fix) im Terminal-Stil statt
+- [x] `LoginForm.tsx` auf `TerminalPanel`/`TerminalInput`/`TerminalButton` umstellen
+- [x] Copy anpassen: kein Discord-Button, Feld-Label `RSI Handle` statt `E-Mail`
+- [x] Bestehendes Error-Mapping (`getAuthErrorMessage`) unverändert weiternutzen, nur visuell neu verpackt
+- [x] Gleiches für Register-Form
+- [x] `LoginFormFallback`/Suspense-Fallback (aus dem `useSearchParams`-Fix) im Terminal-Stil statt
       unstyled Plain-Text – sonst kurzer Stil-Blitzer bei jedem Seitenaufruf
-- [ ] Browser-Autofill-Override für alle `TerminalInput`-Felder (`:-webkit-autofill`-Trick, siehe M1) –
+- [x] Browser-Autofill-Override für alle `TerminalInput`-Felder (`:-webkit-autofill`-Trick, siehe M1) –
       Passwort-Manager-Vorschläge rendern sonst mit weißem Hintergrund unabhängig vom Theme
 
 ### M3 – Waiting Page Reskin
