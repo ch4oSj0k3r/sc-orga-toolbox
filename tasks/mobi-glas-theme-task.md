@@ -119,10 +119,10 @@ Materialsprache: Clip-Corners, Cyan-Border, monospaced Tabellen-Header) statt de
 
 ### M0 – Foundation Verification
 
-- [ ] Offene technische Fragen aus Punkt 2 klären
-- [ ] `next/font`-Umstellung für die drei Fonts
-- [ ] Tailwind-Config ggf. auf tatsächliche installierte Version anpassen
-- [ ] `overflow-hidden`-Scope korrigieren (nicht global)
+- [x] Offene technische Fragen aus Punkt 2 klären
+- [x] `next/font`-Umstellung für die drei Fonts
+- [x] Tailwind-Config ggf. auf tatsächliche installierte Version anpassen
+- [x] `overflow-hidden`-Scope korrigieren (nicht global)
 
 ### M0.5 – App-Shell (Route Groups + Header/Nav/Footer + Logout)
 
@@ -147,29 +147,27 @@ app/
 Route-Group-Klammern `(app)`/`(auth)` tauchen nicht in der URL auf – reine Ordnerorganisation, kein
 Breaking Change für bestehende Links/Redirects.
 
-- [ ] Bestehende Ordner `admin/`, `dashboard/` (falls schon angelegt) nach `app/(app)/` verschieben
-- [ ] Bestehende Ordner `login/`, `register/`, `waiting/` nach `app/(auth)/` verschieben
-- [ ] `app/(app)/layout.tsx` anlegen: ruft `requireActiveSession()` zentral auf, rendert `Header`/`Footer`
+- [x] Bestehende Ordner `admin/`, `dashboard/` (falls schon angelegt) nach `app/(app)/` verschieben
+- [x] Bestehende Ordner `login/`, `register/`, `waiting/` nach `app/(auth)/` verschieben
+- [x] `app/(app)/layout.tsx` anlegen: ruft `requireActiveSession()` zentral auf, rendert `Header`/`Footer`
       um `{children}`
-- [ ] `/admin/page.tsx` behält seinen eigenen `requireAdminSession()`-Aufruf (strengere Anforderung als
+- [x] `/admin/page.tsx` behält seinen eigenen `requireAdminSession()`-Aufruf (strengere Anforderung als
       nur "eingeloggt" – bewusste Redundanz, gleiches Defense-in-Depth-Prinzip wie beim Cron-Secret)
-- [ ] `components/Header.tsx` (Server Component) – bekommt `user` als Prop vom Layout, kein eigener
+- [x] `components/Header.tsx` (Server Component) – bekommt `user` als Prop vom Layout, kein eigener
       Session-Fetch nötig; rendert Admin-Link nur bei `user.role === 'ADMIN'` (reiner Server-Conditional,
       kein Client-JS)
-- [ ] `components/UserMenu.tsx` (`'use client'`) – einziger Client-Teil im Header, ruft `signOut()` auf
+- [x] `components/UserMenu.tsx` (`'use client'`) – einziger Client-Teil im Header, ruft `signOut()` auf
       Logout-Klick, nach demselben "so viel Server, so wenig Client wie nötig"-Prinzip wie beim
       Waiting-Page-Split
-- [ ] `components/Footer.tsx` – Org-Name/Version, Platzhalter für später (Impressum o. ä.)
-- [ ] Optisch im MobiGlas-Stil, aber als eigener Layout-Baustein (kein `TerminalPanel`-Reuse – Header ist
+- [x] `components/Footer.tsx` – Org-Name/Version, Platzhalter für später (Impressum o. ä.)
+- [x] Optisch im MobiGlas-Stil, aber als eigener Layout-Baustein (kein `TerminalPanel`-Reuse – Header ist
       volle Breite, horizontal, andere Proportionen als eine zentrierte Karte)
 
 ### M1 – Design Primitives
 
-- [ ] `components/mobiglas/*` bauen (siehe Liste oben)
-- [ ] Jede Komponente isoliert testen (z. B. eigene `/dev/mobiglas`-Testseite oder Storybook-artiges
-      Sammel-Page, das nach Abschluss wieder entfernt wird)
-- [ ] `danger-deep`-Token für BANNED vs. REJECTED ergänzen (siehe Punkt 3)
-- [ ] `TerminalInput`: Autofill-Override einbauen (`box-shadow: 0 0 0px 1000px var(--panel-alt) inset`-Trick
+- [x] `components/mobiglas/*` bauen (siehe Liste oben)
+- [x] `danger-deep`-Token für BANNED vs. REJECTED ergänzen (siehe Punkt 3)
+- [x] `TerminalInput`: Autofill-Override einbauen (`box-shadow: 0 0 0px 1000px var(--panel-alt) inset`-Trick
       für `:-webkit-autofill`), sonst brechen Browser-Passwort-Vorschläge das Theme mit weißem Hintergrund
 
 ### M2 – Login & Register Reskin

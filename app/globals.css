@@ -12,6 +12,8 @@
     --color-danger: #ff6a5c;
     --color-text: #d7e4ea;
     --color-text-dim: #6f8792;
+    --color-danger: #ff6a5c;
+    --color-danger-deep: #b23a2f; /* gesättigter/dunkler als danger, für BANNED (Terminalzustand) */
 
     /* Fonts - Werte kommen als CSS-Variablen aus next/font (siehe app/layout.tsx) */
     --font-display: var(--font-display);
