@@ -183,9 +183,9 @@ Breaking Change für bestehende Links/Redirects.
 
 ### M3 – Waiting Page Reskin
 
-- [ ] `StatusLine`-Komponente für die PENDING/VERIFIED-Zustände nutzen (passt konzeptionell besonders gut,
+- [x] `StatusLine`-Komponente für die PENDING/VERIFIED-Zustände nutzen (passt konzeptionell besonders gut,
       da die Seite ohnehin einen "wartet auf Prozess"-Charakter hat)
-- [ ] Verifizierungs-Token-Anzeige im Terminal-Stil (monospaced, hervorgehoben, "select-all" wie im Original
+- [x] Verifizierungs-Token-Anzeige im Terminal-Stil (monospaced, hervorgehoben, "select-all" wie im Original
       beibehalten)
 
 ### M4 – Admin Console Redesign
