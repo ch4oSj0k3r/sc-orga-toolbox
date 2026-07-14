@@ -215,16 +215,16 @@ URL-Query-Param + `<Link>` – kein zusätzlicher Fetch nötig, deep-linkbar/tei
 
 ### M5 – Motion & Sound Layer
 
-- [ ] Scanline-Sweep, Pulse-Dot, Blink-Cursor aus der Referenz übernehmen (bereits mit
+- [x] Scanline-Sweep, Pulse-Dot, Blink-Cursor aus der Referenz übernehmen (bereits mit
       `prefers-reduced-motion`-Fallback im Original – beibehalten)
-- [ ] Sound-Konzept: **kurze, diskrete Feedback-Sounds** für einzelne Aktionen (Klick, Erfolg, Fehler,
-      Admin-Aktion bestätigt). Bewusst **kein** geloopter Ambient-Hintergrundsound – klingt im Mockup
-      stimmungsvoll, nervt in einem Tool, das täglich offen ist, nach wenigen Minuten
-- [ ] Autoplay-Policy beachten: Sound darf nie ungefragt beim Seitenaufruf starten (Browser blockt das
-      ohnehin ohne vorherige User-Interaktion) – nur als Reaktion auf echte Klicks/Aktionen abspielen
-- [ ] Mute-Toggle einplanen, Präferenz in `localStorage` speichern (in der echten App unproblematisch,
-      anders als in Chat-Artefakten)
-- [ ] Sonner-`Toaster` an die Farbpalette anpassen (`toastOptions`/CSS-Variablen) – aktuell nur generisches
+- [-] Sound-Konzept: **kurze, diskrete Feedback-Sounds** für einzelne Aktionen (Klick, Erfolg, Fehler,
+  Admin-Aktion bestätigt). Bewusst **kein** geloopter Ambient-Hintergrundsound – klingt im Mockup
+  stimmungsvoll, nervt in einem Tool, das täglich offen ist, nach wenigen Minuten **VERSCHOBEN**
+- [-] Autoplay-Policy beachten: Sound darf nie ungefragt beim Seitenaufruf starten (Browser blockt das
+  ohnehin ohne vorherige User-Interaktion) – nur als Reaktion auf echte Klicks/Aktionen abspielen
+- [-] Mute-Toggle einplanen, Präferenz in `localStorage` speichern (in der echten App unproblematisch,
+  anders als in Chat-Artefakten)
+- [x] Sonner-`Toaster` an die Farbpalette anpassen (`toastOptions`/CSS-Variablen) – aktuell nur generisches
       `theme="dark"`, passt stilistisch nicht zum Cyan/Amber/Danger-Schema, sobald der Rest umgestylt ist
 
 ### M6 – Accessibility & Cross-Cutting Pass

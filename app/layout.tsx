@@ -35,7 +35,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
             <body className="min-h-full flex flex-col">
                 {/* Sonner Toaster für robuste Next.js App-Router Performance */}
-                <Toaster theme="dark" position="bottom-right" closeButton richColors />
+                <Toaster
+                    theme="dark"
+                    position="top-right"
+                    closeButton
+                    toastOptions={{
+                        unstyled: true,
+                        classNames: {
+                            toast: 'font-mono text-xs bg-panel border border-line text-text px-4 py-3 shadow-panel flex items-center gap-3 [clip-path:polygon(10px_0,100%_0,100%_calc(100%-10px),calc(100%-10px)_100%,0_100%,0_10px)]',
+                            title: 'text-text',
+                            description: 'text-text-dim',
+                            success: '!border-cyan-dim',
+                            error: '!border-danger/40',
+                            closeButton:
+                                '!bg-panel-alt !border-line !text-text-dim hover:!text-text',
+                        },
+                    }}
+                />
                 <AuthProvider>{children}</AuthProvider>
             </body>
         </html>
