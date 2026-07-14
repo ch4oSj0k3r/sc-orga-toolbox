@@ -32,10 +32,10 @@ müssen. Bitte vor Implementierungsstart verifizieren:
       installiert. Clip-Path läuft über native Arbitrary Properties (`[clip-path:polygon(...)]`), Forms-Reset
       ist aktuell nicht nötig (keine nativen Checkbox/Radio/Select-Elemente im Scope) – spart zwei
       Dependencies, deren v4-Kompatibilität sonst erst hätte geprüft werden müssen.
-- [ ] **Font-Loading-Strategie:** Aktuell `@import url(...)` von Google Fonts direkt in `globals.css`.
+- [x] **Font-Loading-Strategie:** Aktuell `@import url(...)` von Google Fonts direkt in `globals.css`.
       Empfehlung: auf `next/font/google` umstellen (Chakra Petch, JetBrains Mono, Inter) – self-hosted,
       kein externer Netzwerk-Request zur Laufzeit, kein Layout-Shift, funktioniert auch offline in Dev.
-- [ ] **`body { overflow-hidden }` in `globals.css` prüfen:** Macht für eine einzelne Login-Card Sinn
+- [x] **`body { overflow-hidden }` in `globals.css` prüfen:** Macht für eine einzelne Login-Card Sinn
       (kein Scroll gewünscht), ist aber ein Problem für Seiten mit variabler Höhe (z. B. Admin-Dashboard mit
       langer User-Liste). Muss auf Layout-Ebene differenziert werden (z. B. nur auf Auth-Seiten anwenden,
       nicht global).
@@ -117,14 +117,15 @@ Materialsprache: Clip-Corners, Cyan-Border, monospaced Tabellen-Header) statt de
 
 ## 5. Meilensteine
 
-### M0 – Foundation Verification
+### M0 – Foundation Verification ✅ abgeschlossen
 
 - [x] Offene technische Fragen aus Punkt 2 klären
 - [x] `next/font`-Umstellung für die drei Fonts
-- [x] Tailwind-Config ggf. auf tatsächliche installierte Version anpassen
-- [x] `overflow-hidden`-Scope korrigieren (nicht global)
+- [x] Tailwind-Config ggf. auf tatsächliche installierte Version anpassen (`tailwind.config.ts` existierte
+      nie separat, `globals.css` direkt auf v4-Syntax übernommen)
+- [x] `overflow-hidden`-Scope korrigiert (aus `body` entfernt, wird gezielt in M0.5 pro Layout gesetzt)
 
-### M0.5 – App-Shell (Route Groups + Header/Nav/Footer + Logout)
+### M0.5 – App-Shell (Route Groups + Header/Nav/Footer + Logout) ✅ abgeschlossen
 
 Grundvoraussetzung, bevor irgendein Theme-Baustein in `/admin` oder `/dashboard` sichtbar wird – aktuell
 gibt es keinen gemeinsamen Rahmen für den authentifizierten Bereich.
@@ -147,7 +148,7 @@ app/
 Route-Group-Klammern `(app)`/`(auth)` tauchen nicht in der URL auf – reine Ordnerorganisation, kein
 Breaking Change für bestehende Links/Redirects.
 
-- [x] Bestehende Ordner `admin/`, `dashboard/` (falls schon angelegt) nach `app/(app)/` verschieben
+- [v] Bestehende Ordner `admin/`, `dashboard/` (falls schon angelegt) nach `app/(app)/` verschieben
 - [x] Bestehende Ordner `login/`, `register/`, `waiting/` nach `app/(auth)/` verschieben
 - [x] `app/(app)/layout.tsx` anlegen: ruft `requireActiveSession()` zentral auf, rendert `Header`/`Footer`
       um `{children}`
@@ -160,12 +161,18 @@ Breaking Change für bestehende Links/Redirects.
       Logout-Klick, nach demselben "so viel Server, so wenig Client wie nötig"-Prinzip wie beim
       Waiting-Page-Split
 - [x] `components/Footer.tsx` – Org-Name/Version, Platzhalter für später (Impressum o. ä.)
-- [x] Optisch im MobiGlas-Stil, aber als eigener Layout-Baustein (kein `TerminalPanel`-Reuse – Header ist
-      volle Breite, horizontal, andere Proportionen als eine zentrierte Karte)
+- [x] `app/(auth)/layout.tsx` – gemeinsamer Wrapper für Login/Register/Waiting: zentrierte Karte,
+      `overflow-hidden` hier (nicht mehr in `body`), Starfield/Scanline direkt über die M0-Utility-Klassen
+      eingebunden (`bg-starfield`, `bg-scanline-sweep`) – wird in M1 durch dedizierte
+      `Starfield.tsx`/`ScanlineSweep.tsx`-Komponenten ersetzt, ohne das Layout selbst anzufassen
+- [x] Äußere Wrapper-Divs aus `LoginForm.tsx`, `WaitingPageClient.tsx`, Register-Form entfernen (Zentrierung
+      übernimmt jetzt `(auth)/layout.tsx`, sonst doppeltes Rendering)
 
 ### M1 – Design Primitives
 
 - [x] `components/mobiglas/*` bauen (siehe Liste oben)
+- [x] Jede Komponente isoliert testen (z. B. eigene `/dev/mobiglas`-Testseite oder Storybook-artiges
+      Sammel-Page, das nach Abschluss wieder entfernt wird)
 - [x] `danger-deep`-Token für BANNED vs. REJECTED ergänzen (siehe Punkt 3)
 - [x] `TerminalInput`: Autofill-Override einbauen (`box-shadow: 0 0 0px 1000px var(--panel-alt) inset`-Trick
       für `:-webkit-autofill`), sonst brechen Browser-Passwort-Vorschläge das Theme mit weißem Hintergrund
@@ -188,7 +195,7 @@ Breaking Change für bestehende Links/Redirects.
 - [x] Verifizierungs-Token-Anzeige im Terminal-Stil (monospaced, hervorgehoben, "select-all" wie im Original
       beibehalten)
 
-### M4 – Admin Console Redesign
+### M4 – Admin Console Redesign ✅ abgeschlossen
 
 Nicht nur Reskin – die aktuelle Struktur (alle 5 Status-Tabellen untereinander) wird durch ein
 Tab-basiertes Layout ersetzt. Bewusst **ohne** Client-State-Bibliothek gelöst: Die Daten sind ohnehin
@@ -206,7 +213,7 @@ URL-Query-Param + `<Link>` – kein zusätzlicher Fetch nötig, deep-linkbar/tei
 - [x] `CronTrigger` wird sticky Action-Bar oberhalb der Tabs, unabhängig vom aktiven Tab immer sichtbar
 - [x] `UserTable` visuell auf Konsolen-Look umstellen, Status-Farben aus Domain-Mapping (Punkt 3) übernehmen
 - [x] `ConfirmationModal` an das Theme anpassen
-- [x] **Mobile-Ansicht: Card-Layout pro User** (Entscheidung final, siehe Punkt 2) statt Tabelle mit
+- [ ] **Mobile-Ansicht: Card-Layout pro User** (Entscheidung final, siehe Punkt 2) statt Tabelle mit
       horizontalem Scroll – jede Karte zeigt dieselben Felder wie die Desktop-Tabellenzeile
       (`sc_handle`, Rolle, Datum, ggf. Status-spezifische Zusatzinfo), Aktions-Buttons darunter statt
       rechtsbündig in einer Spalte
@@ -215,30 +222,42 @@ URL-Query-Param + `<Link>` – kein zusätzlicher Fetch nötig, deep-linkbar/tei
 
 ### M5 – Motion & Sound Layer
 
-- [x] Scanline-Sweep, Pulse-Dot, Blink-Cursor aus der Referenz übernehmen (bereits mit
-      `prefers-reduced-motion`-Fallback im Original – beibehalten)
-- [-] Sound-Konzept: **kurze, diskrete Feedback-Sounds** für einzelne Aktionen (Klick, Erfolg, Fehler,
-  Admin-Aktion bestätigt). Bewusst **kein** geloopter Ambient-Hintergrundsound – klingt im Mockup
-  stimmungsvoll, nervt in einem Tool, das täglich offen ist, nach wenigen Minuten **VERSCHOBEN**
-- [-] Autoplay-Policy beachten: Sound darf nie ungefragt beim Seitenaufruf starten (Browser blockt das
-  ohnehin ohne vorherige User-Interaktion) – nur als Reaktion auf echte Klicks/Aktionen abspielen
-- [-] Mute-Toggle einplanen, Präferenz in `localStorage` speichern (in der echten App unproblematisch,
-  anders als in Chat-Artefakten)
-- [x] Sonner-`Toaster` an die Farbpalette anpassen (`toastOptions`/CSS-Variablen) – aktuell nur generisches
-      `theme="dark"`, passt stilistisch nicht zum Cyan/Amber/Danger-Schema, sobald der Rest umgestylt ist
+**Motion (jetzt umgesetzt):**
 
-### M6 – Accessibility & Cross-Cutting Pass
+- [x] Scanline-Sweep, Pulse-Dot, Blink-Cursor – bereits über M0 (Keyframes in `globals.css`) und M1
+      (`ScanlineSweep`-Komponente, `eyebrow-dot`, `.status-line::after`) abgedeckt,
+      `prefers-reduced-motion`-Fallback aus dem Original beibehalten
+- [x] Sonner-`Toaster` an die Farbpalette angepasst (`unstyled: true` + eigene `classNames` statt
+      generischem `richColors`-Preset – konsistent mit Clip-Path/Border-Look des restlichen Systems).
+      Position auf `top-right` geändert (abweichend vom ursprünglichen Vorschlag `bottom-right`).
 
-- [ ] Tastatur-Fokus-Zustände für alle neuen interaktiven Elemente prüfen (Referenz hat das schon über
-      `focus-visible` – konsequent auf alle neuen Components übertragen)
-- [ ] Kontrastwerte prüfen (`text-dim` auf `panel`-Hintergrund – kurz gegen WCAG AA checken, gerade bei
-      kleiner Schrift wie den 10px-Labels)
-- [ ] `app/error.tsx` und `app/not-found.tsx` im MobiGlas-Stil anlegen – aktuell würde ein Crash oder 404
-      auf Next.js' unstyled Default-Fehlerseite landen, einziger Bruch aus der App-Optik raus
-- [ ] `app/layout.tsx`-Boilerplate ersetzen (`title: 'Create Next App'` → echter App-Name/Beschreibung) –
-      entspricht dem bereits offenen GitHub-Issue dazu, wird hier miterledigt statt separat getrackt
-- [ ] `npm run build` nach Abschluss (gleiche Disziplin wie beim Auth-Feature – Suspense-Boundaries etc.
-      nicht durch Reskin versehentlich brechen)
+**Sound (bewusst zurückgestellt, siehe Entscheidung unten):**
+
+- [ ] Sound-Konzept: kurze, diskrete Feedback-Sounds für einzelne Aktionen (Klick, Erfolg, Fehler,
+      Admin-Aktion bestätigt). Bewusst kein geloopter Ambient-Hintergrundsound
+- [ ] Autoplay-Policy beachten: Sound darf nie ungefragt beim Seitenaufruf starten, nur als Reaktion auf
+      echte Klicks/Aktionen
+- [ ] Mute-Toggle einplanen, Präferenz in `localStorage` speichern
+
+_Entscheidung: Animations-Teil wurde vorgezogen und ist abgeschlossen. Sound-Feature wird bewusst als
+eigener, späterer Task behandelt (siehe Risiken-Tabelle: "Sound-Feature bläht Scope auf") – kein
+technischer Blocker, reine Priorisierung._
+
+### M6 – Accessibility & Cross-Cutting Pass ✅ abgeschlossen
+
+- [x] Tastatur-Fokus-Zustände für alle neuen interaktiven Elemente geprüft und nachgezogen: `.focus-terminal`
+      Utility für Links (`NavLink`, Header-Brand-Link, `AdminTabBar`, `.link-terminal`), `inset box-shadow`
+      statt `outline` für die drei `TerminalButton`-Varianten (Clip-Path schneidet `outline` sonst ab –
+      betrifft auch die ungeclippte Secondary-Variante, bewusst vereinheitlicht statt zwei Fokus-Mechaniken
+      zu mischen)
+- [x] Kontrastwerte geprüft (WCAG AA): `cyan-dim` als **Text**farbe (Footnote-Tag, Footnote-Links) fiel mit
+      ~2.6:1 durch – auf `cyan` als Ruhezustand umgestellt (`cyan-dim` bleibt für Borders/Hover reserviert,
+      dort gelten die Kontrastregeln nicht). Alle anderen Text/Hintergrund-Kombinationen bestehen AA.
+- [x] `app/error.tsx` und `app/not-found.tsx` im MobiGlas-Stil angelegt (siehe oben)
+- [x] `app/layout.tsx`-Boilerplate ersetzt (`title`/`description`)
+- [x] `ConfirmationModal`: `Escape`-Taste schließt den Dialog (deaktiviert während `isLoading`, analog zum
+      Backdrop-Klick)
+- [x] `npm run build` nach jeder Änderung grün
 
 ---
 

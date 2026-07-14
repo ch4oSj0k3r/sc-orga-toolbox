@@ -72,6 +72,10 @@
            [clip-path:polygon(18px_0,100%_0,100%_calc(100%-18px),calc(100%-18px)_100%,0_100%,0_18px)];
     }
 
+    .focus-terminal {
+        @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan focus-visible:outline-offset-2;
+    }
+
     /* HUD Corner Brackets - nutze mit <span class="hud-corner hud-corner-tl" /> etc. */
     .hud-corner {
         @apply absolute w-4 h-4 border-cyan border-solid opacity-85;
@@ -108,20 +112,18 @@
     /* Primär-Button (z.B. "Registrieren", "Einloggen") */
     .btn-terminal {
         @apply w-full flex items-center justify-center gap-2.5 bg-panel-alt border
-           border-cyan-dim text-text font-mono text-[13px] tracking-[0.06em] uppercase
-           px-4 py-3 cursor-pointer transition-all duration-200
-           [clip-path:polygon(10px_0,100%_0,100%_calc(100%-10px),calc(100%-10px)_100%,0_100%,0_10px)]
-           hover:border-cyan hover:text-cyan hover:shadow-glow
-           focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan focus-visible:outline-offset-2
-           disabled:opacity-60 disabled:cursor-default;
+            border-cyan-dim text-text font-mono text-[13px] tracking-[0.06em] uppercase
+            px-4 py-3 cursor-pointer transition-all duration-200
+            [clip-path:polygon(10px_0,100%_0,100%_calc(100%-10px),calc(100%-10px)_100%,0_100%,0_10px)]
+            hover:border-cyan hover:text-cyan hover:shadow-glow
+            disabled:opacity-60 disabled:cursor-default;
     }
 
-    /* Sekundär-Button */
+    /* Sekundär-Button (z.B. "Abbrechen") */
     .btn-terminal-secondary {
         @apply w-full bg-transparent border border-line text-text-dim font-mono text-xs
-           tracking-[0.06em] uppercase px-4 py-2.5 cursor-pointer transition-all duration-200
-           hover:border-text-dim hover:text-text
-           focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan focus-visible:outline-offset-2;
+            tracking-[0.06em] uppercase px-4 py-2.5 cursor-pointer transition-all duration-200
+            hover:border-text-dim hover:text-text;
     }
 
     /* Danger-Button (z.B. "Löschen", "Abbrechen", "Logout") */
@@ -131,8 +133,20 @@
             px-4 py-3 cursor-pointer transition-all duration-200
             [clip-path:polygon(10px_0,100%_0,100%_calc(100%-10px),calc(100%-10px)_100%,0_100%,0_10px)]
             hover:border-danger hover:shadow-[0_0_18px_rgba(255,106,92,0.35)]
-            focus-visible:outline focus-visible:outline-2 focus-visible:outline-danger focus-visible:outline-offset-2
             disabled:opacity-60 disabled:cursor-default;
+    }
+
+    .btn-terminal:focus-visible {
+        outline: none;
+        box-shadow: inset 0 0 0 2px var(--color-cyan);
+    }
+    .btn-terminal-secondary:focus-visible {
+        outline: none;
+        box-shadow: inset 0 0 0 2px var(--color-cyan-dim);
+    }
+    .btn-terminal-danger:focus-visible {
+        outline: none;
+        box-shadow: inset 0 0 0 2px var(--color-danger);
     }
 
     /* Input-Felder */
@@ -169,7 +183,11 @@
         @apply mt-5 font-mono text-[10px] text-text-dim leading-relaxed border-t border-line pt-3.5;
     }
     .footnote-terminal .tag {
-        @apply text-cyan-dim;
+        @apply text-cyan; /* statt text-cyan-dim */
+    }
+
+    .link-terminal {
+        @apply text-cyan hover:text-cyan-dim transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan focus-visible:outline-offset-2;
     }
 }
 

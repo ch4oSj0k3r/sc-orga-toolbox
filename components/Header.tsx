@@ -13,7 +13,7 @@ export function Header({ user }: HeaderProps) {
     return (
         <header className="border-b border-line bg-panel">
             <div className="flex items-center px-6 py-4 max-w-7xl mx-auto">
-                <Link href="/dashboard" className="eyebrow mb-0!">
+                <Link href="/dashboard" className="eyebrow mb-0! focus-terminal">
                     <span className="eyebrow-dot" />
                     ORG TOOLBOX
                 </Link>

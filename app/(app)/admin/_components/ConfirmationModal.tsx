@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { TerminalPanel } from '@/components/mobiglas/TerminalPanel';
 import { TerminalButton } from '@/components/mobiglas/TerminalButton';
 
@@ -22,6 +23,19 @@ export function ConfirmationModal({
     isLoading = false,
     variant = 'primary',
 }: ConfirmationModalProps) {
+    useEffect(() => {
+        if (!isOpen) return;
+
+        function handleKeyDown(e: KeyboardEvent) {
+            if (e.key === 'Escape' && !isLoading) {
+                onCancel();
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, isLoading, onCancel]);
+
     if (!isOpen) return null;
 
     return (

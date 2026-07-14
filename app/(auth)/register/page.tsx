@@ -124,7 +124,7 @@ export default function RegisterPage() {
 
             <Footnote>
                 Bereits registriert?{' '}
-                <a href="/login" className="text-cyan-dim hover:text-cyan">
+                <a href="/login" className="link-terminal">
                     Zum Login
                 </a>
             </Footnote>

@@ -17,7 +17,7 @@ export function AdminTabBar({ tabs, counts, activeTab }: AdminTabBarProps) {
                     <Link
                         key={tab.status}
                         href={`/admin?tab=${tab.status}`}
-                        className={`font-mono text-xs uppercase tracking-[0.06em] px-4 py-3 border-b-2 whitespace-nowrap transition-colors ${
+                        className={`font-mono text-xs uppercase tracking-[0.06em] px-4 py-3 border-b-2 whitespace-nowrap transition-colors focus-terminal ${
                             isActive
                                 ? 'border-cyan text-cyan'
                                 : 'border-transparent text-text-dim hover:text-text'

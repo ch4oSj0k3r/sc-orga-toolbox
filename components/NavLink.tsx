@@ -15,7 +15,7 @@ export function NavLink({ href, children }: NavLinkProps) {
     return (
         <Link
             href={href}
-            className={`font-mono text-xs uppercase tracking-[0.06em] pb-1 border-b-2 transition-colors ${
+            className={`font-mono text-xs uppercase tracking-[0.06em] pb-1 border-b-2 transition-colors focus-terminal ${
                 isActive
                     ? 'text-cyan border-cyan'
                     : 'text-text-dim border-transparent hover:text-text'

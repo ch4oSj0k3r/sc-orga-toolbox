@@ -89,7 +89,7 @@ export function LoginPageClient() {
                 <span className="tag">Org-Mitglieder</span> erhalten Zugang.
                 <br />
                 Noch nicht registriert?{' '}
-                <a href="/register" className="text-cyan-dim hover:text-cyan">
+                <a href="/register" className="link-terminal">
                     Zum Registrieren
                 </a>
             </Footnote>
