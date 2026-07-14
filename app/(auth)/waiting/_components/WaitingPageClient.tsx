@@ -93,10 +93,7 @@ export default function WaitingPageClient() {
             <div className="grid grid-cols-1 gap-4 pt-5 mt-5 border-t border-line">
                 <TerminalButton onClick={() => update()}>Status aktualisieren</TerminalButton>
 
-                <TerminalButton
-                    onClick={() => signOut({ callbackUrl: '/login' })}
-                    variant="secondary"
-                >
+                <TerminalButton onClick={() => signOut({ callbackUrl: '/login' })} variant="danger">
                     Abmelden
                 </TerminalButton>
             </div>

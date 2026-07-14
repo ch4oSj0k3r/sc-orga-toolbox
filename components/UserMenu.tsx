@@ -1,6 +1,7 @@
 'use client';
 
 import { signOut } from 'next-auth/react';
+import { TerminalButton } from '@/components/mobiglas/TerminalButton';
 
 interface UserMenuProps {
     userName?: string | null;
@@ -8,14 +9,18 @@ interface UserMenuProps {
 
 export function UserMenu({ userName }: UserMenuProps) {
     return (
-        <div className="flex items-center gap-4">
-            <span className="font-mono text-xs text-text-dim">{userName}</span>
-            <button
+        <div className="flex items-center gap-4 pl-6 border-l border-line">
+            <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan shadow-[0_0_8px_var(--color-cyan)]" />
+                <span className="font-mono text-xs text-text">{userName}</span>
+            </div>
+            <TerminalButton
+                variant="danger"
                 onClick={() => signOut({ callbackUrl: '/login' })}
-                className="font-mono text-xs uppercase tracking-[0.06em] text-text-dim hover:text-danger transition-colors"
+                className="!w-auto px-3 py-1.5 text-[11px]"
             >
                 Logout
-            </button>
+            </TerminalButton>
         </div>
     );
 }

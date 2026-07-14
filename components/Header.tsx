@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { NavLink } from './NavLink';
 import { UserMenu } from './UserMenu';
 
 interface HeaderProps {
@@ -11,23 +12,21 @@ interface HeaderProps {
 export function Header({ user }: HeaderProps) {
     return (
         <header className="border-b border-line bg-panel">
-            <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
-                <Link href="/dashboard" className="eyebrow">
+            <div className="flex items-center px-6 py-4 max-w-7xl mx-auto">
+                <Link href="/dashboard" className="eyebrow mb-0!">
                     <span className="eyebrow-dot" />
                     ORG TOOLBOX
                 </Link>
 
-                <nav className="flex items-center gap-6">
-                    {user.role === 'ADMIN' && (
-                        <Link
-                            href="/admin"
-                            className="font-mono text-xs uppercase tracking-[0.06em] text-text-dim hover:text-cyan transition-colors"
-                        >
-                            Admin
-                        </Link>
-                    )}
+                {user.role === 'ADMIN' && (
+                    <nav className="flex items-center gap-6 pl-6 ml-6 border-l border-line">
+                        <NavLink href="/admin">Admin</NavLink>
+                    </nav>
+                )}
+
+                <div className="ml-auto">
                     <UserMenu userName={user.name} />
-                </nav>
+                </div>
             </div>
         </header>
     );

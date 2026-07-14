@@ -124,6 +124,17 @@
            focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan focus-visible:outline-offset-2;
     }
 
+    /* Danger-Button (z.B. "Löschen", "Abbrechen", "Logout") */
+    .btn-terminal-danger {
+        @apply w-full flex items-center justify-center gap-2.5 bg-panel-alt border
+            border-danger/40 text-danger font-mono text-[13px] tracking-[0.06em] uppercase
+            px-4 py-3 cursor-pointer transition-all duration-200
+            [clip-path:polygon(10px_0,100%_0,100%_calc(100%-10px),calc(100%-10px)_100%,0_100%,0_10px)]
+            hover:border-danger hover:shadow-[0_0_18px_rgba(255,106,92,0.35)]
+            focus-visible:outline focus-visible:outline-2 focus-visible:outline-danger focus-visible:outline-offset-2
+            disabled:opacity-60 disabled:cursor-default;
+    }
+
     /* Input-Felder */
     .input-terminal {
         @apply w-full bg-panel-alt border border-line text-text font-mono text-[13px]

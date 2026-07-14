@@ -1,12 +1,17 @@
 interface TerminalButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary';
+    variant?: 'primary' | 'secondary' | 'danger';
 }
+
+const variantClass: Record<NonNullable<TerminalButtonProps['variant']>, string> = {
+    primary: 'btn-terminal',
+    secondary: 'btn-terminal-secondary',
+    danger: 'btn-terminal-danger',
+};
 
 export function TerminalButton({
     variant = 'primary',
     className = '',
     ...props
 }: TerminalButtonProps) {
-    const variantClass = variant === 'primary' ? 'btn-terminal' : 'btn-terminal-secondary';
-    return <button className={`${variantClass} ${className}`} {...props} />;
+    return <button className={`${variantClass[variant]} ${className}`} {...props} />;
 }

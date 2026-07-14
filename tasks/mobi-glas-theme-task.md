@@ -196,21 +196,21 @@ komplett server-seitig geladen (`getAdminDashboardData()`), Tab-Wechsel läuft r
 URL-Query-Param + `<Link>` – kein zusätzlicher Fetch nötig, deep-linkbar/teilbar (`/admin?tab=rejected`),
 übersteht Reload ohne eigenen State-Management-Aufwand.
 
-- [ ] `ConsolePanel`-Baustein entwerfen (volle Breite, gleiche Materialsprache wie `TerminalPanel`:
+- [x] `ConsolePanel`-Baustein entwerfen (volle Breite, gleiche Materialsprache wie `TerminalPanel`:
       Clip-Corners, Cyan-Border, aber für tabellarische Daten statt zentrierter Karte)
-- [ ] `AdminPage` liest `searchParams.tab` (Server Component, Next.js 16 `searchParams` als Promise),
+- [x] `AdminPage` liest `searchParams.tab` (Server Component, Next.js 16 `searchParams` als Promise),
       Default-Tab: **`VERIFIED`** (Entscheidung final, siehe Punkt 2) – Handlungsbedarf zuerst, `ACTIVE`
       als Normalzustand ohne Aktionsbedarf muss nicht die erste Sicht sein
-- [ ] `TabBar`-Komponente: Segmented-Control im MobiGlas-Stil, Cyan-Unterstrich/Glow auf aktivem Tab,
+- [x] `TabBar`-Komponente: Segmented-Control im MobiGlas-Stil, Cyan-Unterstrich/Glow auf aktivem Tab,
       Count-Badge pro Status (z. B. `PENDING (3)`) – reine `<Link>`-Elemente, kein `onClick`/State nötig
-- [ ] `CronTrigger` wird sticky Action-Bar oberhalb der Tabs, unabhängig vom aktiven Tab immer sichtbar
-- [ ] `UserTable` visuell auf Konsolen-Look umstellen, Status-Farben aus Domain-Mapping (Punkt 3) übernehmen
-- [ ] `ConfirmationModal` an das Theme anpassen
-- [ ] **Mobile-Ansicht: Card-Layout pro User** (Entscheidung final, siehe Punkt 2) statt Tabelle mit
+- [x] `CronTrigger` wird sticky Action-Bar oberhalb der Tabs, unabhängig vom aktiven Tab immer sichtbar
+- [x] `UserTable` visuell auf Konsolen-Look umstellen, Status-Farben aus Domain-Mapping (Punkt 3) übernehmen
+- [x] `ConfirmationModal` an das Theme anpassen
+- [x] **Mobile-Ansicht: Card-Layout pro User** (Entscheidung final, siehe Punkt 2) statt Tabelle mit
       horizontalem Scroll – jede Karte zeigt dieselben Felder wie die Desktop-Tabellenzeile
       (`sc_handle`, Rolle, Datum, ggf. Status-spezifische Zusatzinfo), Aktions-Buttons darunter statt
       rechtsbündig in einer Spalte
-- [ ] Leere Zustände ("Keine Benutzer mit diesem Status vorhanden") pro Tab beibehalten, optisch ans
+- [x] Leere Zustände ("Keine Benutzer mit diesem Status vorhanden") pro Tab beibehalten, optisch ans
       Console-Theme angepasst
 
 ### M5 – Motion & Sound Layer
