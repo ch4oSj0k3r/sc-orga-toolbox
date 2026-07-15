@@ -5,7 +5,7 @@ import { AdminUserTable } from './AdminUserTable';
 import { AdminUserCard } from './AdminUserCard';
 import { ConfirmationModal } from './ConfirmationModal';
 import { useAdminUserActions } from '../useAdminUserActions';
-import { AdminUser } from '../adminTypes';
+import type { AdminUser } from '../adminTypes';
 
 export function AdminUserList({ users, type }: { users: AdminUser[]; type: UserStatus }) {
     const { isPending, modalConfig, openModal, closeModal, handleConfirm, actions } =

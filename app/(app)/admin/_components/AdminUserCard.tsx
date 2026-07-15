@@ -3,7 +3,7 @@ import { FormatDate } from './FormatDate';
 import { AdminUserActions } from './AdminUserActions';
 import type { UserStatus } from '@/lib/generated/client';
 import type { useAdminUserActions } from '../useAdminUserActions';
-import { AdminUser } from '../adminTypes';
+import type { AdminUser } from '../adminTypes';
 
 interface AdminUserCardProps {
     user: AdminUser;

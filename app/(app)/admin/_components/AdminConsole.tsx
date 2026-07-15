@@ -4,7 +4,7 @@ import { AdminToolbar } from './AdminToolbar';
 import { AdminTabBar } from './AdminTabBar';
 import { AdminUserList } from './AdminUserList';
 import { ConsolePanel } from '@/components/mobiglas/ConsolePanel';
-import { AdminUser } from '../adminTypes';
+import type { AdminUser } from '../adminTypes';
 
 interface AdminConsoleProps {
     data: Record<UserStatus, AdminUser[]>;
