@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { triggerCronVerification } from '../actions';
 import { TerminalButton } from '@/components/mobiglas/TerminalButton';
 import { StatusLine } from '@/components/mobiglas/StatusLine';
+import { createPortal } from 'react-dom';
 
 export function CronTrigger() {
     const [isLoading, setIsLoading] = useState(false);
@@ -26,23 +27,39 @@ export function CronTrigger() {
         }
     };
 
+    const loadingOverlay =
+        isLoading && typeof document !== 'undefined'
+            ? createPortal(
+                  <div
+                      className="fixed inset-0 z-100 flex flex-col items-center justify-center bg-bg/85 backdrop-blur-md"
+                      role="status"
+                      aria-live="polite"
+                      aria-busy="true"
+                  >
+                      <div
+                          aria-hidden="true"
+                          className="mb-4 h-10 w-10 animate-spin rounded-full border-2 border-cyan-dim border-t-cyan"
+                      />
+
+                      <StatusLine variant="active">RSI API-Abgleich läuft...</StatusLine>
+
+                      <p className="mt-1 font-mono text-[11px] text-text-dim">
+                          Dies kann einen Moment dauern, da Profile validiert werden.
+                      </p>
+                  </div>,
+                  document.body
+              )
+            : null;
+
     return (
         <>
-            {isLoading && (
-                <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg/85 backdrop-blur-md">
-                    <div className="w-10 h-10 border-2 border-cyan-dim border-t-cyan rounded-full animate-spin mb-4" />
-                    <StatusLine variant="active">RSI API-Abgleich läuft...</StatusLine>
-                    <p className="font-mono text-[11px] text-text-dim mt-1">
-                        Dies kann einen Moment dauern, da Profile validiert werden.
-                    </p>
-                </div>
-            )}
+            {loadingOverlay}
 
             <TerminalButton
                 type="button"
                 disabled={isLoading}
                 onClick={handleTrigger}
-                className="w-auto! px-4 py-2"
+                className="w-full! px-4 py-2 sm:w-auto!"
             >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path

@@ -5,16 +5,24 @@ export interface AdminTab {
     label: string;
 }
 
-export const ADMIN_TABS: AdminTab[] = [
+export const ADMIN_TABS = [
     { status: 'VERIFIED', label: 'Verifiziert' },
     { status: 'PENDING', label: 'Pending' },
     { status: 'REJECTED', label: 'Rejected' },
-    { status: 'BANNED', label: 'Banned' },
     { status: 'ACTIVE', label: 'Aktiv' },
-];
+    { status: 'BANNED', label: 'Banned' },
+] satisfies readonly AdminTab[];
 
-export const DEFAULT_ADMIN_TAB: UserStatus = 'VERIFIED';
+export const DEFAULT_ADMIN_TAB = 'VERIFIED' satisfies UserStatus;
 
-export function isValidAdminTab(value: string | undefined): value is UserStatus {
-    return ADMIN_TABS.some((tab) => tab.status === value);
+export function parseAdminTab(value: string | undefined): UserStatus {
+    const normalized = value?.toUpperCase();
+
+    return ADMIN_TABS.some((tab) => tab.status === normalized)
+        ? (normalized as UserStatus)
+        : DEFAULT_ADMIN_TAB;
+}
+
+export function getAdminTabHref(status: UserStatus): string {
+    return `/admin?tab=${status.toLowerCase()}`;
 }

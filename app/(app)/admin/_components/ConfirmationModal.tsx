@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { TerminalPanel } from '@/components/mobiglas/TerminalPanel';
 import { TerminalButton } from '@/components/mobiglas/TerminalButton';
+import { createPortal } from 'react-dom';
 
 interface ConfirmationModalProps {
     isOpen: boolean;
@@ -36,40 +37,58 @@ export function ConfirmationModal({
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [isOpen, isLoading, onCancel]);
 
-    if (!isOpen) return null;
+    if (!isOpen || typeof document === 'undefined') {
+        return null;
+    }
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    return createPortal(
+        <div
+            className="fixed inset-0 z-100 flex items-center justify-center p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirmation-modal-title"
+        >
             <div
-                className="fixed inset-0 bg-bg/80 backdrop-blur-sm transition-opacity"
+                className="fixed inset-0 bg-bg/80 backdrop-blur-sm"
                 onClick={isLoading ? undefined : onCancel}
+                aria-hidden="true"
             />
 
-            <TerminalPanel className="relative max-w-md" showCorners={false}>
-                <h3 className="font-display text-lg font-bold uppercase tracking-wide text-text">
+            <TerminalPanel
+                className="relative z-10 max-h-[calc(100dvh-2rem)] max-w-md overflow-y-auto"
+                showCorners={false}
+            >
+                <h3
+                    id="confirmation-modal-title"
+                    className="font-display text-lg font-bold uppercase tracking-wide text-text"
+                >
                     {title}
                 </h3>
-                <p className="font-mono text-xs text-text-dim mt-2 leading-relaxed">{message}</p>
 
-                <div className="mt-6 flex justify-end gap-3">
+                <p className="mt-2 font-mono text-xs leading-relaxed text-text-dim">{message}</p>
+
+                <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                     <TerminalButton
+                        autoFocus
                         variant="secondary"
                         disabled={isLoading}
                         onClick={onCancel}
-                        className="w-auto! px-4 py-2"
+                        className="w-full! px-4 py-2 sm:w-auto!"
                     >
                         Abbrechen
                     </TerminalButton>
+
                     <TerminalButton
                         variant={variant}
                         disabled={isLoading}
                         onClick={onConfirm}
-                        className="w-auto! px-4 py-2"
+                        className="w-full! px-4 py-2 sm:w-auto!"
                     >
                         {isLoading ? (
                             <span className="flex items-center gap-2">
                                 <span
-                                    className={`w-3.5 h-3.5 border-2 rounded-full animate-spin ${
+                                    aria-hidden="true"
+                                    className={`h-3.5 w-3.5 animate-spin rounded-full border-2 ${
                                         variant === 'danger'
                                             ? 'border-danger/40 border-t-danger'
                                             : 'border-cyan-dim border-t-cyan'
@@ -83,6 +102,7 @@ export function ConfirmationModal({
                     </TerminalButton>
                 </div>
             </TerminalPanel>
-        </div>
+        </div>,
+        document.body
     );
 }

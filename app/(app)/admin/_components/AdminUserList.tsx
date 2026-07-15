@@ -5,17 +5,7 @@ import { AdminUserTable } from './AdminUserTable';
 import { AdminUserCard } from './AdminUserCard';
 import { ConfirmationModal } from './ConfirmationModal';
 import { useAdminUserActions } from '../useAdminUserActions';
-
-interface AdminUser {
-    id: string;
-    sc_handle: string;
-    status: UserStatus;
-    role: string;
-    failed_attempts: number;
-    createdAt: Date;
-    rejectedAt: Date | null;
-    bannedAt: Date | null;
-}
+import { AdminUser } from '../adminTypes';
 
 export function AdminUserList({ users, type }: { users: AdminUser[]; type: UserStatus }) {
     const { isPending, modalConfig, openModal, closeModal, handleConfirm, actions } =

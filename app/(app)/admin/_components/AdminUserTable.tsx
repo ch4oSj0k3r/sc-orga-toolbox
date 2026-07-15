@@ -2,17 +2,7 @@ import { FormatDate } from './FormatDate';
 import { AdminUserActions } from './AdminUserActions';
 import type { UserStatus } from '@/lib/generated/client';
 import type { useAdminUserActions } from '../useAdminUserActions';
-
-interface AdminUser {
-    id: string;
-    sc_handle: string;
-    status: UserStatus;
-    role: string;
-    failed_attempts: number;
-    createdAt: Date;
-    rejectedAt: Date | null;
-    bannedAt: Date | null;
-}
+import { AdminUser } from '../adminTypes';
 
 interface AdminUserTableProps {
     users: AdminUser[];

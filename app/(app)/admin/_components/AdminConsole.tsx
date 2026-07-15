@@ -3,17 +3,8 @@ import { ADMIN_TABS } from '../adminNavigation';
 import { AdminToolbar } from './AdminToolbar';
 import { AdminTabBar } from './AdminTabBar';
 import { AdminUserList } from './AdminUserList';
-
-interface AdminUser {
-    id: string;
-    sc_handle: string;
-    status: UserStatus;
-    role: string;
-    failed_attempts: number;
-    createdAt: Date;
-    rejectedAt: Date | null;
-    bannedAt: Date | null;
-}
+import { ConsolePanel } from '@/components/mobiglas/ConsolePanel';
+import { AdminUser } from '../adminTypes';
 
 interface AdminConsoleProps {
     data: Record<UserStatus, AdminUser[]>;
@@ -26,10 +17,10 @@ export function AdminConsole({ data, activeTab }: AdminConsoleProps) {
     ) as Record<UserStatus, number>;
 
     return (
-        <div className="max-w-7xl mx-auto">
+        <ConsolePanel className="mx-auto max-w-7xl">
             <AdminToolbar />
             <AdminTabBar tabs={ADMIN_TABS} counts={counts} activeTab={activeTab} />
             <AdminUserList users={data[activeTab]} type={activeTab} />
-        </div>
+        </ConsolePanel>
     );
 }

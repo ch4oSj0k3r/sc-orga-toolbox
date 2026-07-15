@@ -11,15 +11,15 @@ interface HeaderProps {
 
 export function Header({ user }: HeaderProps) {
     return (
-        <header className="border-b border-line bg-panel">
-            <div className="flex items-center px-6 py-4 max-w-7xl mx-auto">
+        <header className="sticky top-0 z-40 border-b border-line bg-panel/95 backdrop-blur-md">
+            <div className="mx-auto flex h-16 max-w-7xl items-center px-6">
                 <Link href="/dashboard" className="eyebrow mb-0! focus-terminal">
                     <span className="eyebrow-dot" />
                     ORG TOOLBOX
                 </Link>
 
                 {user.role === 'ADMIN' && (
-                    <nav className="flex items-center gap-6 pl-6 ml-6 border-l border-line">
+                    <nav className="ml-6 flex items-center gap-6 border-l border-line pl-6">
                         <NavLink href="/admin">Admin</NavLink>
                     </nav>
                 )}

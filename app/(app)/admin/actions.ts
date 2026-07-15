@@ -5,11 +5,12 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { env } from '@/lib/env';
+import { Role, UserStatus } from '@/lib/generated/browser';
 
 // Hilfsfunktionen zur Absicherung der Actions
 async function assertAdmin() {
     const session = await getServerSession(authOptions);
-    if (!session || session.user?.role !== 'ADMIN') {
+    if (!session || session.user?.role !== Role.ADMIN) {
         throw new Error('Nicht autorisiert: Nur Admins haben hier Zugriff.');
     }
     return session;
@@ -21,10 +22,10 @@ async function assertNotLastAdmin(userId: string) {
         select: { role: true },
     });
 
-    if (target?.role !== 'ADMIN') return;
+    if (target?.role !== Role.ADMIN) return;
 
     const otherAdmins = await prisma.user.count({
-        where: { role: 'ADMIN', id: { not: userId } },
+        where: { role: Role.ADMIN, id: { not: userId } },
     });
 
     if (otherAdmins === 0) {
@@ -61,12 +62,34 @@ export async function getAdminDashboardData() {
         },
     });
 
+    // Berechne, wie viele Dummy-User wir noch brauchen
+    const targetCount = 100;
+    const neededDummies = Math.max(0, targetCount - allUsers.length);
+
+    // Erstelle ein neues Array mit der exakten Anzahl an Dummies
+    const dummyUsers = Array(neededDummies)
+        .fill(null)
+        .map(() => ({
+            id: `test-${Math.random().toString(36).substr(2, 9)}`, // Einzigartige ID, sonst meckert React beim Rendern wegen "key"
+            sc_handle: 'testuser',
+            status: UserStatus.VERIFIED,
+            role: Role.GUEST,
+            failed_attempts: 0,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            rejectedAt: null,
+            bannedAt: null,
+        }));
+
+    // Beide Arrays zusammenführen
+    const testUsers = [...allUsers, ...dummyUsers];
+
     return {
-        PENDING: allUsers.filter((u) => u.status === 'PENDING'),
-        VERIFIED: allUsers.filter((u) => u.status === 'VERIFIED'),
-        ACTIVE: allUsers.filter((u) => u.status === 'ACTIVE'),
-        REJECTED: allUsers.filter((u) => u.status === 'REJECTED'),
-        BANNED: allUsers.filter((u) => u.status === 'BANNED'),
+        [UserStatus.PENDING]: allUsers.filter((u) => u.status === UserStatus.PENDING),
+        [UserStatus.VERIFIED]: testUsers.filter((u) => u.status === UserStatus.VERIFIED),
+        [UserStatus.ACTIVE]: allUsers.filter((u) => u.status === UserStatus.ACTIVE),
+        [UserStatus.REJECTED]: allUsers.filter((u) => u.status === UserStatus.REJECTED),
+        [UserStatus.BANNED]: allUsers.filter((u) => u.status === UserStatus.BANNED),
     };
 }
 
@@ -78,7 +101,7 @@ export async function activateUser(userId: string) {
     await assertAdmin();
     const user = await getUserOrThrow(userId);
 
-    if (user.status !== 'VERIFIED') {
+    if (user.status !== UserStatus.VERIFIED) {
         throw new Error(
             `Aktion abgelehnt: User hat Status ${user.status}, erwartet wird VERIFIED.`
         );
@@ -86,7 +109,7 @@ export async function activateUser(userId: string) {
 
     await prisma.user.update({
         where: { id: userId },
-        data: { status: 'ACTIVE', role: 'MEMBER' },
+        data: { status: UserStatus.ACTIVE, role: Role.MEMBER },
     });
 
     revalidatePath('/admin');
@@ -103,14 +126,14 @@ export async function banUser(userId: string) {
     if (session.user.id === userId) {
         throw new Error('Du kannst dich nicht selbst sperren.');
     }
-    if (user.status === 'BANNED') {
+    if (user.status === UserStatus.BANNED) {
         throw new Error('User ist bereits gesperrt.');
     }
     await assertNotLastAdmin(userId);
 
     await prisma.user.update({
         where: { id: userId },
-        data: { status: 'BANNED', bannedAt: new Date() },
+        data: { status: UserStatus.BANNED, bannedAt: new Date() },
     });
 
     revalidatePath('/admin');
@@ -124,7 +147,7 @@ export async function resetUserAttempts(userId: string) {
     await assertAdmin();
     const user = await getUserOrThrow(userId);
 
-    if (user.status !== 'REJECTED' && user.status !== 'PENDING') {
+    if (user.status !== UserStatus.REJECTED && user.status !== UserStatus.PENDING) {
         throw new Error(
             `Aktion abgelehnt: Reset nur aus REJECTED oder PENDING möglich, aktueller Status: ${user.status}.`
         );
@@ -132,7 +155,7 @@ export async function resetUserAttempts(userId: string) {
 
     await prisma.user.update({
         where: { id: userId },
-        data: { status: 'PENDING', failed_attempts: 0, rejectedAt: null },
+        data: { status: UserStatus.PENDING, failed_attempts: 0, rejectedAt: null },
     });
 
     revalidatePath('/admin');
