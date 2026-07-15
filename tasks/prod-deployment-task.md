@@ -33,10 +33,10 @@ Deployment erfolgt zunächst manuell über `make deploy` und SSH. Eine spätere 
 
 ## Aufgaben
 
-- [ ] Next.js Standalone Build aktivieren
-- [ ] Produktionsbuild testen
-- [ ] Production Start lokal testen
-- [ ] Healthcheck-Endpunkt anlegen
+- [x] Next.js Standalone Build aktivieren
+- [x] Produktionsbuild testen
+- [x] Production Start lokal testen
+- [x] Healthcheck-Endpunkt anlegen
 
 ## Akzeptanzkriterien
 

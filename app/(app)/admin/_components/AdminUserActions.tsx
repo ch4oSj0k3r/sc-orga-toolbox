@@ -1,11 +1,12 @@
 import { TerminalButton } from '@/components/mobiglas/TerminalButton';
 import type { UserStatus } from '@/lib/generated/client';
+import type { AdminAction } from '../adminActionTypes';
 
 interface AdminUserActionsProps {
     user: { id: string; sc_handle: string };
     type: UserStatus;
     onAction: (
-        action: (id: string) => Promise<void>,
+        action: AdminAction,
         id: string,
         title: string,
         message: string,

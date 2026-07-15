@@ -1,11 +1,14 @@
 'use server';
 
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { env } from '@/lib/env';
 import { Role, UserStatus } from '@/lib/generated/browser';
+import { prisma } from '@/lib/prisma';
+
+import type { AdminActionResult } from './adminActionTypes';
 
 // Hilfsfunktionen zur Absicherung der Actions
 async function assertAdmin() {
@@ -16,21 +19,24 @@ async function assertAdmin() {
     return session;
 }
 
-async function assertNotLastAdmin(userId: string) {
+async function isLastAdmin(userId: string): Promise<boolean> {
     const target = await prisma.user.findUnique({
         where: { id: userId },
         select: { role: true },
     });
 
-    if (target?.role !== Role.ADMIN) return;
+    if (target?.role !== Role.ADMIN) {
+        return false;
+    }
 
     const otherAdmins = await prisma.user.count({
-        where: { role: Role.ADMIN, id: { not: userId } },
+        where: {
+            role: Role.ADMIN,
+            id: { not: userId },
+        },
     });
 
-    if (otherAdmins === 0) {
-        throw new Error('Aktion abgelehnt: Es muss mindestens ein Admin-Account bestehen bleiben.');
-    }
+    return otherAdmins === 0;
 }
 
 async function getUserOrThrow(userId: string) {
@@ -62,31 +68,9 @@ export async function getAdminDashboardData() {
         },
     });
 
-    // Berechne, wie viele Dummy-User wir noch brauchen
-    const targetCount = 100;
-    const neededDummies = Math.max(0, targetCount - allUsers.length);
-
-    // Erstelle ein neues Array mit der exakten Anzahl an Dummies
-    const dummyUsers = Array(neededDummies)
-        .fill(null)
-        .map(() => ({
-            id: `test-${Math.random().toString(36).substr(2, 9)}`, // Einzigartige ID, sonst meckert React beim Rendern wegen "key"
-            sc_handle: 'testuser',
-            status: UserStatus.VERIFIED,
-            role: Role.GUEST,
-            failed_attempts: 0,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            rejectedAt: null,
-            bannedAt: null,
-        }));
-
-    // Beide Arrays zusammenführen
-    const testUsers = [...allUsers, ...dummyUsers];
-
     return {
         [UserStatus.PENDING]: allUsers.filter((u) => u.status === UserStatus.PENDING),
-        [UserStatus.VERIFIED]: testUsers.filter((u) => u.status === UserStatus.VERIFIED),
+        [UserStatus.VERIFIED]: allUsers.filter((u) => u.status === UserStatus.VERIFIED),
         [UserStatus.ACTIVE]: allUsers.filter((u) => u.status === UserStatus.ACTIVE),
         [UserStatus.REJECTED]: allUsers.filter((u) => u.status === UserStatus.REJECTED),
         [UserStatus.BANNED]: allUsers.filter((u) => u.status === UserStatus.BANNED),
@@ -97,60 +81,89 @@ export async function getAdminDashboardData() {
  * 2. Aktiviert einen verifizierten User -> wird MEMBER
  * Erlaubter Ausgangsstatus: nur VERIFIED
  */
-export async function activateUser(userId: string) {
+export async function activateUser(userId: string): Promise<AdminActionResult> {
     await assertAdmin();
     const user = await getUserOrThrow(userId);
 
     if (user.status !== UserStatus.VERIFIED) {
-        throw new Error(
-            `Aktion abgelehnt: User hat Status ${user.status}, erwartet wird VERIFIED.`
-        );
+        return {
+            success: false,
+            message: `Aktion abgelehnt: User hat Status ${user.status}, erwartet wird VERIFIED.`,
+        };
     }
 
     await prisma.user.update({
         where: { id: userId },
-        data: { status: UserStatus.ACTIVE, role: Role.MEMBER },
+        data: {
+            status: UserStatus.ACTIVE,
+            role: Role.MEMBER,
+        },
     });
 
     revalidatePath('/admin');
+
+    return {
+        success: true,
+    };
 }
 
 /**
  * 3. Bannt einen User permanent
  * Erlaubt aus jedem Status außer bereits BANNED (kein sinnvoller No-Op-Schutz nötig, aber sauberer)
  */
-export async function banUser(userId: string) {
+export async function banUser(userId: string): Promise<AdminActionResult> {
     const session = await assertAdmin();
     const user = await getUserOrThrow(userId);
 
     if (session.user.id === userId) {
-        throw new Error('Du kannst dich nicht selbst sperren.');
+        return {
+            success: false,
+            message: 'Du kannst dich nicht selbst sperren.',
+        };
     }
+
     if (user.status === UserStatus.BANNED) {
-        throw new Error('User ist bereits gesperrt.');
+        return {
+            success: false,
+            message: 'User ist bereits gesperrt.',
+        };
     }
-    await assertNotLastAdmin(userId);
+
+    if (await isLastAdmin(userId)) {
+        return {
+            success: false,
+            message: 'Es muss mindestens ein Admin-Account bestehen bleiben.',
+        };
+    }
 
     await prisma.user.update({
         where: { id: userId },
-        data: { status: UserStatus.BANNED, bannedAt: new Date() },
+        data: {
+            status: UserStatus.BANNED,
+            bannedAt: new Date(),
+        },
     });
 
     revalidatePath('/admin');
+
+    return {
+        success: true,
+    };
 }
 
 /**
  * 4. Setzt fehlgeschlagene Versuche zurück -> zurück in den Validierungs-Loop
  * Erlaubter Ausgangsstatus: REJECTED oder PENDING (manueller Reset bei feststeckendem Counter)
  */
-export async function resetUserAttempts(userId: string) {
+export async function resetUserAttempts(userId: string): Promise<AdminActionResult> {
     await assertAdmin();
     const user = await getUserOrThrow(userId);
 
     if (user.status !== UserStatus.REJECTED && user.status !== UserStatus.PENDING) {
-        throw new Error(
-            `Aktion abgelehnt: Reset nur aus REJECTED oder PENDING möglich, aktueller Status: ${user.status}.`
-        );
+        return {
+            success: false,
+            message: `Reset nur aus REJECTED oder PENDING möglich. Aktueller Status: ${user.status}.`,
+        };
     }
 
     await prisma.user.update({
@@ -159,21 +172,38 @@ export async function resetUserAttempts(userId: string) {
     });
 
     revalidatePath('/admin');
+
+    return {
+        success: true,
+    };
 }
 
 /**
  * 5. Löscht einen User-Datensatz permanent
  */
-export async function deleteUser(userId: string) {
+export async function deleteUser(userId: string): Promise<AdminActionResult> {
     const session = await assertAdmin();
 
     if (session.user.id === userId) {
-        throw new Error('Du kannst deinen eigenen Account nicht löschen.');
+        return {
+            success: false,
+            message: 'Du kannst dich nicht selbst löschen.',
+        };
     }
-    await assertNotLastAdmin(userId);
+
+    if (await isLastAdmin(userId)) {
+        return {
+            success: false,
+            message: 'Es muss mindestens ein Admin-Account bestehen bleiben.',
+        };
+    }
 
     await prisma.user.delete({ where: { id: userId } });
     revalidatePath('/admin');
+
+    return {
+        success: true,
+    };
 }
 
 export async function triggerCronVerification() {
