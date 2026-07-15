@@ -1,26 +1,224 @@
 @import 'tailwindcss';
 
-:root {
-    --background: #ffffff;
-    --foreground: #171717;
+@theme {
+    /* Farben */
+    --color-bg: #070a10;
+    --color-panel: #0c1119;
+    --color-panel-alt: #111a26;
+    --color-line: #1c2a36;
+    --color-cyan: #4fe0d4;
+    --color-cyan-dim: #1f5f5a;
+    --color-amber: #ffb454;
+    --color-text: #d7e4ea;
+    --color-text-dim: #6f8792;
+    --color-danger: #ff6a5c;
+    --color-danger-deep: #b23a2f; /* gesättigter/dunkler als danger, für BANNED (Terminalzustand) */
+
+    /* Fonts - Werte kommen als CSS-Variablen aus next/font (siehe app/layout.tsx) */
+    --font-display: var(--font-display);
+    --font-mono: var(--font-mono);
+    --font-sans: var(--font-sans);
+
+    /* Shadows */
+    --shadow-glow: 0 0 18px rgba(79, 224, 212, 0.35);
+    --shadow-panel: 0 0 0 1px rgba(79, 224, 212, 0.05), 0 20px 60px rgba(0, 0, 0, 0.6);
+
+    /* Animations */
+    --animate-sweep: sweep 7s linear infinite;
+    --animate-pulse-glow: pulse-glow 1.8s ease-in-out infinite;
+    --animate-blink: blink 1s step-end infinite;
 }
 
-@theme inline {
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
+@keyframes sweep {
+    0% {
+        transform: translateY(-140px);
+    }
+    100% {
+        transform: translateY(100vh);
     }
 }
 
-body {
-    background: var(--background);
-    color: var(--foreground);
-    font-family: Arial, Helvetica, sans-serif;
+@keyframes pulse-glow {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.3;
+    }
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+@layer base {
+    body {
+        @apply bg-bg text-text font-sans;
+        background-image: radial-gradient(ellipse at 50% 20%, #0d1622 0%, #070a10 65%);
+        /* Kein overflow-hidden hier mehr - wird gezielt nur im (auth)-Layout gesetzt, sobald
+       M0.5 (Route Groups) steht. Global hätte das die Admin-Tabelle unscrollbar gemacht. */
+    }
+}
+
+@layer components {
+    /* Terminal-Panel Grundgerüst */
+    .terminal-panel {
+        @apply relative w-full max-w-[420px] bg-panel border border-line
+           px-[30px] pt-7 pb-[26px] shadow-panel
+           [clip-path:polygon(18px_0,100%_0,100%_calc(100%-18px),calc(100%-18px)_100%,0_100%,0_18px)];
+    }
+
+    .focus-terminal {
+        @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan focus-visible:outline-offset-2;
+    }
+
+    /* HUD Corner Brackets - nutze mit <span class="hud-corner hud-corner-tl" /> etc. */
+    .hud-corner {
+        @apply absolute w-4 h-4 border-cyan border-solid opacity-85;
+    }
+    .hud-corner-tl {
+        @apply -top-px -left-px border-t-2 border-l-2 border-r-0 border-b-0;
+    }
+    .hud-corner-br {
+        @apply -bottom-px -right-px border-b-2 border-r-2 border-t-0 border-l-0;
+    }
+
+    .eyebrow {
+        @apply font-mono text-[11px] tracking-[0.14em] text-cyan flex items-center gap-2 mb-1.5;
+    }
+    .eyebrow-dot {
+        @apply w-1.5 h-1.5 rounded-full bg-cyan shadow-[0_0_8px_var(--color-cyan)] animate-pulse-glow;
+    }
+
+    .status-line {
+        @apply font-mono text-xs text-text-dim min-h-[18px] mb-[18px] border-l-2 border-cyan-dim pl-2.5;
+    }
+    .status-line-active,
+    .status-line-granted {
+        @apply text-cyan border-cyan;
+    }
+    .status-line-denied {
+        @apply text-danger border-danger;
+    }
+    .status-line::after {
+        content: '_';
+        @apply animate-blink;
+    }
+
+    /* Primär-Button (z.B. "Registrieren", "Einloggen") */
+    .btn-terminal {
+        @apply w-full flex items-center justify-center gap-2.5 bg-panel-alt border
+            border-cyan-dim text-text font-mono text-[13px] tracking-[0.06em] uppercase
+            px-4 py-3 cursor-pointer transition-all duration-200
+            [clip-path:polygon(10px_0,100%_0,100%_calc(100%-10px),calc(100%-10px)_100%,0_100%,0_10px)]
+            hover:border-cyan hover:text-cyan hover:shadow-glow
+            disabled:opacity-60 disabled:cursor-default;
+    }
+
+    /* Sekundär-Button (z.B. "Abbrechen") */
+    .btn-terminal-secondary {
+        @apply w-full bg-transparent border border-line text-text-dim font-mono text-xs
+            tracking-[0.06em] uppercase px-4 py-2.5 cursor-pointer transition-all duration-200
+            hover:border-text-dim hover:text-text;
+    }
+
+    /* Danger-Button (z.B. "Löschen", "Abbrechen", "Logout") */
+    .btn-terminal-danger {
+        @apply w-full flex items-center justify-center gap-2.5 bg-panel-alt border
+            border-danger/40 text-danger font-mono text-[13px] tracking-[0.06em] uppercase
+            px-4 py-3 cursor-pointer transition-all duration-200
+            [clip-path:polygon(10px_0,100%_0,100%_calc(100%-10px),calc(100%-10px)_100%,0_100%,0_10px)]
+            hover:border-danger hover:shadow-[0_0_18px_rgba(255,106,92,0.35)]
+            disabled:opacity-60 disabled:cursor-default;
+    }
+
+    .btn-terminal:focus-visible {
+        outline: none;
+        box-shadow: inset 0 0 0 2px var(--color-cyan);
+    }
+    .btn-terminal-secondary:focus-visible {
+        outline: none;
+        box-shadow: inset 0 0 0 2px var(--color-cyan-dim);
+    }
+    .btn-terminal-danger:focus-visible {
+        outline: none;
+        box-shadow: inset 0 0 0 2px var(--color-danger);
+    }
+
+    /* Input-Felder */
+    .input-terminal {
+        @apply w-full bg-panel-alt border border-line text-text font-mono text-[13px]
+           px-3 py-2.5 outline-none transition-colors duration-200
+           focus-visible:border-cyan focus-visible:shadow-[0_0_0_1px_rgba(79,224,212,0.35)];
+    }
+
+    /* Autofill-Override: Browser-Passwort-Vorschläge rendern sonst mit weißem Hintergrund,
+     unabhängig vom Theme (siehe M1 in mobi-glas-theme-task.md) */
+    .input-terminal:-webkit-autofill,
+    .input-terminal:-webkit-autofill:hover,
+    .input-terminal:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0px 1000px var(--color-panel-alt) inset;
+        -webkit-text-fill-color: var(--color-text);
+        transition: background-color 9999s ease-in-out 0s;
+    }
+
+    .label-terminal {
+        @apply block font-mono text-[10px] tracking-[0.1em] text-text-dim uppercase mb-1.5;
+    }
+
+    .divider-terminal {
+        @apply flex items-center gap-3 my-5 font-mono text-[10px] text-text-dim tracking-[0.1em];
+    }
+    .divider-terminal::before,
+    .divider-terminal::after {
+        content: '';
+        @apply flex-1 h-px bg-line;
+    }
+
+    .footnote-terminal {
+        @apply mt-5 font-mono text-[10px] text-text-dim leading-relaxed border-t border-line pt-3.5;
+    }
+    .footnote-terminal .tag {
+        @apply text-cyan; /* statt text-cyan-dim */
+    }
+
+    .link-terminal {
+        @apply text-cyan hover:text-cyan-dim transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan focus-visible:outline-offset-2;
+    }
+}
+
+@layer utilities {
+    /* Starfield-Hintergrund, per Element aktivierbar (fixed positioniert) */
+    .bg-starfield {
+        background-image:
+            radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.5) 50%, transparent 51%),
+            radial-gradient(1px 1px at 80% 10%, rgba(255, 255, 255, 0.4) 50%, transparent 51%),
+            radial-gradient(1.5px 1.5px at 60% 70%, rgba(255, 255, 255, 0.35) 50%, transparent 51%),
+            radial-gradient(1px 1px at 30% 85%, rgba(255, 255, 255, 0.3) 50%, transparent 51%),
+            radial-gradient(1px 1px at 90% 60%, rgba(255, 255, 255, 0.4) 50%, transparent 51%),
+            radial-gradient(1.5px 1.5px at 45% 35%, rgba(255, 255, 255, 0.3) 50%, transparent 51%);
+        background-repeat: repeat;
+        background-size: 400px 400px;
+    }
+
+    /* Scanline-Sweep-Overlay, fixed + pointer-events-none im JSX setzen */
+    .bg-scanline-sweep {
+        background: linear-gradient(
+            to bottom,
+            transparent 0%,
+            rgba(79, 224, 212, 0.35) 50%,
+            transparent 100%
+        );
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-sweep,
+    .animate-pulse-glow,
+    .status-line::after {
+        animation: none;
+    }
 }
