@@ -91,10 +91,10 @@ Deployment erfolgt zunächst manuell über `make deploy` und SSH. Eine spätere 
 
 ## Aufgaben
 
-- [ ] `.env.example` aktualisieren
-- [ ] `.env.prod` Konzept definieren
-- [ ] Secret-Erzeugung dokumentieren
-- [ ] Environment validieren
+- [x] `.env.example` aktualisieren
+- [x] `.env.prod` Konzept definieren
+- [x] Secret-Erzeugung dokumentieren
+- [x] Environment validieren
 
 ## Akzeptanzkriterien
 
