@@ -36,6 +36,10 @@ Auf dem Server wird das System über drei Container orchestriert:
 2. sc-webapp (Next.js): Die Core-Anwendung. Sie enthält das Frontend, die API-Routen (inkl. Verifizierungs-Cron) und die gesamte Business-Logik.
 3. sc-db (MariaDB): Die zentrale relationale Datenbank.
 
+### Hinweise
+
+Keine Inline-Kommentare in .env-Dateien verwenden.
+
 ---
 
 ## 🔒 Authentifizierung & Verifizierungs-Workflow

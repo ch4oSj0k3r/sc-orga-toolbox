@@ -49,12 +49,13 @@ Deployment erfolgt zunächst manuell über `make deploy` und SSH. Eine spätere 
 
 ## Aufgaben
 
-- [ ] Multi-Stage Dockerfile
-- [ ] `.dockerignore`
-- [ ] Non-Root User
-- [ ] Prisma Generate
-- [ ] Standalone Build integrieren
-- [ ] Healthcheck konfigurieren
+- [x] Multi-Stage Dockerfile
+- [x] `.dockerignore`
+- [x] Non-Root User
+- [x] Prisma Generate
+- [x] Standalone Build integrieren
+- [x] Healthcheck konfigurieren
+- [x] Runtime-Test des Containers erfolgreich durchgeführt
 
 ## Akzeptanzkriterien
 
