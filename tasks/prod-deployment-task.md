@@ -68,13 +68,17 @@ Deployment erfolgt zunächst manuell über `make deploy` und SSH. Eine spätere 
 
 ## Aufgaben
 
-- [ ] `docker-compose.prod.yml`
-- [ ] MariaDB integrieren
-- [ ] Persistentes Volume
-- [ ] internes Docker-Netzwerk
-- [ ] Webapp ausschließlich auf `127.0.0.1` veröffentlichen
-- [ ] Restart Policy
-- [ ] Container Healthchecks
+- [x] `docker-compose.prod.yml`
+- [x] MariaDB integriert
+- [x] Persistentes Volume
+- [x] internes Docker-Netzwerk
+- [x] Webapp ausschließlich auf `127.0.0.1` veröffentlicht
+- [x] Restart Policy
+- [x] Container Healthchecks
+- [x] Log-Rotation
+- [x] Compose-Konfiguration validiert
+- [x] Webapp und Datenbank starten erfolgreich
+- [x] Persistenz nach Container-Neustart geprüft
 
 ## Akzeptanzkriterien
 
@@ -104,6 +108,7 @@ Deployment erfolgt zunächst manuell über `make deploy` und SSH. Eine spätere 
 ## Aufgaben
 
 - [ ] `prisma migrate deploy`
+- [ ] separaten Migration-Service oder Deployment-Schritt für `prisma migrate deploy` umsetzen
 - [ ] Deployment-Reihenfolge definieren
 - [ ] Fehlerfall sauber behandeln
 
