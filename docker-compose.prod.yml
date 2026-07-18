@@ -66,6 +66,23 @@ services:
                 max-size: 10m
                 max-file: '3'
 
+    migrate:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: migrate
+        env_file:
+            - .env.prod
+        environment:
+            DB_HOST: db
+            DB_PORT: 3306
+        networks:
+            - sc_internal
+        depends_on:
+            db:
+                condition: service_healthy
+        restart: 'no'
+
 volumes:
     sc_db_data:
         name: sc_db_data

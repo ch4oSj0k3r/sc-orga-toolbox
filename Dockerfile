@@ -59,6 +59,11 @@ RUN DB_HOST=localhost \
     npm run build
 
 
+FROM builder AS migrate
+
+CMD ["npx", "prisma", "migrate", "deploy"]
+
+
 FROM base AS runner
 
 WORKDIR /app

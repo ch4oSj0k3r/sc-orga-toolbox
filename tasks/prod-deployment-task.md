@@ -107,10 +107,10 @@ Deployment erfolgt zunächst manuell über `make deploy` und SSH. Eine spätere 
 
 ## Aufgaben
 
-- [ ] `prisma migrate deploy`
-- [ ] separaten Migration-Service oder Deployment-Schritt für `prisma migrate deploy` umsetzen
-- [ ] Deployment-Reihenfolge definieren
-- [ ] Fehlerfall sauber behandeln
+- [x] `prisma migrate deploy`
+- [x] separaten Migration-Service oder Deployment-Schritt für `prisma migrate deploy` umsetzen
+- [x] Deployment-Reihenfolge definieren
+- [x] Fehlerfall sauber behandeln
 
 ## Akzeptanzkriterien
 
