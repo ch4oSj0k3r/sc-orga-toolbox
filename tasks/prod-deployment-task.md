@@ -155,10 +155,10 @@ Deployment erfolgt zunächst manuell über `make deploy` und SSH. Eine spätere 
 
 ## Aufgaben
 
-- [ ] Datenbank-Backup-Skript
-- [ ] tägliche automatische Backups
+- [x] Datenbank-Backup-Skript
+- [x] tägliche automatische Backups
 - [ ] Rotation (7 täglich / 4 wöchentlich)
-- [ ] Restore dokumentieren
+- [x] Restore dokumentieren
 
 ## Akzeptanzkriterien
 
