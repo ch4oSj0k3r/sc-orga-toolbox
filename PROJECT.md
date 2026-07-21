@@ -36,6 +36,40 @@ Auf dem Server wird das System über drei Container orchestriert:
 2. sc-webapp (Next.js): Die Core-Anwendung. Sie enthält das Frontend, die API-Routen (inkl. Verifizierungs-Cron) und die gesamte Business-Logik.
 3. sc-db (MariaDB): Die zentrale relationale Datenbank.
 
+### Initial Administrator Bootstrap
+
+Nach einem frischen Deployment existiert zunächst kein Administrator.
+Der erste Administrator wird einmalig nach erfolgreicher Registrierung und Verifizierung direkt in der Datenbank zum `ADMIN` hochgestuft.
+Dieser Schritt ist bewusst kein Bestandteil der Anwendung und erfolgt ausschließlich während des initialen Deployments. Alle weiteren Administratoren werden anschließend über das Admin-Backend verwaltet.
+
+### Hinweise
+
+Keine Inline-Kommentare in .env-Dateien verwenden.
+
+### Deployment – Prisma Migrationen
+
+**Entscheidung**
+
+Prisma-Migrationen werden über einen dedizierten Docker-Compose-Service (`migrate`) ausgeführt.
+
+**Begründung**
+
+- Trennung der Verantwortlichkeiten (Single Responsibility)
+- Runtime-Image bleibt schlank und enthält keine Prisma CLI
+- Migrationen werden bewusst und explizit ausgeführt
+- Reproduzierbarer Ablauf in Entwicklung und Produktion
+- Kein zusätzlicher Deployment-Code oder Shell-Skripte erforderlich (KISS)
+
+**Deployment-Ablauf**
+
+```bash
+docker compose pull # bzw. build
+docker compose run --rm migrate
+docker compose up -d
+```
+
+Der `migrate`-Service ist ein kurzlebiger Container und wird ausschließlich für Schema-Migrationen gestartet. Er ist **kein** dauerhaft laufender Bestandteil des Stacks und wird nicht automatisch beim `docker compose up` ausgeführt.
+
 ---
 
 ## 🔒 Authentifizierung & Verifizierungs-Workflow

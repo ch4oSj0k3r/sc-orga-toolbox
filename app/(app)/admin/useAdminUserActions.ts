@@ -3,8 +3,8 @@
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { activateUser, banUser, resetUserAttempts, deleteUser } from './actions';
+import type { AdminAction } from './adminActionTypes';
 
-type AdminAction = (id: string) => Promise<void>;
 type ModalVariant = 'primary' | 'danger';
 
 interface ModalConfig {
@@ -49,11 +49,18 @@ export function useAdminUserActions() {
 
         startTransition(async () => {
             try {
-                await action(userId);
+                const result = await action(userId);
+
+                if (!result.success) {
+                    toast.error(result.message);
+                    return;
+                }
+
                 toast.success(`${title} erfolgreich durchgeführt!`);
                 closeModal();
             } catch (error) {
-                toast.error(error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten');
+                console.error(error);
+                toast.error('Ein unerwarteter Fehler ist aufgetreten.');
             }
         });
     }
