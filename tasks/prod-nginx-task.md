@@ -32,15 +32,15 @@ Die öffentliche Domain, TLS-Terminierung und Zertifikatsverwaltung bleiben zun�
 
 ## Aufgaben
 
-- [ ] Nginx-Konfiguration im Repository anlegen
-- [ ] Requests an `http://webapp:3000` weiterleiten
-- [ ] `Host`-Header weiterreichen
-- [ ] `X-Real-IP` setzen
-- [ ] `X-Forwarded-For` setzen
-- [ ] `X-Forwarded-Proto` weiterreichen
-- [ ] WebSocket- und Upgrade-Verbindungen unterstützen
-- [ ] sinnvolle Timeouts konfigurieren
-- [ ] Nginx-Konfiguration mit `nginx -t` validieren
+- [x] Nginx-Konfiguration im Repository anlegen
+- [x] Requests an `http://webapp:3000` weiterleiten
+- [x] `Host`-Header weiterreichen
+- [x] `X-Real-IP` setzen
+- [x] `X-Forwarded-For` setzen
+- [x] `X-Forwarded-Proto` weiterreichen
+- [x] WebSocket- und Upgrade-Verbindungen unterstützen
+- [x] sinnvolle Timeouts konfigurieren
+- [x] Nginx-Konfiguration mit `nginx -t` validieren
 
 ## Akzeptanzkriterien
 
@@ -55,17 +55,17 @@ Die öffentliche Domain, TLS-Terminierung und Zertifikatsverwaltung bleiben zun�
 
 ## Aufgaben
 
-- [ ] Nginx-Service in `docker-compose.prod.yml` ergänzen
-- [ ] Nginx-Image auf eine konkrete Version pinnen
-- [ ] Nginx-Konfiguration read-only mounten
-- [ ] Nginx in das interne Docker-Netzwerk aufnehmen
-- [ ] Abhängigkeit zur Webapp konfigurieren
-- [ ] Host-Port über `NGINX_HOST_PORT` konfigurierbar machen
-- [ ] Nginx-Port nur auf der benötigten Host-Schnittstelle veröffentlichen
-- [ ] direkten Host-Port der Webapp entfernen
-- [ ] Restart Policy konfigurieren
-- [ ] Log-Rotation konfigurieren
-- [ ] Healthcheck für Nginx ergänzen
+- [x] Nginx-Service in `docker-compose.prod.yml` ergänzen
+- [x] Nginx-Image auf eine konkrete Version pinnen
+- [x] Nginx-Konfiguration read-only mounten
+- [x] Nginx in das interne Docker-Netzwerk aufnehmen
+- [x] Abhängigkeit zur Webapp konfigurieren
+- [x] Host-Port über `NGINX_HOST_PORT` konfigurierbar machen
+- [x] Nginx-Port nur auf der benötigten Host-Schnittstelle veröffentlichen
+- [x] direkten Host-Port der Webapp entfernen
+- [x] Restart Policy konfigurieren
+- [x] Log-Rotation konfigurieren
+- [x] Healthcheck für Nginx ergänzen
 - [ ] Compose-Konfiguration validieren
 
 ## Akzeptanzkriterien
@@ -82,11 +82,11 @@ Die öffentliche Domain, TLS-Terminierung und Zertifikatsverwaltung bleiben zun�
 
 ## Aufgaben
 
-- [ ] `NGINX_HOST_PORT` in `.env.example` ergänzen
-- [ ] Beispielwert dokumentieren
-- [ ] bereits belegten Port `8080` nicht als Standard verwenden
-- [ ] Environment-Validierung für den Port ergänzen
-- [ ] sicherstellen, dass keine Zertifikate oder Private Keys im Repository landen
+- [x] `NGINX_HOST_PORT` in `.env.example` ergänzen
+- [x] Beispielwert dokumentieren
+- [x] bereits belegten Port `8080` nicht als Standard verwenden
+- [x] Environment-Validierung für den Port ergänzen
+- [x] sicherstellen, dass keine Zertifikate oder Private Keys im Repository landen
 
 ## Akzeptanzkriterien
 
@@ -100,11 +100,11 @@ Die öffentliche Domain, TLS-Terminierung und Zertifikatsverwaltung bleiben zun�
 
 ## Aufgaben
 
-- [ ] `scripts/deploy.sh` um den Nginx-Service erweitern
-- [ ] Nginx nach erfolgreicher Migration und gestarteter Webapp starten
-- [ ] Deployment-Healthcheck über den Nginx-Port ausführen
-- [ ] Fehlerausgabe um Nginx-Logs ergänzen
-- [ ] Containerstatus für Nginx anzeigen
+- [x] `scripts/deploy.sh` um den Nginx-Service erweitern
+- [x] Nginx nach erfolgreicher Migration und gestarteter Webapp starten
+- [x] Deployment-Healthcheck über den Nginx-Port ausführen
+- [x] Fehlerausgabe um Nginx-Logs ergänzen
+- [x] Containerstatus für Nginx anzeigen
 - [ ] bestehende Deployments ohne unnötige Downtime aktualisieren
 - [ ] vollständigen Deployment-Ablauf auf dem Produktionsserver testen
 
@@ -144,13 +144,13 @@ Die öffentliche Domain, TLS-Terminierung und Zertifikatsverwaltung bleiben zun�
 
 ## Aufgaben
 
-- [ ] Nginx-Container ohne unnötige privilegierte Rechte betreiben
-- [ ] Port nur auf der erforderlichen Host-Schnittstelle binden
-- [ ] keine internen Services öffentlich veröffentlichen
-- [ ] MariaDB weiterhin ausschließlich intern erreichbar halten
-- [ ] unnötige Nginx-Header deaktivieren
-- [ ] Request-Größenlimit prüfen und dokumentieren
-- [ ] Security-Header mit zentralem Reverse Proxy abstimmen
+- [x] Nginx-Container ohne unnötige privilegierte Rechte betreiben
+- [x] Port nur auf der erforderlichen Host-Schnittstelle binden
+- [x] keine internen Services öffentlich veröffentlichen
+- [x] MariaDB weiterhin ausschließlich intern erreichbar halten
+- [x] unnötige Nginx-Header deaktivieren
+- [x] Request-Größenlimit prüfen und dokumentieren
+- [x] Security-Header mit zentralem Reverse Proxy abstimmen
 
 ## Akzeptanzkriterien
 
@@ -165,14 +165,14 @@ Die öffentliche Domain, TLS-Terminierung und Zertifikatsverwaltung bleiben zun�
 
 ## Aufgaben
 
-- [ ] `docs/deployment.md` aktualisieren
-- [ ] Zielarchitektur dokumentieren
-- [ ] Nginx-Port und Environment-Konfiguration dokumentieren
-- [ ] lokale Testbefehle dokumentieren
-- [ ] Status- und Log-Befehle dokumentieren
-- [ ] Zuständigkeiten für Projekt-Nginx und zentralen TLS-Proxy dokumentieren
-- [ ] Troubleshooting für `502 Bad Gateway` ergänzen
-- [ ] Troubleshooting für belegte Host-Ports ergänzen
+- [x] `docs/deployment.md` aktualisieren
+- [x] Zielarchitektur dokumentieren
+- [x] Nginx-Port und Environment-Konfiguration dokumentieren
+- [x] lokale Testbefehle dokumentieren
+- [x] Status- und Log-Befehle dokumentieren
+- [x] Zuständigkeiten für Projekt-Nginx und zentralen TLS-Proxy dokumentieren
+- [x] Troubleshooting für `502 Bad Gateway` ergänzen
+- [x] Troubleshooting für belegte Host-Ports ergänzen
 
 ## Akzeptanzkriterien
 
@@ -198,16 +198,16 @@ Die öffentliche Domain, TLS-Terminierung und Zertifikatsverwaltung bleiben zun�
 
 # Definition of Done
 
-- [ ] eigener Nginx-Container in `docker-compose.prod.yml`
-- [ ] Nginx-Konfiguration im Repository versioniert
-- [ ] Host-Port über Environment konfigurierbar
-- [ ] Webapp nicht mehr direkt auf dem Host veröffentlicht
-- [ ] Proxy-Header korrekt konfiguriert
-- [ ] WebSocket-Upgrade unterstützt
-- [ ] Nginx-Healthcheck vorhanden
-- [ ] Deployment-Skript aktualisiert
+- [x] eigener Nginx-Container in `docker-compose.prod.yml`
+- [x] Nginx-Konfiguration im Repository versioniert
+- [x] Host-Port über Environment konfigurierbar
+- [x] Webapp nicht mehr direkt auf dem Host veröffentlicht
+- [x] Proxy-Header korrekt konfiguriert
+- [x] WebSocket-Upgrade unterstützt
+- [x] Nginx-Healthcheck vorhanden
+- [x] Deployment-Skript aktualisiert
 - [ ] Healthcheck über Nginx erfolgreich
 - [ ] vollständiges Deployment auf dem Produktionsserver getestet
 - [ ] Weiterleitung durch den zentralen HTTPS-Reverse-Proxy erfolgreich
 - [ ] produktive Domain funktioniert ohne Zertifikatsfehler
-- [ ] Dokumentation aktualisiert
+- [x] Dokumentation aktualisiert

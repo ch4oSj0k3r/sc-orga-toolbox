@@ -8,7 +8,7 @@ PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 COMPOSE_FILE="${PROJECT_DIR}/docker-compose.prod.yml"
 ENV_FILE="${PROJECT_DIR}/.env.prod"
 
-HEALTHCHECK_URL="${HEALTHCHECK_URL:-http://127.0.0.1:3000/api/health}"
+HEALTHCHECK_URL="${HEALTHCHECK_URL:-}"
 HEALTHCHECK_ATTEMPTS="${HEALTHCHECK_ATTEMPTS:-30}"
 HEALTHCHECK_INTERVAL="${HEALTHCHECK_INTERVAL:-2}"
 
@@ -30,7 +30,7 @@ Optionen:
 Optionale Umgebungsvariablen:
 
   HEALTHCHECK_URL
-      Standard: http://127.0.0.1:3000/api/health
+      Standard: wird nach dem Start aus dem veröffentlichten Nginx-Port ermittelt
 
   HEALTHCHECK_ATTEMPTS
       Standard: 30
@@ -79,12 +79,12 @@ on_error() {
     if command -v docker >/dev/null 2>&1 &&
         [[ -f "${COMPOSE_FILE}" ]] &&
         [[ -f "${ENV_FILE}" ]]; then
-        log "Letzte Webapp-Logs:"
+        log "Letzte Webapp- und Nginx-Logs:"
 
         compose logs \
             --tail=100 \
             --no-color \
-            webapp 2>/dev/null || true
+            webapp nginx 2>/dev/null || true
     fi
 
     exit "${exit_code}"
@@ -112,6 +112,29 @@ validate_number() {
 
     [[ "${value}" =~ ^[1-9][0-9]*$ ]] ||
         fail "${name} muss eine positive Ganzzahl sein."
+}
+
+validate_port() {
+    local value="$1"
+    local name="$2"
+
+    validate_number "${value}" "${name}"
+
+    ((10#${value} <= 65535)) ||
+        fail "${name} muss zwischen 1 und 65535 liegen."
+}
+
+compose_environment_value() {
+    local name="$1"
+
+    compose config --environment |
+        awk -F= -v key="${name}" '
+            $1 == key {
+                sub(/^[^=]*=/, "")
+                print
+                exit
+            }
+        '
 }
 
 while [[ $# -gt 0 ]]; do
@@ -163,6 +186,15 @@ log "Environment-Datei: ${ENV_FILE}"
 
 log "Validiere Docker-Compose-Konfiguration."
 compose config --quiet
+
+NGINX_HOST_PORT="$(compose_environment_value NGINX_HOST_PORT)"
+
+[[ -n "${NGINX_HOST_PORT}" ]] ||
+    fail "NGINX_HOST_PORT fehlt in der Environment-Konfiguration."
+
+validate_port "${NGINX_HOST_PORT}" "NGINX_HOST_PORT"
+
+log "Toolbox-Nginx wird an 127.0.0.1:${NGINX_HOST_PORT} veröffentlicht."
 
 if [[ "${SKIP_BUILD}" == "false" ]]; then
     section "Docker-Images bauen"
@@ -219,7 +251,20 @@ section "Webapp starten"
 
 compose up -d webapp
 
-section "Healthcheck ausführen"
+section "Nginx starten"
+
+compose up -d nginx
+
+if [[ -z "${HEALTHCHECK_URL}" ]]; then
+    NGINX_PUBLISHED_ADDRESS="$(compose port nginx 80)"
+
+    [[ -n "${NGINX_PUBLISHED_ADDRESS}" ]] ||
+        fail "Der veröffentlichte Nginx-Port konnte nicht ermittelt werden."
+
+    HEALTHCHECK_URL="http://${NGINX_PUBLISHED_ADDRESS}/api/health"
+fi
+
+section "Healthcheck über Nginx ausführen"
 
 HEALTHY=false
 
@@ -235,12 +280,12 @@ for ((attempt = 1; attempt <= HEALTHCHECK_ATTEMPTS; attempt++)); do
         break
     fi
 
-    log "Webapp noch nicht erreichbar (${attempt}/${HEALTHCHECK_ATTEMPTS})."
+    log "Anwendung über Nginx noch nicht erreichbar (${attempt}/${HEALTHCHECK_ATTEMPTS})."
     sleep "${HEALTHCHECK_INTERVAL}"
 done
 
 if [[ "${HEALTHY}" != "true" ]]; then
-    compose logs --tail=100 --no-color webapp || true
+    compose logs --tail=100 --no-color webapp nginx || true
     fail "Healthcheck nach ${HEALTHCHECK_ATTEMPTS} Versuchen fehlgeschlagen."
 fi
 
@@ -256,4 +301,4 @@ fi
 
 section "Deployment erfolgreich"
 
-log "Die Anwendung ist gesund und einsatzbereit."
+log "Die Anwendung ist über Nginx gesund und einsatzbereit."
