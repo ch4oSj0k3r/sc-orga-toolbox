@@ -82,7 +82,7 @@ docker compose \
 gzip -t "${TEMP_FILE}" ||
     fail "Das erzeugte Backup ist beschädigt."
 
-if ! gzip -dc "${BACKUP_FILE}" | grep -q "_prisma_migrations"; then
+if ! gzip -dc "${TEMP_FILE}" | grep -q "_prisma_migrations"; then
     fail "Backup scheint kein gültiger Prisma-Dump zu sein."
 fi
 

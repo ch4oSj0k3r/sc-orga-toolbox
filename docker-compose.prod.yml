@@ -14,11 +14,7 @@ services:
         networks:
             - sc_internal
         healthcheck:
-            test:
-                [
-                    'CMD-SHELL',
-                    'healthcheck.sh --connect --innodb_initialized',
-                ]
+            test: ['CMD-SHELL', 'healthcheck.sh --connect --innodb_initialized']
             interval: 10s
             timeout: 5s
             retries: 10
@@ -41,8 +37,8 @@ services:
             DB_PORT: 3306
             HOSTNAME: 0.0.0.0
             PORT: 3000
-        ports:
-            - '127.0.0.1:3000:3000'
+        expose:
+            - '3000'
         networks:
             - sc_internal
         depends_on:
@@ -56,6 +52,30 @@ services:
                     '-e',
                     "fetch('http://127.0.0.1:3000/api/health').then(response => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))",
                 ]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 20s
+        logging:
+            driver: json-file
+            options:
+                max-size: 10m
+                max-file: '3'
+
+    nginx:
+        image: nginx:1.28.0-alpine
+        restart: unless-stopped
+        ports:
+            - '127.0.0.1:${NGINX_HOST_PORT:?NGINX_HOST_PORT muss gesetzt sein}:80'
+        volumes:
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+        networks:
+            - sc_internal
+        depends_on:
+            webapp:
+                condition: service_healthy
+        healthcheck:
+            test: ['CMD-SHELL', 'wget -q -O /dev/null http://127.0.0.1/api/health || exit 1']
             interval: 30s
             timeout: 5s
             retries: 3
