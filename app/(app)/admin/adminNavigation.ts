@@ -24,5 +24,5 @@ export function parseAdminTab(value: string | undefined): UserStatus {
 }
 
 export function getAdminTabHref(status: UserStatus): string {
-    return `/admin?tab=${status.toLowerCase()}`;
+    return `/admin/users?tab=${status.toLowerCase()}`;
 }

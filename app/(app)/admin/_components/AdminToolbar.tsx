@@ -15,10 +15,10 @@ export function AdminToolbar() {
         >
             <div>
                 <h1 className="font-display text-2xl font-bold uppercase tracking-wide">
-                    Orga Admin-Dashboard
+                    Mitgliederverwaltung
                 </h1>
                 <p className="mt-1 font-mono text-xs text-text-dim">
-                    Verwaltung der Benutzerregistrierungen und Sicherheitsstufen.
+                    Benutzerregistrierungen, Rollen und Sicherheitsstufen verwalten.
                 </p>
             </div>
             <CronTrigger />

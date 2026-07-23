@@ -100,7 +100,7 @@ export async function activateUser(userId: string): Promise<AdminActionResult> {
         },
     });
 
-    revalidatePath('/admin');
+    revalidatePath('/admin/users');
 
     return {
         success: true,
@@ -162,7 +162,7 @@ export async function updateUserRole(userId: string, targetRole: Role): Promise<
         data: { role: targetRole },
     });
 
-    revalidatePath('/admin');
+    revalidatePath('/admin/users');
 
     return {
         success: true,
@@ -206,7 +206,7 @@ export async function banUser(userId: string): Promise<AdminActionResult> {
         },
     });
 
-    revalidatePath('/admin');
+    revalidatePath('/admin/users');
 
     return {
         success: true,
@@ -233,7 +233,7 @@ export async function resetUserAttempts(userId: string): Promise<AdminActionResu
         data: { status: UserStatus.PENDING, failed_attempts: 0, rejectedAt: null },
     });
 
-    revalidatePath('/admin');
+    revalidatePath('/admin/users');
 
     return {
         success: true,
@@ -261,7 +261,7 @@ export async function deleteUser(userId: string): Promise<AdminActionResult> {
     }
 
     await prisma.user.delete({ where: { id: userId } });
-    revalidatePath('/admin');
+    revalidatePath('/admin/users');
 
     return {
         success: true,
@@ -281,6 +281,6 @@ export async function triggerCronVerification() {
     }
 
     const result = await response.json();
-    revalidatePath('/admin');
+    revalidatePath('/admin/users');
     return result;
 }

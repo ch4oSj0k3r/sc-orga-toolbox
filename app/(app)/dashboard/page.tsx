@@ -54,7 +54,7 @@ export default async function DashboardPage() {
                 <ModuleSection
                     eyebrow="Restricted Access"
                     title="Verwaltung"
-                    description="Administrative Systeme für Benutzer- und Zugriffsverwaltung."
+                    description="Administrative Systeme für Mitglieder-, Modul- und Zugriffsverwaltung."
                     modules={administrationModules}
                 />
             )}
