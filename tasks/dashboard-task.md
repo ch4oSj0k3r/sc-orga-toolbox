@@ -12,12 +12,12 @@ Das Dashboard dient als zentraler Einstiegspunkt für alle zukünftigen Toolbox-
 
 ## Aufgaben
 
-- [ ] Root-Route `/` nach `/dashboard` weiterleiten
-- [ ] Next.js-Standardseite vollständig entfernen
-- [ ] `/dashboard` innerhalb des geschützten App-Layouts anlegen
-- [ ] Logo im Header weiterhin auf `/dashboard` verlinken
-- [ ] Admin-Link aus dem Header entfernen
-- [ ] Header auf Logo, Benutzeranzeige und Logout reduzieren
+- [x] Root-Route `/` nach `/dashboard` weiterleiten
+- [x] Next.js-Standardseite vollständig entfernen
+- [x] `/dashboard` innerhalb des geschützten App-Layouts anlegen
+- [x] Logo im Header weiterhin auf `/dashboard` verlinken
+- [x] Admin-Link aus dem Header entfernen
+- [x] Header auf Logo, Benutzeranzeige und Logout reduzieren
 
 ## Akzeptanzkriterien
 
@@ -32,12 +32,12 @@ Das Dashboard dient als zentraler Einstiegspunkt für alle zukünftigen Toolbox-
 
 ## Aufgaben
 
-- [ ] zentrale Modul-Registry anlegen
-- [ ] Modul-ID, Titel, Beschreibung und Zielroute definieren
-- [ ] Kategorien `module` und `administration` unterstützen
-- [ ] erlaubte Rollen pro Modul hinterlegen
-- [ ] sichtbare Module anhand der Session-Rolle filtern
-- [ ] Mitgliederverwaltung als erstes Administrationsmodul registrieren
+- [x] zentrale Modul-Registry anlegen
+- [x] Modul-ID, Titel, Beschreibung und Zielroute definieren
+- [x] Kategorien `module` und `administration` unterstützen
+- [x] erlaubte Rollen pro Modul hinterlegen
+- [x] sichtbare Module anhand der Session-Rolle filtern
+- [x] Mitgliederverwaltung als erstes Administrationsmodul registrieren
 
 ## Akzeptanzkriterien
 
@@ -51,14 +51,14 @@ Das Dashboard dient als zentraler Einstiegspunkt für alle zukünftigen Toolbox-
 
 ## Aufgaben
 
-- [ ] Begrüßungsbereich mit Benutzername anzeigen
-- [ ] aktuelle Rolle als Zugriffslevel darstellen
-- [ ] Modulbereich anlegen
-- [ ] Verwaltungsbereich für administrative Systeme anlegen
-- [ ] wiederverwendbare Modulkachel erstellen
-- [ ] Empty State anzeigen, solange keine fachlichen Module existieren
-- [ ] responsive Rasterdarstellung umsetzen
-- [ ] Tastaturfokus und Link-Beschriftungen berücksichtigen
+- [x] Begrüßungsbereich mit Benutzername anzeigen
+- [x] aktuelle Rolle als Zugriffslevel darstellen
+- [x] Modulbereich anlegen
+- [x] Verwaltungsbereich für administrative Systeme anlegen
+- [x] wiederverwendbare Modulkachel erstellen
+- [x] Empty State anzeigen, solange keine fachlichen Module existieren
+- [x] responsive Rasterdarstellung umsetzen
+- [x] Tastaturfokus und Link-Beschriftungen berücksichtigen
 
 ## Akzeptanzkriterien
 
@@ -74,15 +74,15 @@ Das Dashboard dient als zentraler Einstiegspunkt für alle zukünftigen Toolbox-
 
 ## Aufgaben
 
-- [ ] Root-Redirect testen
-- [ ] Dashboard als `MEMBER` testen
-- [ ] Dashboard als `ADMIN` testen
-- [ ] Mitgliederverwaltung über Kachel öffnen
-- [ ] Header auf Desktop testen
-- [ ] Dashboard und Header mobil testen
-- [ ] `npm run lint` ausführen
-- [ ] `npm run build` ausführen
-- [ ] `git diff --check` ausführen
+- [x] Root-Redirect testen
+- [x] Dashboard als `MEMBER` testen
+- [x] Dashboard als `ADMIN` testen
+- [x] Mitgliederverwaltung über Kachel öffnen
+- [x] Header auf Desktop testen
+- [x] Dashboard und Header mobil testen
+- [x] `npm run lint` ausführen
+- [x] `npm run build` ausführen
+- [x] `git diff --check` ausführen
 
 ## Akzeptanzkriterien
 
@@ -108,16 +108,16 @@ Das Dashboard dient als zentraler Einstiegspunkt für alle zukünftigen Toolbox-
 
 # Definition of Done
 
-- [ ] Standardseite entfernt
-- [ ] Root-Redirect vorhanden
-- [ ] Dashboard-Route vorhanden
-- [ ] Modul-Registry vorhanden
-- [ ] rollenabhängige Filterung vorhanden
-- [ ] Mitgliederverwaltung als Admin-Kachel vorhanden
-- [ ] Admin-Link aus Header entfernt
-- [ ] Empty State vorhanden
-- [ ] responsive Darstellung geprüft
-- [ ] Linting erfolgreich
-- [ ] Production-Build erfolgreich
-- [ ] lokaler Funktionstest erfolgreich
-- [ ] Production-Test erfolgreich
+- [x] Standardseite entfernt
+- [x] Root-Redirect vorhanden
+- [x] Dashboard-Route vorhanden
+- [x] Modul-Registry vorhanden
+- [x] rollenabhängige Filterung vorhanden
+- [x] Mitgliederverwaltung als Admin-Kachel vorhanden
+- [x] Admin-Link aus Header entfernt
+- [x] Empty State vorhanden
+- [x] responsive Darstellung geprüft
+- [x] Linting erfolgreich
+- [x] Production-Build erfolgreich
+- [x] lokaler Funktionstest erfolgreich
+- [x] Production-Test erfolgreich
