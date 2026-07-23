@@ -23,8 +23,18 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-    title: 'Org Toolbox',
-    description: 'Org Toolbox für Mitglieder',
+    title: {
+        default: 'Org Toolbox',
+        template: '%s | Org Toolbox',
+    },
+    description: 'Modulare Organisationstoolbox für Star-Citizen-Organisationen.',
+    applicationName: 'Org Toolbox',
+    manifest: '/manifest.webmanifest',
+    appleWebApp: {
+        capable: true,
+        title: 'Org Toolbox',
+        statusBarStyle: 'black-translucent',
+    },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
