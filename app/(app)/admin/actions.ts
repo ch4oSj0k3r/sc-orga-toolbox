@@ -108,7 +108,69 @@ export async function activateUser(userId: string): Promise<AdminActionResult> {
 }
 
 /**
- * 3. Bannt einen User permanent
+ * 3. Ändert die Rolle eines aktiven Users zwischen MEMBER und ADMIN.
+ */
+export async function updateUserRole(userId: string, targetRole: Role): Promise<AdminActionResult> {
+    const session = await assertAdmin();
+
+    if (targetRole !== Role.MEMBER && targetRole !== Role.ADMIN) {
+        return {
+            success: false,
+            message: 'Als Zielrolle sind nur MEMBER und ADMIN erlaubt.',
+        };
+    }
+
+    const user = await getUserOrThrow(userId);
+
+    if (session.user.id === userId) {
+        return {
+            success: false,
+            message: 'Du kannst deine eigene Rolle nicht ändern.',
+        };
+    }
+
+    if (user.status !== UserStatus.ACTIVE) {
+        return {
+            success: false,
+            message: `Rollen können nur bei aktiven Usern geändert werden. Aktueller Status: ${user.status}.`,
+        };
+    }
+
+    if (user.role !== Role.MEMBER && user.role !== Role.ADMIN) {
+        return {
+            success: false,
+            message: `Die aktuelle Rolle ${user.role} kann hier nicht geändert werden.`,
+        };
+    }
+
+    if (user.role === targetRole) {
+        return {
+            success: false,
+            message: `Der User besitzt bereits die Rolle ${targetRole}.`,
+        };
+    }
+
+    if (user.role === Role.ADMIN && targetRole === Role.MEMBER && (await isLastAdmin(userId))) {
+        return {
+            success: false,
+            message: 'Es muss mindestens ein Admin-Account bestehen bleiben.',
+        };
+    }
+
+    await prisma.user.update({
+        where: { id: userId },
+        data: { role: targetRole },
+    });
+
+    revalidatePath('/admin');
+
+    return {
+        success: true,
+    };
+}
+
+/**
+ * 4. Bannt einen User permanent
  * Erlaubt aus jedem Status außer bereits BANNED (kein sinnvoller No-Op-Schutz nötig, aber sauberer)
  */
 export async function banUser(userId: string): Promise<AdminActionResult> {
@@ -152,7 +214,7 @@ export async function banUser(userId: string): Promise<AdminActionResult> {
 }
 
 /**
- * 4. Setzt fehlgeschlagene Versuche zurück -> zurück in den Validierungs-Loop
+ * 5. Setzt fehlgeschlagene Versuche zurück -> zurück in den Validierungs-Loop
  * Erlaubter Ausgangsstatus: REJECTED oder PENDING (manueller Reset bei feststeckendem Counter)
  */
 export async function resetUserAttempts(userId: string): Promise<AdminActionResult> {
@@ -179,7 +241,7 @@ export async function resetUserAttempts(userId: string): Promise<AdminActionResu
 }
 
 /**
- * 5. Löscht einen User-Datensatz permanent
+ * 6. Löscht einen User-Datensatz permanent
  */
 export async function deleteUser(userId: string): Promise<AdminActionResult> {
     const session = await assertAdmin();

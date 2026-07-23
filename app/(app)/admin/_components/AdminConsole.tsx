@@ -1,17 +1,19 @@
-import type { UserStatus } from '@/lib/generated/client';
-import { ADMIN_TABS } from '../adminNavigation';
-import { AdminToolbar } from './AdminToolbar';
-import { AdminTabBar } from './AdminTabBar';
-import { AdminUserList } from './AdminUserList';
 import { ConsolePanel } from '@/components/mobiglas/ConsolePanel';
+import type { UserStatus } from '@/lib/generated/client';
+
+import { ADMIN_TABS } from '../adminNavigation';
 import type { AdminUser } from '../adminTypes';
+import { AdminTabBar } from './AdminTabBar';
+import { AdminToolbar } from './AdminToolbar';
+import { AdminUserList } from './AdminUserList';
 
 interface AdminConsoleProps {
     data: Record<UserStatus, AdminUser[]>;
     activeTab: UserStatus;
+    currentUserId: string;
 }
 
-export function AdminConsole({ data, activeTab }: AdminConsoleProps) {
+export function AdminConsole({ data, activeTab, currentUserId }: AdminConsoleProps) {
     const counts = Object.fromEntries(
         Object.entries(data).map(([status, users]) => [status, users.length])
     ) as Record<UserStatus, number>;
@@ -20,7 +22,7 @@ export function AdminConsole({ data, activeTab }: AdminConsoleProps) {
         <ConsolePanel className="mx-auto max-w-7xl">
             <AdminToolbar />
             <AdminTabBar tabs={ADMIN_TABS} counts={counts} activeTab={activeTab} />
-            <AdminUserList users={data[activeTab]} type={activeTab} />
+            <AdminUserList users={data[activeTab]} type={activeTab} currentUserId={currentUserId} />
         </ConsolePanel>
     );
 }
