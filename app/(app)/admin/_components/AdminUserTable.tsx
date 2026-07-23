@@ -1,17 +1,25 @@
-import { FormatDate } from './FormatDate';
-import { AdminUserActions } from './AdminUserActions';
 import type { UserStatus } from '@/lib/generated/client';
-import type { useAdminUserActions } from '../useAdminUserActions';
+
 import type { AdminUser } from '../adminTypes';
+import type { useAdminUserActions } from '../useAdminUserActions';
+import { AdminUserActions } from './AdminUserActions';
+import { FormatDate } from './FormatDate';
 
 interface AdminUserTableProps {
     users: AdminUser[];
     type: UserStatus;
+    currentUserId: string;
     onAction: ReturnType<typeof useAdminUserActions>['openModal'];
     actions: ReturnType<typeof useAdminUserActions>['actions'];
 }
 
-export function AdminUserTable({ users, type, onAction, actions }: AdminUserTableProps) {
+export function AdminUserTable({
+    users,
+    type,
+    currentUserId,
+    onAction,
+    actions,
+}: AdminUserTableProps) {
     return (
         <div className="overflow-x-auto bg-panel border border-line rounded">
             <table className="w-full text-left border-collapse text-sm font-mono text-text">
@@ -30,7 +38,12 @@ export function AdminUserTable({ users, type, onAction, actions }: AdminUserTabl
                 <tbody className="divide-y divide-line">
                     {users.map((user) => (
                         <tr key={user.id} className="hover:bg-panel-alt/50 transition-colors">
-                            <td className="p-4 font-medium">{user.sc_handle}</td>
+                            <td className="p-4 font-medium">
+                                {user.sc_handle}
+                                {user.id === currentUserId && (
+                                    <span className="ml-2 text-xs text-cyan">(Du)</span>
+                                )}
+                            </td>
                             <td className="p-4">
                                 <span className="px-2 py-0.5 text-xs rounded bg-panel-alt border border-line text-text-dim">
                                     {user.role}
@@ -64,6 +77,7 @@ export function AdminUserTable({ users, type, onAction, actions }: AdminUserTabl
                                 <AdminUserActions
                                     user={user}
                                     type={type}
+                                    currentUserId={currentUserId}
                                     onAction={onAction}
                                     actions={actions}
                                 />

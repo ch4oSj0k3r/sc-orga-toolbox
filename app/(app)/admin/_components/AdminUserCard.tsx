@@ -1,22 +1,35 @@
 import { TerminalPanel } from '@/components/mobiglas/TerminalPanel';
-import { FormatDate } from './FormatDate';
-import { AdminUserActions } from './AdminUserActions';
 import type { UserStatus } from '@/lib/generated/client';
-import type { useAdminUserActions } from '../useAdminUserActions';
+
 import type { AdminUser } from '../adminTypes';
+import type { useAdminUserActions } from '../useAdminUserActions';
+import { AdminUserActions } from './AdminUserActions';
+import { FormatDate } from './FormatDate';
 
 interface AdminUserCardProps {
     user: AdminUser;
     type: UserStatus;
+    currentUserId: string;
     onAction: ReturnType<typeof useAdminUserActions>['openModal'];
     actions: ReturnType<typeof useAdminUserActions>['actions'];
 }
 
-export function AdminUserCard({ user, type, onAction, actions }: AdminUserCardProps) {
+export function AdminUserCard({
+    user,
+    type,
+    currentUserId,
+    onAction,
+    actions,
+}: AdminUserCardProps) {
     return (
         <TerminalPanel showCorners={false} className="max-w-none">
             <div className="flex justify-between items-start mb-3">
-                <span className="font-mono font-medium">{user.sc_handle}</span>
+                <span className="font-mono font-medium">
+                    {user.sc_handle}
+                    {user.id === currentUserId && (
+                        <span className="ml-2 text-xs text-cyan">(Du)</span>
+                    )}
+                </span>
                 <span className="px-2 py-0.5 text-xs rounded bg-panel-alt border border-line text-text-dim">
                     {user.role}
                 </span>
@@ -41,7 +54,13 @@ export function AdminUserCard({ user, type, onAction, actions }: AdminUserCardPr
                 </p>
             )}
             <div className="mt-3 pt-3 border-t border-line">
-                <AdminUserActions user={user} type={type} onAction={onAction} actions={actions} />
+                <AdminUserActions
+                    user={user}
+                    type={type}
+                    currentUserId={currentUserId}
+                    onAction={onAction}
+                    actions={actions}
+                />
             </div>
         </TerminalPanel>
     );

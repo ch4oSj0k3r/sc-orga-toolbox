@@ -1,13 +1,20 @@
 'use client';
 
 import type { UserStatus } from '@/lib/generated/client';
-import { AdminUserTable } from './AdminUserTable';
-import { AdminUserCard } from './AdminUserCard';
-import { ConfirmationModal } from './ConfirmationModal';
-import { useAdminUserActions } from '../useAdminUserActions';
-import type { AdminUser } from '../adminTypes';
 
-export function AdminUserList({ users, type }: { users: AdminUser[]; type: UserStatus }) {
+import type { AdminUser } from '../adminTypes';
+import { useAdminUserActions } from '../useAdminUserActions';
+import { AdminUserCard } from './AdminUserCard';
+import { AdminUserTable } from './AdminUserTable';
+import { ConfirmationModal } from './ConfirmationModal';
+
+interface AdminUserListProps {
+    users: AdminUser[];
+    type: UserStatus;
+    currentUserId: string;
+}
+
+export function AdminUserList({ users, type, currentUserId }: AdminUserListProps) {
     const { isPending, modalConfig, openModal, closeModal, handleConfirm, actions } =
         useAdminUserActions();
 
@@ -22,16 +29,23 @@ export function AdminUserList({ users, type }: { users: AdminUser[]; type: UserS
     return (
         <>
             <div className={`hidden md:block ${isPending ? 'opacity-50 pointer-events-none' : ''}`}>
-                <AdminUserTable users={users} type={type} onAction={openModal} actions={actions} />
+                <AdminUserTable
+                    users={users}
+                    type={type}
+                    currentUserId={currentUserId}
+                    onAction={openModal}
+                    actions={actions}
+                />
             </div>
             <div
                 className={`md:hidden space-y-3 ${isPending ? 'opacity-50 pointer-events-none' : ''}`}
             >
-                {users.map((u) => (
+                {users.map((user) => (
                     <AdminUserCard
-                        key={u.id}
-                        user={u}
+                        key={user.id}
+                        user={user}
                         type={type}
+                        currentUserId={currentUserId}
                         onAction={openModal}
                         actions={actions}
                     />

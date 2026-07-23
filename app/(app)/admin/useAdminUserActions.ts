@@ -2,7 +2,10 @@
 
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
-import { activateUser, banUser, resetUserAttempts, deleteUser } from './actions';
+
+import { Role } from '@/lib/generated/browser';
+
+import { activateUser, banUser, deleteUser, resetUserAttempts, updateUserRole } from './actions';
 import type { AdminAction } from './adminActionTypes';
 
 type ModalVariant = 'primary' | 'danger';
@@ -28,6 +31,9 @@ const initialModalConfig: ModalConfig = {
 export function useAdminUserActions() {
     const [isPending, startTransition] = useTransition();
     const [modalConfig, setModalConfig] = useState<ModalConfig>(initialModalConfig);
+
+    const promoteUser: AdminAction = (userId) => updateUserRole(userId, Role.ADMIN);
+    const demoteUser: AdminAction = (userId) => updateUserRole(userId, Role.MEMBER);
 
     function openModal(
         action: AdminAction,
@@ -71,6 +77,13 @@ export function useAdminUserActions() {
         openModal,
         closeModal,
         handleConfirm,
-        actions: { activateUser, banUser, resetUserAttempts, deleteUser },
+        actions: {
+            activateUser,
+            promoteUser,
+            demoteUser,
+            banUser,
+            resetUserAttempts,
+            deleteUser,
+        },
     };
 }
