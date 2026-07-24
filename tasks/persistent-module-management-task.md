@@ -120,14 +120,14 @@ model ModuleAllowedRole {
 
 ## Aufgaben
 
-- [ ] technische Definitionen mit Datenbankeinträgen zusammenführen
-- [ ] Standardwerte verwenden, falls kein Datenbankeintrag existiert
-- [ ] nicht konfigurierbare Felder immer aus dem Code übernehmen
-- [ ] verpflichtende Rollen immer ergänzen
-- [ ] doppelte Rollen entfernen
-- [ ] Module nach effektiver Sortierreihenfolge sortieren
-- [ ] deaktivierte Module aus dem regulären Dashboard entfernen
-- [ ] serverseitigen Service für Dashboard und Adminseite bereitstellen
+- [x] technische Definitionen mit Datenbankeinträgen zusammenführen
+- [x] Standardwerte verwenden, falls kein Datenbankeintrag existiert
+- [x] nicht konfigurierbare Felder immer aus dem Code übernehmen
+- [x] verpflichtende Rollen immer ergänzen
+- [x] doppelte Rollen entfernen
+- [x] Module nach effektiver Sortierreihenfolge sortieren
+- [x] deaktivierte Module aus dem regulären Dashboard entfernen
+- [x] serverseitigen Service für Dashboard und Adminseite bereitstellen
 
 ## Regeln
 
