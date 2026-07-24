@@ -696,16 +696,16 @@ interface SaveModuleConfigurationInput {
 
 ## Aufgaben
 
-- [ ] rollenbasierte Dashboard-Auswertung auf benutzerbezogene Auswertung umstellen
-- [ ] aktive Gruppen des angemeldeten Benutzers laden
-- [ ] aktive Gruppenfreigaben der Module laden
-- [ ] Rollen- und Gruppenzugriff additiv auswerten
-- [ ] archivierte Gruppen aus der Auswertung ausschließen
-- [ ] deaktivierte Module weiterhin ausschließen
-- [ ] verpflichtende Rollen weiterhin berücksichtigen
-- [ ] unbekannte Modulzuordnungen ignorieren
-- [ ] N+1-Abfragen vermeiden
-- [ ] Dashboard auf den neuen Service umstellen
+- [x] rollenbasierte Dashboard-Auswertung auf benutzerbezogene Auswertung umstellen
+- [x] aktive Gruppen des angemeldeten Benutzers laden
+- [x] aktive Gruppenfreigaben der Module laden
+- [x] Rollen- und Gruppenzugriff additiv auswerten
+- [x] archivierte Gruppen aus der Auswertung ausschließen
+- [x] deaktivierte Module weiterhin ausschließen
+- [x] verpflichtende Rollen weiterhin berücksichtigen
+- [x] unbekannte Modulzuordnungen ignorieren
+- [x] N+1-Abfragen vermeiden
+- [x] Dashboard auf den neuen Service umstellen
 
 ## Neuer Service
 

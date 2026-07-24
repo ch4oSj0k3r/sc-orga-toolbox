@@ -2,7 +2,10 @@ import 'server-only';
 
 import type { Role } from '@/lib/generated/enums';
 import { prisma } from '@/lib/prisma';
-import { getActiveGroupIdsByModule } from '@/lib/access-groups/accessGroupService';
+import {
+    getActiveGroupIdsByModule,
+    getActiveGroupIdsForUser,
+} from '@/lib/access-groups/accessGroupService';
 
 import {
     moduleDefinitions,
@@ -47,6 +50,11 @@ export interface ModuleAssignedAccessGroup {
 export interface ModuleManagementConfiguration extends EffectiveModuleConfiguration {
     assignedGroups: readonly ModuleAssignedAccessGroup[];
     hasPersistentGroupAssignments: boolean;
+}
+
+export interface ModuleAccessSubject {
+    userId: string;
+    role: Role;
 }
 
 function mergeRoles(...roleGroups: readonly (readonly Role[])[]): Role[] {
@@ -156,12 +164,18 @@ export async function getEffectiveModuleConfigurations(): Promise<EffectiveModul
     return resolveEffectiveModuleConfigurations(storedConfigurations, activeGroupIdsByModule);
 }
 
-export async function getVisibleModulesForRole(
-    role: Role
-): Promise<EffectiveModuleConfiguration[]> {
-    const modules = await getEffectiveModuleConfigurations();
+export async function getVisibleModulesForUser({
+    userId,
+    role,
+}: ModuleAccessSubject): Promise<EffectiveModuleConfiguration[]> {
+    const [modules, activeUserGroupIds] = await Promise.all([
+        getEffectiveModuleConfigurations(),
+        getActiveGroupIdsForUser(userId),
+    ]);
 
-    return modules.filter((module) => module.enabled && module.allowedRoles.includes(role));
+    const activeUserGroupIdSet = new Set(activeUserGroupIds);
+
+    return modules.filter((module) => hasModuleAccess(module, role, activeUserGroupIdSet));
 }
 
 export async function getModuleManagementConfigurations(): Promise<
@@ -234,4 +248,20 @@ export async function getModuleManagementConfigurations(): Promise<
             hasPersistentGroupAssignments: assignedGroups.length > 0,
         };
     });
+}
+
+export function hasModuleAccess(
+    module: EffectiveModuleConfiguration,
+    userRole: Role,
+    activeUserGroupIds: ReadonlySet<string>
+): boolean {
+    if (!module.enabled) {
+        return false;
+    }
+
+    if (module.allowedRoles.includes(userRole)) {
+        return true;
+    }
+
+    return module.allowedGroupIds.some((groupId) => activeUserGroupIds.has(groupId));
 }
