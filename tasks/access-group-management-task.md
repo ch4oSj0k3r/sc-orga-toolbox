@@ -482,22 +482,22 @@ Das Modul `member-area` dient als erstes reales Zugriffsziel für Rollen- und Gr
 
 - [x] Route `/admin/groups` erstellen
 - [x] Route serverseitig auf Administratoren beschränken
-- [ ] aktive Gruppen anzeigen
-- [ ] archivierte Gruppen anzeigen
-- [ ] verständlichen Empty State anzeigen
-- [ ] Gruppe erstellen
-- [ ] Anzeigenamen bearbeiten
-- [ ] Beschreibung bearbeiten
-- [ ] technischen Schlüssel schreibgeschützt anzeigen
-- [ ] Gruppe archivieren
-- [ ] Gruppe wiederherstellen
-- [ ] ungenutzte Gruppe endgültig löschen
-- [ ] Benutzeranzahl anzeigen
-- [ ] Modulanzahl anzeigen
-- [ ] Erfolgs- und Fehlermeldungen anzeigen
-- [ ] kritische Aktionen über Bestätigungsdialoge absichern
-- [ ] Darstellung auf Desktop und Mobilgeräten umsetzen
-- [ ] Bedienung mit Tastatur sicherstellen
+- [x] aktive Gruppen anzeigen
+- [x] archivierte Gruppen anzeigen
+- [x] verständlichen Empty State anzeigen
+- [x] Gruppe erstellen
+- [x] Anzeigenamen bearbeiten
+- [x] Beschreibung bearbeiten
+- [x] technischen Schlüssel schreibgeschützt anzeigen
+- [x] Gruppe archivieren
+- [x] Gruppe wiederherstellen
+- [x] ungenutzte Gruppe endgültig löschen
+- [x] Benutzeranzahl anzeigen
+- [x] Modulanzahl anzeigen
+- [x] Erfolgs- und Fehlermeldungen anzeigen
+- [x] kritische Aktionen über Bestätigungsdialoge absichern
+- [x] Darstellung auf Desktop und Mobilgeräten umsetzen
+- [x] Bedienung mit Tastatur sicherstellen
 
 ## Vorgesehene Aktionen
 
