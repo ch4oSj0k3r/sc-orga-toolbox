@@ -1,0 +1,975 @@
+# Access Group Management Task
+
+## Ziel
+
+Die Anwendung erhält globale Zugriffsgruppen, über die Administratoren Benutzer organisatorisch zusammenfassen und für Toolbox-Module freischalten können.
+
+Gruppen ergänzen das bestehende rollenbasierte Zugriffssystem. Sie ersetzen weder die Systemrollen noch deren technische Schutzregeln.
+
+Der Zugriff auf ein Modul wird additiv ausgewertet:
+
+```text
+Modul ist aktiv
+UND
+(
+    Benutzerrolle ist freigegeben
+    ODER
+    Benutzer gehört einer für das Modul freigegebenen aktiven Gruppe an
+)
+```
+
+Verpflichtende Rollen aus dem technischen Modulkatalog bleiben immer wirksam.
+
+Administrative Kernmodule bleiben ausschließlich für Administratoren erreichbar und können nicht über Gruppen für andere Benutzer freigegeben werden.
+
+---
+
+# Verbindliche fachliche Entscheidungen
+
+## Globale Gruppen
+
+Zugriffsgruppen sind global und können mehreren Benutzern sowie mehreren Modulen zugeordnet werden.
+
+Eine Gruppe, die nur einem Modul zugeordnet ist, verhält sich dadurch faktisch wie eine modulspezifische Gruppe. Ein separater Gruppentyp für globale und modulspezifische Gruppen wird nicht eingeführt.
+
+## Additives Berechtigungsmodell
+
+Gruppen dürfen Zugriff gewähren, aber niemals explizit verweigern.
+
+Es gibt keine Deny-Regeln und keine Prioritätsregeln zwischen Rollen und Gruppen.
+
+Eine vorhandene Rollenfreigabe kann durch eine Gruppe nicht aufgehoben werden.
+
+## Technischer Gruppenschlüssel
+
+Jede Gruppe besitzt:
+
+- eine interne UUID
+- einen eindeutigen technischen Schlüssel
+- einen Anzeigenamen
+- eine optionale Beschreibung
+- einen Archivierungszeitpunkt
+
+Der technische Schlüssel:
+
+- wird bei der Erstellung festgelegt
+- wird normalisiert und in Kleinbuchstaben gespeichert
+- darf nach der Erstellung nicht geändert werden
+- besteht aus Kleinbuchstaben, Zahlen und Bindestrichen
+- ist zwischen 3 und 64 Zeichen lang
+
+Beispiele:
+
+```text
+org-leitung
+security
+mining
+salvage-team
+event-planung
+```
+
+## Archivierung
+
+Eine archivierte Gruppe:
+
+- bleibt in der Datenbank vorhanden
+- behält bestehende Benutzerzuordnungen
+- behält bestehende Modulzuordnungen
+- gewährt keinen Modulzugriff
+- kann keinem neuen Benutzer zugeordnet werden
+- kann keinem neuen Modul zugeordnet werden
+- kann wiederhergestellt werden
+
+Beim Wiederherstellen werden die bestehenden Zuordnungen erneut wirksam.
+
+Archivierung ist damit vollständig reversibel.
+
+## Löschen
+
+Eine Gruppe darf nur endgültig gelöscht werden, wenn sie:
+
+- keinem Benutzer zugeordnet ist
+- keinem Modul zugeordnet ist
+
+Diese Regel wird sowohl durch die Geschäftslogik als auch durch Datenbankrelationen geschützt.
+
+## Benutzerstatus
+
+Neue Gruppenzuweisungen sind ausschließlich für Benutzer mit dem Status `ACTIVE` erlaubt.
+
+Ändert sich der Benutzerstatus später, bleiben vorhandene Gruppenzuweisungen erhalten.
+
+Insbesondere werden Gruppenzuweisungen bei Sperrung, Ablehnung oder Bann eines Benutzers nicht automatisch gelöscht.
+
+Die bestehenden Authentifizierungs- und Statusregeln verhindern unabhängig davon den Zugriff gesperrter Benutzer.
+
+## Administrative Kernmodule
+
+Die folgenden Module bleiben technisch geschützt:
+
+- Mitgliederverwaltung
+- Modulverwaltung
+- Zugriffsgruppenverwaltung
+
+Für diese Module gilt:
+
+- `ADMIN` bleibt verpflichtend
+- das Modul kann nicht deaktiviert werden
+- Rollenfreigaben können nicht bearbeitet werden
+- Gruppenfreigaben können nicht bearbeitet werden
+- manipulierte Datenbankeinträge dürfen die Schutzregeln nicht umgehen
+
+---
+
+# M0 – Fachliches Zugriffsmodell
+
+## Aufgaben
+
+- [ ] globale Zugriffsgruppen als verbindliches Modell dokumentieren
+- [ ] additives Zugriffsmodell dokumentieren
+- [ ] Deny-Regeln ausdrücklich ausschließen
+- [ ] Verhalten archivierter Gruppen dokumentieren
+- [ ] Löschbedingungen dokumentieren
+- [ ] Verhalten bei Statusänderungen eines Benutzers dokumentieren
+- [ ] Schutz administrativer Kernmodule dokumentieren
+- [ ] Zuständigkeiten von Rollen, Gruppen und Modulrichtlinien abgrenzen
+
+## Zugriffsregel
+
+Ein Benutzer besitzt Zugriff auf ein Modul, wenn:
+
+```ts
+const hasAccess =
+    module.enabled &&
+    (module.allowedRoles.includes(user.role) ||
+        module.allowedGroupIds.some((groupId) => user.activeGroupIds.includes(groupId)));
+```
+
+Dabei gelten zusätzlich folgende Regeln:
+
+- `mandatoryRoles` werden bereits in die effektiven Rollenfreigaben aufgenommen.
+- Archivierte Gruppen werden nicht als aktive Benutzergruppe berücksichtigt.
+- Archivierte Gruppen werden nicht als aktive Modulfreigabe berücksichtigt.
+- Nicht gruppenkonfigurierbare Module besitzen effektiv keine Gruppenfreigaben.
+- Unbekannte Modul-IDs werden ignoriert beziehungsweise abgewiesen.
+- Dashboard-Sichtbarkeit ist nicht der alleinige Zugriffsschutz.
+
+## Akzeptanzkriterien
+
+- Rollen und Gruppen sind unabhängig voneinander verständlich.
+- Eine Rollenfreigabe reicht allein für den Zugriff aus.
+- Eine Gruppenfreigabe reicht allein für den Zugriff aus.
+- Eine Gruppe kann keine Rollenfreigabe aufheben.
+- Archivierte Gruppen gewähren keinen Zugriff.
+- Administrative Kernmodule können nicht durch Gruppen geöffnet werden.
+
+---
+
+# M1 – Persistentes Datenmodell
+
+## Aufgaben
+
+- [ ] Prisma-Modell `AccessGroup` ergänzen
+- [ ] Prisma-Modell `UserAccessGroup` ergänzen
+- [ ] Prisma-Modell `ModuleAccessGroup` ergänzen
+- [ ] Relation vom Benutzer zu seinen Gruppenzuweisungen ergänzen
+- [ ] eindeutigen technischen Gruppenschlüssel abbilden
+- [ ] Archivierungszeitpunkt abbilden
+- [ ] Datenbankseitigen Löschschutz für verwendete Gruppen einführen
+- [ ] Migration erzeugen
+- [ ] Prisma-Client neu generieren
+- [ ] Migration in einer leeren Datenbank prüfen
+- [ ] Migration mit vorhandenen Benutzern und Modulkonfigurationen prüfen
+
+## Vorgesehenes Schema
+
+```prisma
+model User {
+  id                 String     @id @default(uuid())
+  sc_handle          String     @unique
+  password           String
+  status             UserStatus @default(PENDING)
+  role               Role       @default(GUEST)
+  verification_token String     @unique
+  failed_attempts    Int        @default(0)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  rejectedAt         DateTime?
+  bannedAt           DateTime?
+
+  accessGroups UserAccessGroup[]
+
+  @@map("users")
+}
+
+model AccessGroup {
+  id          String    @id @default(uuid())
+  key         String    @unique @map("group_key") @db.VarChar(64)
+  name        String    @db.VarChar(80)
+  description String?   @db.Text
+  archivedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  members UserAccessGroup[]
+  modules ModuleAccessGroup[]
+
+  @@map("access_groups")
+}
+
+model UserAccessGroup {
+  userId     String
+  groupId    String
+  assignedAt DateTime @default(now())
+
+  user  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group AccessGroup @relation(fields: [groupId], references: [id], onDelete: Restrict)
+
+  @@id([userId, groupId])
+  @@index([groupId])
+  @@map("user_access_groups")
+}
+
+model ModuleAccessGroup {
+  moduleId   String
+  groupId    String
+  assignedAt DateTime @default(now())
+
+  group AccessGroup @relation(fields: [groupId], references: [id], onDelete: Restrict)
+
+  @@id([moduleId, groupId])
+  @@index([groupId])
+  @@map("module_access_groups")
+}
+```
+
+## Bewusste Modellierungsentscheidung
+
+`ModuleAccessGroup.moduleId` erhält keine Datenbankrelation zu `ModuleConfiguration`.
+
+Der Grund:
+
+- `ModuleConfiguration` ist eine optionale Überschreibung.
+- Gruppenzuweisungen dürfen nicht davon abhängen, ob bereits eine Modulkonfiguration existiert.
+- Das Zurücksetzen von Titel oder Sortierung darf Gruppenzuweisungen nicht unbeabsichtigt über Cascade löschen.
+- Technische Module werden ausschließlich durch den Modulkatalog definiert.
+- Modul-IDs werden serverseitig gegen den Modulkatalog validiert.
+- Unbekannte Modul-IDs werden bei der effektiven Konfiguration ignoriert.
+
+## Löschverhalten
+
+- Wird ein Benutzer gelöscht, werden dessen Gruppenzuweisungen entfernt.
+- Eine verwendete Gruppe kann durch `Restrict` nicht gelöscht werden.
+- Modulzuweisungen müssen vor dem Löschen einer Gruppe explizit entfernt werden.
+- Benutzerzuweisungen müssen vor dem Löschen einer Gruppe explizit entfernt werden.
+
+## Akzeptanzkriterien
+
+- Bestehende Benutzer bleiben durch die Migration unverändert erhalten.
+- Bestehende Modulkonfigurationen bleiben erhalten.
+- Eine Gruppe kann mehreren Benutzern zugeordnet werden.
+- Ein Benutzer kann mehreren Gruppen zugeordnet werden.
+- Eine Gruppe kann mehreren Modulen zugeordnet werden.
+- Eine verwendete Gruppe kann nicht versehentlich gelöscht werden.
+- Die Anwendung funktioniert ohne initiale Gruppen oder Seed-Daten.
+
+---
+
+# M2 – Gruppen-Service und Validierung
+
+## Aufgaben
+
+- [ ] zentrale Zod-Schemas für Gruppeneingaben erstellen
+- [ ] technischen Schlüssel normalisieren
+- [ ] technischen Schlüssel validieren
+- [ ] Anzeigenamen validieren
+- [ ] Beschreibung validieren
+- [ ] eindeutige Schlüsselverletzungen kontrolliert behandeln
+- [ ] aktive und archivierte Gruppen laden können
+- [ ] Gruppendetails mit Benutzer- und Modulanzahl laden können
+- [ ] Gruppen anhand ihrer ID validieren
+- [ ] aktive Gruppen für Auswahlfelder bereitstellen
+- [ ] archivierte Gruppen bei Zugriffsentscheidungen ausschließen
+- [ ] Datenbankzugriffe in einem serverseitigen Gruppen-Service bündeln
+
+## Validierungsregeln
+
+### Technischer Schlüssel
+
+- Pflichtfeld
+- wird vor der Validierung getrimmt
+- wird in Kleinbuchstaben umgewandelt
+- Länge zwischen 3 und 64 Zeichen
+- erlaubtes Muster:
+
+```regex
+^[a-z0-9]+(?:-[a-z0-9]+)*$
+```
+
+Nicht erlaubt sind unter anderem:
+
+```text
+Org-Leitung
+org_leitung
+-org-leitung
+org-leitung-
+org--leitung
+```
+
+### Anzeigename
+
+- Pflichtfeld
+- wird getrimmt
+- Länge zwischen 1 und 80 Zeichen
+
+### Beschreibung
+
+- optional
+- wird getrimmt
+- leerer Text wird als `null` gespeichert
+- maximal 300 Zeichen
+
+## Vorgesehene Service-Funktionen
+
+```ts
+getAccessGroups(options?: {
+    includeArchived?: boolean;
+}): Promise<AccessGroupViewModel[]>;
+
+getAccessGroupById(groupId: string): Promise<AccessGroupDetails | null>;
+
+getActiveAccessGroups(): Promise<AccessGroupOption[]>;
+
+getActiveGroupIdsForUser(userId: string): Promise<string[]>;
+
+getActiveGroupIdsByModule(): Promise<Map<string, string[]>>;
+```
+
+Die genaue Aufteilung kann während der Implementierung vereinfacht werden, sofern:
+
+- keine Geschäftslogik in React-Komponenten landet
+- keine N+1-Abfragen entstehen
+- Archivierungsregeln zentral angewendet werden
+
+## Akzeptanzkriterien
+
+- Ungültige Gruppenschlüssel werden abgewiesen.
+- Doppelte Gruppenschlüssel werden kontrolliert abgewiesen.
+- Archivierte Gruppen werden separat erkennbar geladen.
+- Archivierte Gruppen werden nicht als aktiv zurückgegeben.
+- Validierung und Normalisierung finden serverseitig statt.
+- Datenbankfehler werden nicht ungefiltert an den Client weitergereicht.
+
+---
+
+# M3 – Technischer Modulkatalog
+
+## Aufgaben
+
+- [ ] `ModuleConfigurationPolicy` um `allowedGroups` erweitern
+- [ ] alle bestehenden Moduldefinitionen um die neue Richtlinie ergänzen
+- [ ] administrative Kernmodule für Gruppenfreigaben sperren
+- [ ] neues Kernmodul `group-management` ergänzen
+- [ ] Gruppenverwaltung unter `/admin/groups` registrieren
+- [ ] Standardreihenfolge der administrativen Module festlegen
+- [ ] effektive Modulkonfiguration um Gruppenfreigaben erweitern
+- [ ] unbekannte persistierte Modulzuordnungen ignorieren
+- [ ] manipulierte Gruppenfreigaben geschützter Module ignorieren
+
+## Erweiterte Richtlinie
+
+```ts
+export interface ModuleConfigurationPolicy {
+    title: boolean;
+    description: boolean;
+    enabled: boolean;
+    sortOrder: boolean;
+    allowedRoles: boolean;
+    allowedGroups: boolean;
+}
+```
+
+## Neues Kernmodul
+
+```ts
+{
+    id: 'group-management',
+    defaultTitle: 'Zugriffsgruppen',
+    defaultDescription: 'Zugriffsgruppen erstellen und Berechtigungen verwalten.',
+    defaultSortOrder: 300,
+    href: '/admin/groups',
+    category: 'administration',
+    defaultAllowedRoles: [Role.ADMIN],
+    mandatoryRoles: [Role.ADMIN],
+    configuration: {
+        title: true,
+        description: true,
+        enabled: false,
+        sortOrder: true,
+        allowedRoles: false,
+        allowedGroups: false,
+    },
+}
+```
+
+## Richtlinien für administrative Kernmodule
+
+Für folgende Module gilt `allowedGroups: false`:
+
+```text
+member-management
+module-management
+group-management
+```
+
+Persistierte Gruppenzuweisungen für diese Module werden nicht berücksichtigt.
+
+## Effektive Gruppenfreigaben
+
+Für gruppenkonfigurierbare Module gilt:
+
+- aktive und archivierte Zuordnungen dürfen für die Verwaltungsoberfläche geladen werden
+- für die Zugriffsauswertung werden nur aktive Gruppen berücksichtigt
+- existieren keine Zuordnungen, gilt eine leere Gruppenfreigabe
+- es gibt keine technischen Standardgruppen im Modulkatalog
+
+## Akzeptanzkriterien
+
+- Die Gruppenverwaltung erscheint als administratives Dashboard-Modul.
+- Nur Administratoren sehen die Gruppenverwaltung.
+- Das Modul kann nicht deaktiviert werden.
+- Gruppen können das Modul nicht für Mitglieder öffnen.
+- Nicht gruppenkonfigurierbare Module ignorieren Datenbankzuordnungen.
+- Unbekannte Modul-IDs erzeugen keine Dashboard-Module.
+
+---
+
+# M4 – Gruppenverwaltung
+
+## Aufgaben
+
+- [ ] Route `/admin/groups` erstellen
+- [ ] Route serverseitig auf Administratoren beschränken
+- [ ] aktive Gruppen anzeigen
+- [ ] archivierte Gruppen anzeigen
+- [ ] verständlichen Empty State anzeigen
+- [ ] Gruppe erstellen
+- [ ] Anzeigenamen bearbeiten
+- [ ] Beschreibung bearbeiten
+- [ ] technischen Schlüssel schreibgeschützt anzeigen
+- [ ] Gruppe archivieren
+- [ ] Gruppe wiederherstellen
+- [ ] ungenutzte Gruppe endgültig löschen
+- [ ] Benutzeranzahl anzeigen
+- [ ] Modulanzahl anzeigen
+- [ ] Erfolgs- und Fehlermeldungen anzeigen
+- [ ] kritische Aktionen über Bestätigungsdialoge absichern
+- [ ] Darstellung auf Desktop und Mobilgeräten umsetzen
+- [ ] Bedienung mit Tastatur sicherstellen
+
+## Vorgesehene Aktionen
+
+```ts
+createAccessGroup(input);
+updateAccessGroup(input);
+archiveAccessGroup(groupId);
+restoreAccessGroup(groupId);
+deleteAccessGroup(groupId);
+```
+
+Alle Aktionen:
+
+- erfordern eine Admin-Session
+- validieren Eingaben serverseitig
+- verwenden kontrollierte Rückgabetypen
+- revalidieren betroffene Routen
+- behandeln erwartbare Fehler ohne ungefilterte Exceptions
+
+## Archivieren
+
+Vor dem Archivieren wird deutlich darauf hingewiesen:
+
+- bestehende Zuordnungen bleiben erhalten
+- die Gruppe gewährt anschließend keinen Zugriff mehr
+- eine Wiederherstellung reaktiviert die Zuordnungen
+
+## Löschen
+
+Der Löschbutton ist nur verfügbar, wenn:
+
+```text
+Benutzerzuordnungen = 0
+UND
+Modulzuordnungen = 0
+```
+
+Die Server Action prüft diese Bedingung unabhängig von der Oberfläche erneut.
+
+## Zu revalidierende Routen
+
+```text
+/dashboard
+/admin/groups
+/admin/users
+/admin/modules
+```
+
+## Akzeptanzkriterien
+
+- Administratoren können Gruppen erstellen und bearbeiten.
+- Der technische Schlüssel bleibt unveränderlich.
+- Archivierte Gruppen werden eindeutig gekennzeichnet.
+- Archivieren entfernt keine Zuordnungen.
+- Wiederherstellen reaktiviert die Gruppe.
+- Verwendete Gruppen können nicht gelöscht werden.
+- Direkte Clientmanipulation kann Löschregeln nicht umgehen.
+- Nicht-Administratoren können die Route nicht aufrufen.
+
+---
+
+# M5 – Benutzer-Gruppenzuordnung
+
+## Aufgaben
+
+- [ ] Gruppenzugehörigkeiten in der Mitgliederverwaltung laden
+- [ ] Gruppen als Badges in Benutzerkarten und Benutzertabelle darstellen
+- [ ] aktive und archivierte Gruppen visuell unterscheiden
+- [ ] Bearbeitung der Gruppenzugehörigkeiten ermöglichen
+- [ ] nur aktive Gruppen neu auswählbar machen
+- [ ] neue Zuweisungen nur für Benutzer mit Status `ACTIVE` erlauben
+- [ ] vorhandene Zuweisungen bei Statusänderungen erhalten
+- [ ] archivierte bestehende Zuweisungen anzeigen
+- [ ] archivierte Zuweisungen beim normalen Speichern erhalten
+- [ ] Benutzer- und Gruppendaten serverseitig validieren
+- [ ] Änderungen transaktional speichern
+- [ ] betroffene Routen revalidieren
+
+## Speicheregeln
+
+Beim Bearbeiten eines aktiven Benutzers:
+
+- aktive Gruppen dürfen hinzugefügt werden
+- aktive Gruppen dürfen entfernt werden
+- archivierte bestehende Gruppen bleiben erhalten
+- unbekannte Gruppen-IDs werden abgewiesen
+- archivierte Gruppen dürfen nicht neu hinzugefügt werden
+
+Bei einem Benutzer mit anderem Status:
+
+- bestehende Zuweisungen werden angezeigt
+- neue Zuweisungen sind nicht erlaubt
+- Statusänderungen entfernen keine bestehenden Zuweisungen
+
+## Vorgesehene Server Action
+
+```ts
+updateUserAccessGroups(input: {
+    userId: string;
+    activeGroupIds: string[];
+});
+```
+
+Die Server Action:
+
+- erfordert eine Admin-Session
+- prüft den Benutzerstatus
+- validiert alle Gruppen
+- lehnt archivierte neue Gruppen ab
+- erhält bestehende archivierte Zuweisungen
+- führt Löschen und Erstellen in einer Transaktion aus
+
+## Akzeptanzkriterien
+
+- Ein aktiver Benutzer kann mehreren Gruppen zugeordnet werden.
+- Eine aktive Gruppe kann mehreren Benutzern zugeordnet werden.
+- Archivierte Gruppen können nicht neu zugeordnet werden.
+- Bestehende archivierte Zuweisungen bleiben erhalten.
+- Eine Benutzersperrung löscht keine Gruppenzugehörigkeiten.
+- Ein Benutzer kann sich nicht selbst über Clientdaten einer Gruppe zuordnen.
+- Alle Änderungen sind nach dem Neuladen weiterhin vorhanden.
+
+---
+
+# M6 – Modul-Gruppenzuordnung
+
+## Aufgaben
+
+- [ ] effektive Modulkonfiguration um Gruppeninformationen erweitern
+- [ ] Modulverwaltungs-ViewModel um Gruppen erweitern
+- [ ] Modulformular um Gruppenfreigaben erweitern
+- [ ] Gruppen nur bei `allowedGroups: true` bearbeitbar machen
+- [ ] aktive Gruppen zur Auswahl anbieten
+- [ ] archivierte bestehende Zuordnungen anzeigen
+- [ ] archivierte Zuordnungen beim normalen Speichern erhalten
+- [ ] administrative Kernmodule sichtbar sperren
+- [ ] Gruppenfreigaben serverseitig validieren
+- [ ] Modulkonfiguration, Rollen und Gruppen transaktional speichern
+- [ ] Zurücksetzen der Modulkonfiguration um Gruppen erweitern
+- [ ] unbekannte Modul- und Gruppen-IDs abweisen
+- [ ] betroffene Routen revalidieren
+
+## Speicheregeln
+
+Bei einem gruppenkonfigurierbaren Modul:
+
+- aktive Gruppen dürfen hinzugefügt werden
+- aktive Gruppen dürfen entfernt werden
+- bestehende archivierte Gruppenzuordnungen bleiben beim normalen Speichern erhalten
+- archivierte Gruppen dürfen nicht neu hinzugefügt werden
+
+Bei einem nicht gruppenkonfigurierbaren Modul:
+
+- Gruppenfelder sind gesperrt
+- übermittelte Gruppen-IDs werden nicht akzeptiert
+- vorhandene manipulierte Datenbankeinträge werden nicht wirksam
+
+## Zurücksetzen
+
+Das explizite Zurücksetzen eines Moduls auf die technischen Standardwerte:
+
+- entfernt die persistente Modulkonfiguration
+- entfernt konfigurierbare Rollenüberschreibungen
+- entfernt alle Gruppenzuordnungen des Moduls
+- stellt Titel, Beschreibung, Aktivierung und Sortierung auf Code-Defaults zurück
+
+Das Zurücksetzen ist eine bewusste Ausnahme zur normalen Erhaltung archivierter Zuordnungen.
+
+## Erweiterter Action-Input
+
+```ts
+interface SaveModuleConfigurationInput {
+    moduleId: string;
+    title: string;
+    description: string;
+    enabled: boolean;
+    sortOrder: number;
+    allowedRoles: Role[];
+    allowedGroupIds: string[];
+}
+```
+
+## Akzeptanzkriterien
+
+- Gruppenfreigaben werden relational gespeichert.
+- Gruppenfreigaben sind unabhängig von der Existenz einer Modulkonfiguration möglich.
+- Geschützte Module können keine Gruppenfreigabe erhalten.
+- Archivierte Gruppen können nicht neu ausgewählt werden.
+- Ein normales Speichern entfernt keine archivierten Zuordnungen.
+- Ein explizites Zurücksetzen entfernt alle Modul-Gruppenzuordnungen.
+- Änderungen werden im Dashboard unmittelbar berücksichtigt.
+
+---
+
+# M7 – Benutzerbezogene Modulauswertung
+
+## Aufgaben
+
+- [ ] rollenbasierte Dashboard-Auswertung auf benutzerbezogene Auswertung umstellen
+- [ ] aktive Gruppen des angemeldeten Benutzers laden
+- [ ] aktive Gruppenfreigaben der Module laden
+- [ ] Rollen- und Gruppenzugriff additiv auswerten
+- [ ] archivierte Gruppen aus der Auswertung ausschließen
+- [ ] deaktivierte Module weiterhin ausschließen
+- [ ] verpflichtende Rollen weiterhin berücksichtigen
+- [ ] unbekannte Modulzuordnungen ignorieren
+- [ ] N+1-Abfragen vermeiden
+- [ ] Dashboard auf den neuen Service umstellen
+
+## Neuer Service
+
+Die bisherige rollenbasierte Funktion:
+
+```ts
+getVisibleModulesForRole(role);
+```
+
+wird durch eine benutzerbezogene Funktion ersetzt:
+
+```ts
+getVisibleModulesForUser({
+    userId,
+    role,
+});
+```
+
+Vorgesehener Eingabetyp:
+
+```ts
+interface ModuleAccessSubject {
+    userId: string;
+    role: Role;
+}
+```
+
+## Auswertung
+
+```ts
+function hasModuleAccess(
+    module: EffectiveModuleConfiguration,
+    userRole: Role,
+    activeUserGroupIds: ReadonlySet<string>
+): boolean {
+    if (!module.enabled) {
+        return false;
+    }
+
+    if (module.allowedRoles.includes(userRole)) {
+        return true;
+    }
+
+    return module.allowedGroupIds.some((groupId) => activeUserGroupIds.has(groupId));
+}
+```
+
+## Performance-Regeln
+
+Die Auswertung darf keine Abfrage pro Modul oder Gruppe ausführen.
+
+Ziel ist eine begrenzte Anzahl von Abfragen für:
+
+- persistente Modulkonfigurationen
+- Modul-Gruppenzuordnungen
+- aktive Gruppenzugehörigkeiten des Benutzers
+
+Die Daten werden anschließend im Speicher zusammengeführt.
+
+## Akzeptanzkriterien
+
+- Ein Benutzer sieht ein Modul über seine Rolle.
+- Ein Benutzer sieht ein Modul über eine gemeinsame aktive Gruppe.
+- Ein Benutzer ohne passende Rolle oder Gruppe sieht das Modul nicht.
+- Eine archivierte Gruppe gewährt keinen Zugriff.
+- Eine Wiederherstellung reaktiviert den Zugriff.
+- Ein deaktiviertes Modul wird trotz Gruppenzuweisung nicht angezeigt.
+- Administrative Kernmodule bleiben ausschließlich für Administratoren sichtbar.
+- Die Auswertung erzeugt keine N+1-Abfragen.
+
+---
+
+# M8 – Serverseitiger Modulzugriffsschutz
+
+## Aufgaben
+
+- [ ] zentrale Zugriffsauswertung für einzelne Module bereitstellen
+- [ ] Helper `requireModuleAccess` vorbereiten
+- [ ] Modul-ID gegen den technischen Katalog validieren
+- [ ] angemeldeten Benutzer serverseitig ermitteln
+- [ ] Rollen- und Gruppenzugriff serverseitig prüfen
+- [ ] nicht autorisierte Zugriffe kontrolliert behandeln
+- [ ] bestehendes Admin-Layout für `/admin/*` beibehalten
+- [ ] Dashboard-Sichtbarkeit nicht als Zugriffsschutz verwenden
+- [ ] administrative Kernmodule gegen Gruppenmanipulation absichern
+- [ ] mindestens einen direkten Routenzugriff manuell prüfen
+
+## Vorgesehene API
+
+```ts
+async function canUserAccessModule(input: {
+    moduleId: string;
+    userId: string;
+    role: Role;
+}): Promise<boolean>;
+```
+
+```ts
+async function requireModuleAccess(moduleId: string): Promise<AuthenticatedSession>;
+```
+
+## Verhalten
+
+- Nicht angemeldete Benutzer werden durch den bestehenden Session-Schutz behandelt.
+- Unbekannte Modul-IDs werden nicht akzeptiert.
+- Angemeldete, aber nicht berechtigte Benutzer werden kontrolliert abgewiesen oder zum Dashboard geleitet.
+- Administrative Routen bleiben zusätzlich durch den bestehenden Adminschutz abgesichert.
+- Eine sichtbare Dashboard-Karte ist niemals der alleinige Berechtigungsnachweis.
+
+## Sicherheitsregeln
+
+- Sämtliche Verwaltungs-Actions erfordern eine Admin-Session.
+- Benutzer können keine eigenen Gruppenzuweisungen verändern.
+- Clientseitig übermittelte Modul-IDs werden gegen den Katalog geprüft.
+- Clientseitig übermittelte Gruppen-IDs werden gegen die Datenbank geprüft.
+- Archivierte Gruppen werden serverseitig ausgeschlossen.
+- Richtlinien des Modulkatalogs haben Vorrang vor Datenbankwerten.
+- Unbekannte oder manipulierte Zuordnungen gewähren keinen Zugriff.
+
+## Akzeptanzkriterien
+
+- Direkter Routenzugriff ist ohne Berechtigung nicht möglich.
+- Gruppenfreigaben wirken nicht nur auf die Dashboard-Darstellung.
+- Adminrouten bleiben ausschließlich für Administratoren erreichbar.
+- Manipulierte Datenbankeinträge können geschützte Kernmodule nicht öffnen.
+- Der Zugriffsschutz verwendet dieselbe fachliche Regel wie das Dashboard.
+
+---
+
+# M9 – Qualitätssicherung
+
+## Funktionale Tests
+
+- [ ] Anwendung ohne vorhandene Gruppen starten
+- [ ] gültige Gruppe erstellen
+- [ ] Gruppenschlüssel normalisieren
+- [ ] ungültigen Gruppenschlüssel abweisen
+- [ ] doppelten Gruppenschlüssel abweisen
+- [ ] Anzeigenamen bearbeiten
+- [ ] Beschreibung bearbeiten
+- [ ] technischen Schlüssel nicht bearbeitbar machen
+- [ ] Gruppe archivieren
+- [ ] archivierte Gruppe eindeutig darstellen
+- [ ] Zuordnungen beim Archivieren erhalten
+- [ ] Zugriff einer archivierten Gruppe entziehen
+- [ ] Gruppe wiederherstellen
+- [ ] Zugriff nach Wiederherstellung erneut gewähren
+- [ ] verwendete Gruppe nicht löschen können
+- [ ] ungenutzte Gruppe löschen
+- [ ] aktive Gruppe einem aktiven Benutzer zuordnen
+- [ ] mehrere Gruppen einem Benutzer zuordnen
+- [ ] eine Gruppe mehreren Benutzern zuordnen
+- [ ] archivierte Gruppe nicht neu zuordnen können
+- [ ] neue Gruppenzuweisung für nicht aktiven Benutzer verhindern
+- [ ] Gruppenzuweisungen bei Benutzersperrung erhalten
+- [ ] Gruppe einem gruppenkonfigurierbaren Modul zuordnen
+- [ ] Gruppe mehreren Modulen zuordnen
+- [ ] archivierte Gruppe nicht neu einem Modul zuordnen
+- [ ] geschütztes Kernmodul nicht für Gruppen öffnen können
+- [ ] Modulreset entfernt Gruppenzuordnungen
+- [ ] unbekannte Modul-ID abweisen
+- [ ] unbekannte Gruppen-ID abweisen
+
+## Zugriffstests
+
+- [ ] Zugriff ausschließlich über Rolle testen
+- [ ] Zugriff ausschließlich über Gruppe testen
+- [ ] Zugriff über Rolle und Gruppe gleichzeitig testen
+- [ ] Zugriff ohne Rolle und Gruppe verhindern
+- [ ] deaktiviertes Modul trotz Gruppe ausblenden
+- [ ] archivierte Gruppe aus der Auswertung ausschließen
+- [ ] wiederhergestellte Gruppe erneut berücksichtigen
+- [ ] administratives Kernmodul ausschließlich als Admin sehen
+- [ ] manipulierte Kernmodul-Gruppenzuweisung ignorieren
+- [ ] direkte Modulroute ohne Berechtigung aufrufen
+- [ ] direkte Adminroute als Nicht-Admin aufrufen
+- [ ] unbekannte Modulzuordnung in der Datenbank ignorieren
+
+## Oberflächentests
+
+- [ ] Gruppenverwaltung auf Desktop prüfen
+- [ ] Gruppenverwaltung auf Mobilgeräten prüfen
+- [ ] Mitgliederverwaltung auf Desktop prüfen
+- [ ] Mitgliederverwaltung auf Mobilgeräten prüfen
+- [ ] Modulverwaltung auf Desktop prüfen
+- [ ] Modulverwaltung auf Mobilgeräten prüfen
+- [ ] sichtbaren Tastaturfokus prüfen
+- [ ] Bedienung von Accordions mit Tastatur prüfen
+- [ ] deaktivierte Buttons und Felder prüfen
+- [ ] Erfolgs- und Fehlermeldungen prüfen
+- [ ] Bestätigungsdialoge prüfen
+- [ ] Empty States prüfen
+
+## Migrationstests
+
+- [ ] Migration in einer leeren Datenbank ausführen
+- [ ] Migration mit bestehenden Benutzern ausführen
+- [ ] Migration mit bestehenden Modulkonfigurationen ausführen
+- [ ] bestehende Benutzeranmeldung nach Migration prüfen
+- [ ] bestehende Rollen nach Migration prüfen
+- [ ] bestehende Modulkonfigurationen nach Migration prüfen
+- [ ] Rollback über Datenbankbackup praktisch berücksichtigen
+
+## Technische Prüfung
+
+- [ ] `make format` ausführen
+- [ ] `make lint` ausführen
+- [ ] `npm run build` ausführen
+- [ ] `git diff --check` ausführen
+- [ ] `git status --short` prüfen
+- [ ] Prisma-Schema validieren
+- [ ] Prisma-Client erfolgreich generieren
+- [ ] Migration erfolgreich deployen
+
+## Akzeptanzkriterien
+
+- Bestehende Benutzer-, Rollen- und Modulverwaltung besitzen keine Regressionen.
+- Gruppen gewähren Zugriff ausschließlich nach den dokumentierten Regeln.
+- Archivierung ist reversibel.
+- Löschschutz funktioniert in Oberfläche, Geschäftslogik und Datenbank.
+- Administrative Kernmodule bleiben geschützt.
+- Direkte Routenzugriffe werden serverseitig geprüft.
+- Linting und Production-Build sind erfolgreich.
+- Die Migration funktioniert mit leeren und bestehenden Datenbanken.
+
+---
+
+# Nicht Bestandteil
+
+Folgende Funktionen sind ausdrücklich nicht Bestandteil von PR #18:
+
+- Deny-Regeln
+- verschachtelte Gruppen
+- Gruppen innerhalb anderer Gruppen
+- Hierarchien oder Vererbung zwischen Gruppen
+- gruppenspezifische Rollen
+- direkte Benutzer-zu-Modul-Freigaben
+- individuelle Ausnahmen pro Benutzer
+- zeitlich begrenzte Gruppenmitgliedschaften
+- zeitgesteuerte Modulfreigaben
+- automatische Gruppenzuweisung anhand einer Systemrolle
+- automatische Gruppenzuweisung anhand des Benutzerstatus
+- Synchronisation mit einer Star-Citizen-Organisation
+- Import oder Export von Gruppen
+- Bulk-Zuweisungen
+- Audit-Log für Gruppenänderungen
+- Benachrichtigungen bei Berechtigungsänderungen
+- Gruppenverwaltung durch Nicht-Administratoren
+- Gruppenfreigabe administrativer Kernmodule
+- Einführung einer automatisierten Testinfrastruktur
+
+Automatisierte Tests für die Zugriffsauflösung und Gruppenregeln werden in einem gesonderten Folge-PR behandelt.
+
+---
+
+# Mögliche Folge-Features
+
+Nach PR #18 können unter anderem folgende Erweiterungen separat umgesetzt werden:
+
+- automatisierte Unit-Tests für Gruppen- und Modulzugriffsregeln
+- Integrationstests für Prisma-Transaktionen
+- E2E-Tests für Berechtigungsflüsse
+- Audit-Log
+- Gruppenverantwortliche
+- zeitlich begrenzte Mitgliedschaften
+- Bulk-Zuweisungen
+- Gruppenimport
+- Star-Citizen-Organisationssynchronisation
+- detaillierte Berechtigungen innerhalb eines Moduls
+
+---
+
+# Definition of Done
+
+- [ ] fachliches Gruppenmodell ist verbindlich dokumentiert
+- [ ] globale Zugriffsgruppen sind implementiert
+- [ ] Prisma-Modelle und Migration sind vorhanden
+- [ ] technischer Gruppenschlüssel ist eindeutig und unveränderlich
+- [ ] Gruppen können erstellt und bearbeitet werden
+- [ ] Gruppen können archiviert und wiederhergestellt werden
+- [ ] verwendete Gruppen können nicht gelöscht werden
+- [ ] Benutzer können aktiven Gruppen zugeordnet werden
+- [ ] Module können aktiven Gruppen zugeordnet werden
+- [ ] archivierte Gruppen behalten ihre Zuordnungen
+- [ ] archivierte Gruppen gewähren keinen Zugriff
+- [ ] Rollen- und Gruppenzugriff werden additiv ausgewertet
+- [ ] Dashboard verwendet die benutzerbezogene Modulauswertung
+- [ ] serverseitiger Modulzugriffsschutz ist vorhanden
+- [ ] administrative Kernmodule bleiben geschützt
+- [ ] Gruppenverwaltung ist ausschließlich für Administratoren erreichbar
+- [ ] Mitgliederverwaltung zeigt Gruppenzuordnungen
+- [ ] Modulverwaltung zeigt Gruppenfreigaben
+- [ ] Desktop- und Mobilansicht sind geprüft
+- [ ] Migration mit leerer Datenbank ist geprüft
+- [ ] Migration mit bestehenden Daten ist geprüft
+- [ ] manuelle Funktionstests sind erfolgreich
+- [ ] Linting ist erfolgreich
+- [ ] Production-Build ist erfolgreich
+- [ ] PR ist konfliktfrei und merge-bereit
