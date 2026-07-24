@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import { TerminalPanel } from '@/components/mobiglas/TerminalPanel';
 
-import type { ToolboxModule } from '../moduleRegistry';
+import type { ToolboxModule } from '@/lib/modules/moduleCatalog';
 
 interface ModuleCardProps {
     module: ToolboxModule;

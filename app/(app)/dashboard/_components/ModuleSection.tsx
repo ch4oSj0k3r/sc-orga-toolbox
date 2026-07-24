@@ -1,4 +1,4 @@
-import type { ToolboxModule } from '../moduleRegistry';
+import type { ToolboxModule } from '@/lib/modules/moduleCatalog';
 import { ModuleCard } from './ModuleCard';
 
 interface ModuleSectionProps {
