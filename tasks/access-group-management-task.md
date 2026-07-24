@@ -626,14 +626,14 @@ Die Server Action:
 
 ## Aufgaben
 
-- [ ] effektive Modulkonfiguration um Gruppeninformationen erweitern
-- [ ] Modulverwaltungs-ViewModel um Gruppen erweitern
-- [ ] Modulformular um Gruppenfreigaben erweitern
-- [ ] Gruppen nur bei `allowedGroups: true` bearbeitbar machen
-- [ ] aktive Gruppen zur Auswahl anbieten
-- [ ] archivierte bestehende Zuordnungen anzeigen
+- [x] effektive Modulkonfiguration um Gruppeninformationen erweitern
+- [x] Modulverwaltungs-ViewModel um Gruppen erweitern
+- [x] Modulformular um Gruppenfreigaben erweitern
+- [x] Gruppen nur bei `allowedGroups: true` bearbeitbar machen
+- [x] aktive Gruppen zur Auswahl anbieten
+- [x] archivierte bestehende Zuordnungen anzeigen
 - [x] archivierte Zuordnungen beim normalen Speichern erhalten
-- [ ] administrative Kernmodule sichtbar sperren
+- [x] administrative Kernmodule sichtbar sperren
 - [x] Gruppenfreigaben serverseitig validieren
 - [x] Modulkonfiguration, Rollen und Gruppen transaktional speichern
 - [x] Zurücksetzen der Modulkonfiguration um Gruppen erweitern

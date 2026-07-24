@@ -37,6 +37,18 @@ export interface EffectiveModuleConfiguration {
     hasPersistentConfiguration: boolean;
 }
 
+export interface ModuleAssignedAccessGroup {
+    id: string;
+    key: string;
+    name: string;
+    archivedAt: Date | null;
+}
+
+export interface ModuleManagementConfiguration extends EffectiveModuleConfiguration {
+    assignedGroups: readonly ModuleAssignedAccessGroup[];
+    hasPersistentGroupAssignments: boolean;
+}
+
 function mergeRoles(...roleGroups: readonly (readonly Role[])[]): Role[] {
     const roles = new Set<Role>();
 
@@ -150,4 +162,76 @@ export async function getVisibleModulesForRole(
     const modules = await getEffectiveModuleConfigurations();
 
     return modules.filter((module) => module.enabled && module.allowedRoles.includes(role));
+}
+
+export async function getModuleManagementConfigurations(): Promise<
+    ModuleManagementConfiguration[]
+> {
+    const [storedConfigurations, assignments] = await Promise.all([
+        prisma.moduleConfiguration.findMany({
+            include: {
+                allowedRoles: {
+                    select: {
+                        role: true,
+                    },
+                },
+            },
+        }),
+        prisma.moduleAccessGroup.findMany({
+            select: {
+                moduleId: true,
+                group: {
+                    select: {
+                        id: true,
+                        key: true,
+                        name: true,
+                        archivedAt: true,
+                    },
+                },
+            },
+        }),
+    ]);
+
+    const assignedGroupsByModule = new Map<string, ModuleAssignedAccessGroup[]>();
+
+    const activeGroupIdsByModule = new Map<string, string[]>();
+
+    for (const assignment of assignments) {
+        const assignedGroups = assignedGroupsByModule.get(assignment.moduleId) ?? [];
+
+        assignedGroups.push(assignment.group);
+        assignedGroupsByModule.set(assignment.moduleId, assignedGroups);
+
+        if (!assignment.group.archivedAt) {
+            const activeGroupIds = activeGroupIdsByModule.get(assignment.moduleId) ?? [];
+
+            activeGroupIds.push(assignment.group.id);
+            activeGroupIdsByModule.set(assignment.moduleId, activeGroupIds);
+        }
+    }
+
+    for (const groups of assignedGroupsByModule.values()) {
+        groups.sort((left, right) => left.name.localeCompare(right.name, 'de'));
+    }
+
+    const modules = resolveEffectiveModuleConfigurations(
+        storedConfigurations,
+        activeGroupIdsByModule
+    );
+
+    return modules.map((module) => {
+        const assignedGroups = assignedGroupsByModule.get(module.id) ?? [];
+
+        return {
+            ...module,
+
+            // Gesperrte Kernmodule zeigen manipulierte Zuordnungen
+            // nicht als wirksame Freigabe an.
+            assignedGroups: module.configuration.allowedGroups ? assignedGroups : [],
+
+            // Der Reset bleibt trotzdem verfügbar, damit auch
+            // manipulierte Zuordnungen entfernt werden können.
+            hasPersistentGroupAssignments: assignedGroups.length > 0,
+        };
+    });
 }
