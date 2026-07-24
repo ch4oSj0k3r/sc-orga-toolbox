@@ -78,13 +78,6 @@ export async function saveModuleConfiguration(
         ? [...new Set([...requestedRoles, ...definition.mandatoryRoles])]
         : [...new Set([...definition.defaultAllowedRoles, ...definition.mandatoryRoles])];
 
-    if (effectiveRoles.length === 0) {
-        return {
-            success: false,
-            message: 'Das Modul muss für mindestens eine effektive Rolle freigegeben sein.',
-        };
-    }
-
     const requestedGroupIds = data.allowedGroupIds;
 
     if (!definition.configuration.allowedGroups && requestedGroupIds.length > 0) {
@@ -100,6 +93,18 @@ export async function saveModuleConfiguration(
     const sortOrder = definition.configuration.sortOrder
         ? data.sortOrder
         : definition.defaultSortOrder;
+
+    const hasAccessPath =
+        effectiveRoles.length > 0 ||
+        (definition.configuration.allowedGroups && requestedGroupIds.length > 0);
+
+    if (enabled && !hasAccessPath) {
+        return {
+            success: false,
+            message:
+                'Ein aktiviertes Modul muss für mindestens eine effektive Rolle oder Zugriffsgruppe freigegeben sein.',
+        };
+    }
 
     const persistedRoles = definition.configuration.allowedRoles ? requestedRoles : [];
 
