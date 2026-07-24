@@ -171,18 +171,18 @@ model ModuleAllowedRole {
 
 ## Aufgaben
 
-- [ ] `/admin/modules` an die persistente Konfiguration anbinden
-- [ ] alle technischen Module anzeigen
-- [ ] technische Modul-ID und Route schreibgeschützt darstellen
-- [ ] Titel bearbeiten
-- [ ] Beschreibung bearbeiten
-- [ ] Aktivierungsstatus bearbeiten, sofern erlaubt
-- [ ] Sortierreihenfolge bearbeiten, sofern erlaubt
-- [ ] erlaubte Systemrollen bearbeiten, sofern erlaubt
-- [ ] nicht konfigurierbare Felder sichtbar deaktivieren oder ausblenden
-- [ ] Speichern pro Modul ermöglichen
-- [ ] Konfiguration auf Standardwerte zurücksetzen können
-- [ ] verständliche Erfolgs- und Fehlermeldungen anzeigen
+- [x] `/admin/modules` an die persistente Konfiguration anbinden
+- [x] alle technischen Module anzeigen
+- [x] technische Modul-ID und Route schreibgeschützt darstellen
+- [x] Titel bearbeiten
+- [x] Beschreibung bearbeiten
+- [x] Aktivierungsstatus bearbeiten, sofern erlaubt
+- [x] Sortierreihenfolge bearbeiten, sofern erlaubt
+- [x] erlaubte Systemrollen bearbeiten, sofern erlaubt
+- [x] nicht konfigurierbare Felder sichtbar deaktivieren oder ausblenden
+- [x] Speichern pro Modul ermöglichen
+- [x] Konfiguration auf Standardwerte zurücksetzen können
+- [x] verständliche Erfolgs- und Fehlermeldungen anzeigen
 
 ## Akzeptanzkriterien
 
