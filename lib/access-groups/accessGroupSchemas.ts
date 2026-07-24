@@ -28,7 +28,9 @@ export const accessGroupDescriptionSchema = z
     .string()
     .trim()
     .max(300, 'Die Beschreibung darf höchstens 300 Zeichen enthalten.')
-    .transform((value) => (value.length === 0 ? null : value));
+    .optional()
+    .nullable()
+    .transform((value) => (value?.length ? value : null));
 
 export const createAccessGroupSchema = z.object({
     key: accessGroupKeySchema,

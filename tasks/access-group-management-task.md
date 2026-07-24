@@ -371,15 +371,17 @@ Die genaue Aufteilung kann während der Implementierung vereinfacht werden, sofe
 
 ## Aufgaben
 
-- [ ] `ModuleConfigurationPolicy` um `allowedGroups` erweitern
-- [ ] alle bestehenden Moduldefinitionen um die neue Richtlinie ergänzen
-- [ ] administrative Kernmodule für Gruppenfreigaben sperren
-- [ ] neues Kernmodul `group-management` ergänzen
-- [ ] Gruppenverwaltung unter `/admin/groups` registrieren
-- [ ] Standardreihenfolge der administrativen Module festlegen
-- [ ] effektive Modulkonfiguration um Gruppenfreigaben erweitern
-- [ ] unbekannte persistierte Modulzuordnungen ignorieren
-- [ ] manipulierte Gruppenfreigaben geschützter Module ignorieren
+- [x] `ModuleConfigurationPolicy` um `allowedGroups` erweitern
+- [x] alle bestehenden Moduldefinitionen um die neue Richtlinie ergänzen
+- [x] administrative Kernmodule für Gruppenfreigaben sperren
+- [x] neues Kernmodul `group-management` ergänzen
+- [x] Gruppenverwaltung unter `/admin/groups` registrieren
+- [x] Standardreihenfolge der administrativen Module festlegen
+- [x] effektive Modulkonfiguration um Gruppenfreigaben erweitern
+- [x] unbekannte persistierte Modulzuordnungen ignorieren
+- [x] manipulierte Gruppenfreigaben geschützter Module ignorieren
+- [x] erstes gruppenkonfigurierbares Modul `member-area` ergänzen
+- [x] Route `/member-area` bereitstellen
 
 ## Erweiterte Richtlinie
 
@@ -438,6 +440,31 @@ Für gruppenkonfigurierbare Module gilt:
 - existieren keine Zuordnungen, gilt eine leere Gruppenfreigabe
 - es gibt keine technischen Standardgruppen im Modulkatalog
 
+## Erstes gruppenkonfigurierbares Modul
+
+Das Modul `member-area` dient als erstes reales Zugriffsziel für Rollen- und Gruppenfreigaben.
+
+```ts
+{
+    id: 'member-area',
+    defaultTitle: 'Mitgliederbereich',
+    defaultDescription: 'Persönliche Übersicht und freigegebene Organisationsinhalte.',
+    defaultSortOrder: 100,
+    href: '/member-area',
+    category: 'module',
+    defaultAllowedRoles: [Role.MEMBER, Role.ADMIN],
+    mandatoryRoles: [],
+    configuration: {
+        title: true,
+        description: true,
+        enabled: true,
+        sortOrder: true,
+        allowedRoles: true,
+        allowedGroups: true,
+    },
+}
+```
+
 ## Akzeptanzkriterien
 
 - Die Gruppenverwaltung erscheint als administratives Dashboard-Modul.
@@ -453,8 +480,8 @@ Für gruppenkonfigurierbare Module gilt:
 
 ## Aufgaben
 
-- [ ] Route `/admin/groups` erstellen
-- [ ] Route serverseitig auf Administratoren beschränken
+- [x] Route `/admin/groups` erstellen
+- [x] Route serverseitig auf Administratoren beschränken
 - [ ] aktive Gruppen anzeigen
 - [ ] archivierte Gruppen anzeigen
 - [ ] verständlichen Empty State anzeigen

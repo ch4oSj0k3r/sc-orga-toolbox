@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { Role } from '@/lib/generated/enums';
 import { prisma } from '@/lib/prisma';
+import { getActiveGroupIdsByModule } from '@/lib/access-groups/accessGroupService';
 
 import {
     moduleDefinitions,
@@ -30,6 +31,7 @@ export interface EffectiveModuleConfiguration {
     href: string;
     category: ModuleCategory;
     allowedRoles: readonly Role[];
+    allowedGroupIds: readonly string[];
     mandatoryRoles: readonly Role[];
     configuration: ModuleConfigurationPolicy;
     hasPersistentConfiguration: boolean;
@@ -59,8 +61,20 @@ function resolveAllowedRoles(
     return mergeRoles(configuredRoles, definition.mandatoryRoles);
 }
 
+function resolveAllowedGroupIds(
+    definition: ModuleDefinition,
+    activeGroupIdsByModule: ReadonlyMap<string, readonly string[]>
+): string[] {
+    if (!definition.configuration.allowedGroups) {
+        return [];
+    }
+
+    return [...new Set(activeGroupIdsByModule.get(definition.id) ?? [])];
+}
+
 export function resolveEffectiveModuleConfigurations(
-    storedConfigurations: readonly StoredModuleConfiguration[]
+    storedConfigurations: readonly StoredModuleConfiguration[],
+    activeGroupIdsByModule: ReadonlyMap<string, readonly string[]> = new Map()
 ): EffectiveModuleConfiguration[] {
     const storedConfigurationsByModuleId = new Map(
         storedConfigurations.map((configuration) => [configuration.moduleId, configuration])
@@ -93,6 +107,7 @@ export function resolveEffectiveModuleConfigurations(
                 href: definition.href,
                 category: definition.category,
                 allowedRoles: resolveAllowedRoles(definition, storedConfiguration),
+                allowedGroupIds: resolveAllowedGroupIds(definition, activeGroupIdsByModule),
                 mandatoryRoles: [...definition.mandatoryRoles],
                 configuration: definition.configuration,
                 hasPersistentConfiguration: storedConfiguration !== undefined,
@@ -113,17 +128,20 @@ export function resolveEffectiveModuleConfigurations(
 }
 
 export async function getEffectiveModuleConfigurations(): Promise<EffectiveModuleConfiguration[]> {
-    const storedConfigurations = await prisma.moduleConfiguration.findMany({
-        include: {
-            allowedRoles: {
-                select: {
-                    role: true,
+    const [storedConfigurations, activeGroupIdsByModule] = await Promise.all([
+        prisma.moduleConfiguration.findMany({
+            include: {
+                allowedRoles: {
+                    select: {
+                        role: true,
+                    },
                 },
             },
-        },
-    });
+        }),
+        getActiveGroupIdsByModule(),
+    ]);
 
-    return resolveEffectiveModuleConfigurations(storedConfigurations);
+    return resolveEffectiveModuleConfigurations(storedConfigurations, activeGroupIdsByModule);
 }
 
 export async function getVisibleModulesForRole(
