@@ -23,10 +23,7 @@ export interface ModuleDefinition {
 }
 
 /**
- * Temporärer Darstellungstyp für das bestehende Dashboard.
- *
- * Wird im nächsten Schritt durch die effektive Modulkonfiguration
- * aus Code und Datenbank ersetzt.
+ * Darstellungstyp für Module im Dashboard.
  */
 export interface ToolboxModule {
     id: string;
@@ -77,28 +74,4 @@ export const moduleDefinitions = [
 
 export function getModuleDefinition(moduleId: string): ModuleDefinition | undefined {
     return moduleDefinitions.find((definition) => definition.id === moduleId);
-}
-
-function getDefaultAllowedRoles(definition: ModuleDefinition): Role[] {
-    return [...new Set<Role>([...definition.defaultAllowedRoles, ...definition.mandatoryRoles])];
-}
-
-/**
- * Temporärer Adapter für das bestehende Dashboard.
- *
- * Wird bei der Dashboard-Anbindung durch den persistenten Service ersetzt.
- */
-export function getVisibleModules(role: Role): ToolboxModule[] {
-    return moduleDefinitions
-        .map((definition) => ({
-            id: definition.id,
-            title: definition.defaultTitle,
-            description: definition.defaultDescription,
-            sortOrder: definition.defaultSortOrder,
-            href: definition.href,
-            category: definition.category,
-            allowedRoles: getDefaultAllowedRoles(definition),
-        }))
-        .filter((module) => module.allowedRoles.includes(role))
-        .sort((left, right) => left.sortOrder - right.sortOrder);
 }
