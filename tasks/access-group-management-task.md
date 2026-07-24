@@ -564,9 +564,9 @@ Die Server Action prüft diese Bedingung unabhängig von der Oberfläche erneut.
 ## Aufgaben
 
 - [x] Gruppenzugehörigkeiten in der Mitgliederverwaltung laden
-- [ ] Gruppen als Badges in Benutzerkarten und Benutzertabelle darstellen
-- [ ] aktive und archivierte Gruppen visuell unterscheiden
-- [ ] Bearbeitung der Gruppenzugehörigkeiten ermöglichen
+- [x] Gruppen als Badges in Benutzerkarten und Benutzertabelle darstellen
+- [x] aktive und archivierte Gruppen visuell unterscheiden
+- [x] Bearbeitung der Gruppenzugehörigkeiten ermöglichen
 - [x] nur aktive Gruppen neu auswählbar machen
 - [x] neue Zuweisungen nur für Benutzer mit Status `ACTIVE` erlauben
 - [x] vorhandene Zuweisungen bei Statusänderungen erhalten
