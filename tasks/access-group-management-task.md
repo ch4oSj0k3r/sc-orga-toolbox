@@ -125,14 +125,14 @@ Für diese Module gilt:
 
 ## Aufgaben
 
-- [ ] globale Zugriffsgruppen als verbindliches Modell dokumentieren
-- [ ] additives Zugriffsmodell dokumentieren
-- [ ] Deny-Regeln ausdrücklich ausschließen
-- [ ] Verhalten archivierter Gruppen dokumentieren
-- [ ] Löschbedingungen dokumentieren
-- [ ] Verhalten bei Statusänderungen eines Benutzers dokumentieren
-- [ ] Schutz administrativer Kernmodule dokumentieren
-- [ ] Zuständigkeiten von Rollen, Gruppen und Modulrichtlinien abgrenzen
+- [x] globale Zugriffsgruppen als verbindliches Modell dokumentieren
+- [x] additives Zugriffsmodell dokumentieren
+- [x] Deny-Regeln ausdrücklich ausschließen
+- [x] Verhalten archivierter Gruppen dokumentieren
+- [x] Löschbedingungen dokumentieren
+- [x] Verhalten bei Statusänderungen eines Benutzers dokumentieren
+- [x] Schutz administrativer Kernmodule dokumentieren
+- [x] Zuständigkeiten von Rollen, Gruppen und Modulrichtlinien abgrenzen
 
 ## Zugriffsregel
 
@@ -169,15 +169,15 @@ Dabei gelten zusätzlich folgende Regeln:
 
 ## Aufgaben
 
-- [ ] Prisma-Modell `AccessGroup` ergänzen
-- [ ] Prisma-Modell `UserAccessGroup` ergänzen
-- [ ] Prisma-Modell `ModuleAccessGroup` ergänzen
-- [ ] Relation vom Benutzer zu seinen Gruppenzuweisungen ergänzen
-- [ ] eindeutigen technischen Gruppenschlüssel abbilden
-- [ ] Archivierungszeitpunkt abbilden
-- [ ] Datenbankseitigen Löschschutz für verwendete Gruppen einführen
-- [ ] Migration erzeugen
-- [ ] Prisma-Client neu generieren
+- [x] Prisma-Modell `AccessGroup` ergänzen
+- [x] Prisma-Modell `UserAccessGroup` ergänzen
+- [x] Prisma-Modell `ModuleAccessGroup` ergänzen
+- [x] Relation vom Benutzer zu seinen Gruppenzuweisungen ergänzen
+- [x] eindeutigen technischen Gruppenschlüssel abbilden
+- [x] Archivierungszeitpunkt abbilden
+- [x] Datenbankseitigen Löschschutz für verwendete Gruppen einführen
+- [x] Migration erzeugen
+- [x] Prisma-Client neu generieren
 - [ ] Migration in einer leeren Datenbank prüfen
 - [ ] Migration mit vorhandenen Benutzern und Modulkonfigurationen prüfen
 
