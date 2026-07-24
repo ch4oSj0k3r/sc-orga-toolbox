@@ -563,18 +563,18 @@ Die Server Action prüft diese Bedingung unabhängig von der Oberfläche erneut.
 
 ## Aufgaben
 
-- [ ] Gruppenzugehörigkeiten in der Mitgliederverwaltung laden
+- [x] Gruppenzugehörigkeiten in der Mitgliederverwaltung laden
 - [ ] Gruppen als Badges in Benutzerkarten und Benutzertabelle darstellen
 - [ ] aktive und archivierte Gruppen visuell unterscheiden
 - [ ] Bearbeitung der Gruppenzugehörigkeiten ermöglichen
-- [ ] nur aktive Gruppen neu auswählbar machen
-- [ ] neue Zuweisungen nur für Benutzer mit Status `ACTIVE` erlauben
-- [ ] vorhandene Zuweisungen bei Statusänderungen erhalten
-- [ ] archivierte bestehende Zuweisungen anzeigen
-- [ ] archivierte Zuweisungen beim normalen Speichern erhalten
-- [ ] Benutzer- und Gruppendaten serverseitig validieren
-- [ ] Änderungen transaktional speichern
-- [ ] betroffene Routen revalidieren
+- [x] nur aktive Gruppen neu auswählbar machen
+- [x] neue Zuweisungen nur für Benutzer mit Status `ACTIVE` erlauben
+- [x] vorhandene Zuweisungen bei Statusänderungen erhalten
+- [x] archivierte bestehende Zuweisungen anzeigen
+- [x] archivierte Zuweisungen beim normalen Speichern erhalten
+- [x] Benutzer- und Gruppendaten serverseitig validieren
+- [x] Änderungen transaktional speichern
+- [x] betroffene Routen revalidieren
 
 ## Speicheregeln
 
