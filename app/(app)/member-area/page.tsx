@@ -1,11 +1,15 @@
 import { redirect } from 'next/navigation';
 
 import { requireActiveSession } from '@/lib/auth/require-session';
-import { getVisibleModulesForRole } from '@/lib/modules/moduleConfigurationService';
+import { getVisibleModulesForUser } from '@/lib/modules/moduleConfigurationService';
 
 export default async function MemberAreaPage() {
     const session = await requireActiveSession();
-    const visibleModules = await getVisibleModulesForRole(session.user.role);
+
+    const visibleModules = await getVisibleModulesForUser({
+        userId: session.user.id,
+        role: session.user.role,
+    });
 
     if (!visibleModules.some((module) => module.id === 'member-area')) {
         redirect('/dashboard');
@@ -37,9 +41,7 @@ export default async function MemberAreaPage() {
                     {session.user.name ?? 'Citizen'}
                 </p>
 
-                <p className="mt-3 font-mono text-sm text-cyan">
-                    Zugriff über Rolle: {session.user.role}
-                </p>
+                <p className="mt-3 font-mono text-sm text-cyan">Modulzugriff bestätigt</p>
             </section>
         </div>
     );
