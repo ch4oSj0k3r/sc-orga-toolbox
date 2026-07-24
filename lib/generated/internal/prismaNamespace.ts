@@ -375,6 +375,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
     User: 'User',
+    ModuleConfiguration: 'ModuleConfiguration',
+    ModuleAllowedRole: 'ModuleAllowedRole',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -394,7 +396,7 @@ export type TypeMap<
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: 'user';
+        modelProps: 'user' | 'moduleConfiguration' | 'moduleAllowedRole';
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -465,6 +467,142 @@ export type TypeMap<
                 };
             };
         };
+        ModuleConfiguration: {
+            payload: Prisma.$ModuleConfigurationPayload<ExtArgs>;
+            fields: Prisma.ModuleConfigurationFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.ModuleConfigurationFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleConfigurationPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.ModuleConfigurationFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleConfigurationPayload>;
+                };
+                findFirst: {
+                    args: Prisma.ModuleConfigurationFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleConfigurationPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.ModuleConfigurationFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleConfigurationPayload>;
+                };
+                findMany: {
+                    args: Prisma.ModuleConfigurationFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleConfigurationPayload>[];
+                };
+                create: {
+                    args: Prisma.ModuleConfigurationCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleConfigurationPayload>;
+                };
+                createMany: {
+                    args: Prisma.ModuleConfigurationCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                delete: {
+                    args: Prisma.ModuleConfigurationDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleConfigurationPayload>;
+                };
+                update: {
+                    args: Prisma.ModuleConfigurationUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleConfigurationPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.ModuleConfigurationDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.ModuleConfigurationUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                upsert: {
+                    args: Prisma.ModuleConfigurationUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleConfigurationPayload>;
+                };
+                aggregate: {
+                    args: Prisma.ModuleConfigurationAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateModuleConfiguration>;
+                };
+                groupBy: {
+                    args: Prisma.ModuleConfigurationGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.ModuleConfigurationGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.ModuleConfigurationCountArgs<ExtArgs>;
+                    result:
+                        | runtime.Types.Utils.Optional<Prisma.ModuleConfigurationCountAggregateOutputType>
+                        | number;
+                };
+            };
+        };
+        ModuleAllowedRole: {
+            payload: Prisma.$ModuleAllowedRolePayload<ExtArgs>;
+            fields: Prisma.ModuleAllowedRoleFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.ModuleAllowedRoleFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleAllowedRolePayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.ModuleAllowedRoleFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleAllowedRolePayload>;
+                };
+                findFirst: {
+                    args: Prisma.ModuleAllowedRoleFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleAllowedRolePayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.ModuleAllowedRoleFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleAllowedRolePayload>;
+                };
+                findMany: {
+                    args: Prisma.ModuleAllowedRoleFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleAllowedRolePayload>[];
+                };
+                create: {
+                    args: Prisma.ModuleAllowedRoleCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleAllowedRolePayload>;
+                };
+                createMany: {
+                    args: Prisma.ModuleAllowedRoleCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                delete: {
+                    args: Prisma.ModuleAllowedRoleDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleAllowedRolePayload>;
+                };
+                update: {
+                    args: Prisma.ModuleAllowedRoleUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleAllowedRolePayload>;
+                };
+                deleteMany: {
+                    args: Prisma.ModuleAllowedRoleDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.ModuleAllowedRoleUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                upsert: {
+                    args: Prisma.ModuleAllowedRoleUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ModuleAllowedRolePayload>;
+                };
+                aggregate: {
+                    args: Prisma.ModuleAllowedRoleAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateModuleAllowedRole>;
+                };
+                groupBy: {
+                    args: Prisma.ModuleAllowedRoleGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.ModuleAllowedRoleGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.ModuleAllowedRoleCountArgs<ExtArgs>;
+                    result:
+                        | runtime.Types.Utils.Optional<Prisma.ModuleAllowedRoleCountAggregateOutputType>
+                        | number;
+                };
+            };
+        };
     };
 } & {
     other: {
@@ -520,6 +658,27 @@ export const UserScalarFieldEnum = {
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
 
+export const ModuleConfigurationScalarFieldEnum = {
+    moduleId: 'moduleId',
+    title: 'title',
+    description: 'description',
+    enabled: 'enabled',
+    sortOrder: 'sortOrder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+} as const;
+
+export type ModuleConfigurationScalarFieldEnum =
+    (typeof ModuleConfigurationScalarFieldEnum)[keyof typeof ModuleConfigurationScalarFieldEnum];
+
+export const ModuleAllowedRoleScalarFieldEnum = {
+    moduleId: 'moduleId',
+    role: 'role',
+} as const;
+
+export type ModuleAllowedRoleScalarFieldEnum =
+    (typeof ModuleAllowedRoleScalarFieldEnum)[keyof typeof ModuleAllowedRoleScalarFieldEnum];
+
 export const SortOrder = {
     asc: 'asc',
     desc: 'desc',
@@ -543,6 +702,22 @@ export const UserOrderByRelevanceFieldEnum = {
 
 export type UserOrderByRelevanceFieldEnum =
     (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum];
+
+export const ModuleConfigurationOrderByRelevanceFieldEnum = {
+    moduleId: 'moduleId',
+    title: 'title',
+    description: 'description',
+} as const;
+
+export type ModuleConfigurationOrderByRelevanceFieldEnum =
+    (typeof ModuleConfigurationOrderByRelevanceFieldEnum)[keyof typeof ModuleConfigurationOrderByRelevanceFieldEnum];
+
+export const ModuleAllowedRoleOrderByRelevanceFieldEnum = {
+    moduleId: 'moduleId',
+} as const;
+
+export type ModuleAllowedRoleOrderByRelevanceFieldEnum =
+    (typeof ModuleAllowedRoleOrderByRelevanceFieldEnum)[keyof typeof ModuleAllowedRoleOrderByRelevanceFieldEnum];
 
 /**
  * Field references
@@ -575,6 +750,11 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>;
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>;
 
 /**
  * Reference to a field of type 'Float'
@@ -700,6 +880,8 @@ export type PrismaClientOptions = (
 };
 export type GlobalOmitConfig = {
     user?: Prisma.UserOmit;
+    moduleConfiguration?: Prisma.ModuleConfigurationOmit;
+    moduleAllowedRole?: Prisma.ModuleAllowedRoleOmit;
 };
 
 /* Types for Logging */

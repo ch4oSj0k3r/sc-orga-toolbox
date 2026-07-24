@@ -26,15 +26,39 @@ enum Role {
 model User {
   id                 String     @id @default(uuid())
   sc_handle          String     @unique
-  password           String     // Gehashtes Passwort
+  password           String // Gehashtes Passwort
   status             UserStatus @default(PENDING)
   role               Role       @default(GUEST)
   verification_token String     @unique // Wird im Code als "SC-XXXXXX" generiert
   failed_attempts    Int        @default(0)
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-  rejectedAt        DateTime?  // Wird gesetzt, wenn failed_attempts > 18
-  bannedAt          DateTime?  // Wird gesetzt, wenn der Admin den User bannt
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  rejectedAt         DateTime? // Wird gesetzt, wenn failed_attempts > 18
+  bannedAt           DateTime? // Wird gesetzt, wenn der Admin den User bannt
 
   @@map("users")
+}
+
+model ModuleConfiguration {
+  moduleId    String   @id
+  title       String?
+  description String?  @db.Text
+  enabled     Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  allowedRoles ModuleAllowedRole[]
+
+  @@map("module_configurations")
+}
+
+model ModuleAllowedRole {
+  moduleId String
+  role     Role
+
+  module ModuleConfiguration @relation(fields: [moduleId], references: [moduleId], onDelete: Cascade)
+
+  @@id([moduleId, role])
+  @@map("module_allowed_roles")
 }
