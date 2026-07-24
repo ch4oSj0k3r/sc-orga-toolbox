@@ -150,13 +150,13 @@ model ModuleAllowedRole {
 
 ## Aufgaben
 
-- [ ] Dashboard-Module serverseitig aus der effektiven Konfiguration laden
-- [ ] Rollenfilterung mit effektiven Rollenfreigaben durchführen
-- [ ] deaktivierte Module nicht anzeigen
-- [ ] effektiven Titel und effektive Beschreibung verwenden
-- [ ] effektive Sortierreihenfolge anwenden
-- [ ] bestehende Kategorien `module` und `administration` beibehalten
-- [ ] bestehende Empty States weiterhin unterstützen
+- [x] Dashboard-Module serverseitig aus der effektiven Konfiguration laden
+- [x] Rollenfilterung mit effektiven Rollenfreigaben durchführen
+- [x] deaktivierte Module nicht anzeigen
+- [x] effektiven Titel und effektive Beschreibung verwenden
+- [x] effektive Sortierreihenfolge anwenden
+- [x] bestehende Kategorien `module` und `administration` beibehalten
+- [x] bestehende Empty States weiterhin unterstützen
 
 ## Akzeptanzkriterien
 
