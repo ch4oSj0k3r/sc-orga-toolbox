@@ -24,13 +24,13 @@ Zugriffsgruppen und Benutzerzuweisungen sind nicht Bestandteil dieses Features u
 
 ## Aufgaben
 
-- [ ] bestehende Modul-Registry in einen technischen Modulkatalog überführen
-- [ ] Standardtitel und Standardbeschreibung definieren
-- [ ] Standardrollen pro Modul definieren
-- [ ] verpflichtende Rollen pro Modul definieren
-- [ ] granulare Konfigurationsrichtlinien pro Modul einführen
-- [ ] technische Route und Kategorie ausschließlich im Code halten
-- [ ] Helper zum Auflösen einer Moduldefinition anhand der Modul-ID bereitstellen
+- [x] bestehende Modul-Registry in einen technischen Modulkatalog überführen
+- [x] Standardtitel und Standardbeschreibung definieren
+- [x] Standardrollen pro Modul definieren
+- [x] verpflichtende Rollen pro Modul definieren
+- [x] granulare Konfigurationsrichtlinien pro Modul einführen
+- [x] technische Route und Kategorie ausschließlich im Code halten
+- [x] Helper zum Auflösen einer Moduldefinition anhand der Modul-ID bereitstellen
 
 ## Vorgesehene Struktur
 
@@ -68,12 +68,12 @@ interface ModuleDefinition {
 
 ## Aufgaben
 
-- [ ] Prisma-Modell `ModuleConfiguration` ergänzen
-- [ ] Prisma-Modell `ModuleAllowedRole` ergänzen
-- [ ] relationale Rollenfreigaben umsetzen
-- [ ] Migration für die neuen Tabellen erzeugen
-- [ ] Prisma-Client neu generieren
-- [ ] bestehende Benutzer- und Authentifizierungsmodelle unverändert lassen
+- [x] Prisma-Modell `ModuleConfiguration` ergänzen
+- [x] Prisma-Modell `ModuleAllowedRole` ergänzen
+- [x] relationale Rollenfreigaben umsetzen
+- [x] Migration für die neuen Tabellen erzeugen
+- [x] Prisma-Client neu generieren
+- [x] bestehende Benutzer- und Authentifizierungsmodelle unverändert lassen
 
 ## Vorgesehenes Schema
 
