@@ -6,7 +6,7 @@ import type { AdminUser } from '../adminTypes';
 import { useAdminUserActions } from '../useAdminUserActions';
 import { AdminUserCard } from './AdminUserCard';
 import { AdminUserTable } from './AdminUserTable';
-import { ConfirmationModal } from './ConfirmationModal';
+import { ConfirmationModal } from '../../_components/ConfirmationModal';
 
 interface AdminUserListProps {
     users: AdminUser[];

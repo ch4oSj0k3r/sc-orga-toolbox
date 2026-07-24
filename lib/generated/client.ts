@@ -49,3 +49,13 @@ export { Prisma };
  *
  */
 export type User = Prisma.UserModel;
+/**
+ * Model ModuleConfiguration
+ *
+ */
+export type ModuleConfiguration = Prisma.ModuleConfigurationModel;
+/**
+ * Model ModuleAllowedRole
+ *
+ */
+export type ModuleAllowedRole = Prisma.ModuleAllowedRoleModel;

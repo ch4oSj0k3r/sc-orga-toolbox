@@ -49,6 +49,8 @@ export const AnyNull = runtime.AnyNull;
 
 export const ModelName = {
     User: 'User',
+    ModuleConfiguration: 'ModuleConfiguration',
+    ModuleAllowedRole: 'ModuleAllowedRole',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -83,6 +85,27 @@ export const UserScalarFieldEnum = {
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
 
+export const ModuleConfigurationScalarFieldEnum = {
+    moduleId: 'moduleId',
+    title: 'title',
+    description: 'description',
+    enabled: 'enabled',
+    sortOrder: 'sortOrder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+} as const;
+
+export type ModuleConfigurationScalarFieldEnum =
+    (typeof ModuleConfigurationScalarFieldEnum)[keyof typeof ModuleConfigurationScalarFieldEnum];
+
+export const ModuleAllowedRoleScalarFieldEnum = {
+    moduleId: 'moduleId',
+    role: 'role',
+} as const;
+
+export type ModuleAllowedRoleScalarFieldEnum =
+    (typeof ModuleAllowedRoleScalarFieldEnum)[keyof typeof ModuleAllowedRoleScalarFieldEnum];
+
 export const SortOrder = {
     asc: 'asc',
     desc: 'desc',
@@ -106,3 +129,19 @@ export const UserOrderByRelevanceFieldEnum = {
 
 export type UserOrderByRelevanceFieldEnum =
     (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum];
+
+export const ModuleConfigurationOrderByRelevanceFieldEnum = {
+    moduleId: 'moduleId',
+    title: 'title',
+    description: 'description',
+} as const;
+
+export type ModuleConfigurationOrderByRelevanceFieldEnum =
+    (typeof ModuleConfigurationOrderByRelevanceFieldEnum)[keyof typeof ModuleConfigurationOrderByRelevanceFieldEnum];
+
+export const ModuleAllowedRoleOrderByRelevanceFieldEnum = {
+    moduleId: 'moduleId',
+} as const;
+
+export type ModuleAllowedRoleOrderByRelevanceFieldEnum =
+    (typeof ModuleAllowedRoleOrderByRelevanceFieldEnum)[keyof typeof ModuleAllowedRoleOrderByRelevanceFieldEnum];
