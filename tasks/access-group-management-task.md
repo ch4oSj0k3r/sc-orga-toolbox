@@ -284,10 +284,10 @@ Der Grund:
 - [x] technischen Schlüssel validieren
 - [x] Anzeigenamen validieren
 - [x] Beschreibung validieren
-- [ ] eindeutige Schlüsselverletzungen kontrolliert behandeln
+- [x] eindeutige Schlüsselverletzungen kontrolliert behandeln
 - [x] aktive und archivierte Gruppen laden können
 - [x] Gruppendetails mit Benutzer- und Modulanzahl laden können
-- [ ] Gruppen anhand ihrer ID validieren
+- [x] Gruppen anhand ihrer ID validieren
 - [x] aktive Gruppen für Auswahlfelder bereitstellen
 - [x] archivierte Gruppen bei Zugriffsentscheidungen ausschließen
 - [x] Datenbankzugriffe in einem serverseitigen Gruppen-Service bündeln
