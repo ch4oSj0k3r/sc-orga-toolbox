@@ -41,7 +41,7 @@ export function AdminUserActions({
             {type === 'VERIFIED' && (
                 <TerminalButton
                     variant="secondary"
-                    className="w-auto! px-3 py-1 text-cyan border-cyan-dim"
+                    className="w-auto! px-3 py-1"
                     onClick={() =>
                         onAction(
                             actions.activateUser,
@@ -59,7 +59,7 @@ export function AdminUserActions({
             {canChangeRole && user.role === 'MEMBER' && (
                 <TerminalButton
                     variant="secondary"
-                    className="w-auto! px-3 py-1 text-cyan border-cyan-dim"
+                    className="w-auto! px-3 py-1"
                     onClick={() =>
                         onAction(
                             actions.promoteUser,
@@ -77,7 +77,7 @@ export function AdminUserActions({
             {canChangeRole && user.role === 'ADMIN' && (
                 <TerminalButton
                     variant="secondary"
-                    className="w-auto! px-3 py-1 text-text-dim border-line hover:text-cyan hover:border-cyan-dim"
+                    className="w-auto! px-3 py-1"
                     onClick={() =>
                         onAction(
                             actions.demoteUser,
@@ -95,7 +95,7 @@ export function AdminUserActions({
             {type === 'ACTIVE' && (
                 <TerminalButton
                     variant="secondary"
-                    className="w-auto! px-3 py-1 text-amber border-amber/40"
+                    className="w-auto! px-3 py-1"
                     onClick={() =>
                         onAction(
                             actions.banUser,
@@ -131,7 +131,7 @@ export function AdminUserActions({
             {type !== 'ACTIVE' && (
                 <TerminalButton
                     variant="secondary"
-                    className="w-auto! px-3 py-1 hover:text-danger hover:border-danger"
+                    className="w-auto! px-3 py-1"
                     onClick={() =>
                         onAction(
                             actions.deleteUser,
