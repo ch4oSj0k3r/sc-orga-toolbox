@@ -14,7 +14,7 @@ export function ModuleConfigurationHeader({
     const categoryLabel = module.category === 'administration' ? 'Administration' : 'Toolbox-Modul';
 
     return (
-        <summary className="focus-terminal flex cursor-pointer list-none flex-col gap-4 outline-none focus-terminal sm:flex-row sm:items-center sm:justify-between [&::-webkit-details-marker]:hidden">
+        <summary className="focus-terminal flex cursor-pointer list-none flex-col gap-4 sm:flex-row sm:items-center sm:justify-between [&::-webkit-details-marker]:hidden">
             <div>
                 <div className="flex flex-wrap items-center gap-3">
                     <h2 className="font-display text-xl uppercase tracking-wider text-text">
