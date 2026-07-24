@@ -1,6 +1,6 @@
 import { ConsolePanel } from '@/components/mobiglas/ConsolePanel';
 import type { UserStatus } from '@/lib/generated/client';
-import { AccessGroupOption } from '@/lib/access-groups/accessGroupTypes';
+import type { AccessGroupOption } from '@/lib/access-groups/accessGroupTypes';
 
 import { ADMIN_TABS } from '../adminNavigation';
 import type { AdminUser } from '../adminTypes';

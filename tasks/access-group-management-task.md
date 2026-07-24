@@ -632,13 +632,13 @@ Die Server Action:
 - [ ] Gruppen nur bei `allowedGroups: true` bearbeitbar machen
 - [ ] aktive Gruppen zur Auswahl anbieten
 - [ ] archivierte bestehende Zuordnungen anzeigen
-- [ ] archivierte Zuordnungen beim normalen Speichern erhalten
+- [x] archivierte Zuordnungen beim normalen Speichern erhalten
 - [ ] administrative Kernmodule sichtbar sperren
-- [ ] Gruppenfreigaben serverseitig validieren
-- [ ] Modulkonfiguration, Rollen und Gruppen transaktional speichern
-- [ ] Zurücksetzen der Modulkonfiguration um Gruppen erweitern
-- [ ] unbekannte Modul- und Gruppen-IDs abweisen
-- [ ] betroffene Routen revalidieren
+- [x] Gruppenfreigaben serverseitig validieren
+- [x] Modulkonfiguration, Rollen und Gruppen transaktional speichern
+- [x] Zurücksetzen der Modulkonfiguration um Gruppen erweitern
+- [x] unbekannte Modul- und Gruppen-IDs abweisen
+- [x] betroffene Routen revalidieren
 
 ## Speicheregeln
 

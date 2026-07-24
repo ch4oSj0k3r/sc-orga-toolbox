@@ -10,6 +10,7 @@ export interface ModuleConfigurationViewModel {
     href: string;
     category: ModuleCategory;
     allowedRoles: readonly Role[];
+    allowedGroupIds: readonly string[];
     mandatoryRoles: readonly Role[];
     configuration: ModuleConfigurationPolicy;
     hasPersistentConfiguration: boolean;
@@ -21,4 +22,5 @@ export interface ModuleFormState {
     enabled: boolean;
     sortOrder: number;
     allowedRoles: Role[];
+    allowedGroupIds: string[];
 }

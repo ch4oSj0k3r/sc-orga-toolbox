@@ -1,7 +1,7 @@
 'use client';
 
 import type { UserStatus } from '@/lib/generated/client';
-import { AccessGroupOption } from '@/lib/access-groups/accessGroupTypes';
+import type { AccessGroupOption } from '@/lib/access-groups/accessGroupTypes';
 
 import type { AdminUser } from '../adminTypes';
 import { useAdminUserActions } from '../useAdminUserActions';

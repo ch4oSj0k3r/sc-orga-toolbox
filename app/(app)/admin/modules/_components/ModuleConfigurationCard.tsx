@@ -44,6 +44,7 @@ export function ModuleConfigurationCard({ module }: ModuleConfigurationCardProps
                 enabled: formState.enabled,
                 sortOrder: formState.sortOrder,
                 allowedRoles: formState.allowedRoles,
+                allowedGroupIds: formState.allowedGroupIds,
             });
 
             if (!result.success) {
