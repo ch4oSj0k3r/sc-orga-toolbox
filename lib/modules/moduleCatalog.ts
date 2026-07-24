@@ -86,7 +86,7 @@ function getDefaultAllowedRoles(definition: ModuleDefinition): Role[] {
 /**
  * Temporärer Adapter für das bestehende Dashboard.
  *
- * Die persistente Auswertung erfolgt im nächsten Umsetzungsschritt.
+ * Wird bei der Dashboard-Anbindung durch den persistenten Service ersetzt.
  */
 export function getVisibleModules(role: Role): ToolboxModule[] {
     return moduleDefinitions
