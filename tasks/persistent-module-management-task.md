@@ -198,14 +198,14 @@ model ModuleAllowedRole {
 
 ## Aufgaben
 
-- [ ] Admin-Server-Action zum Speichern einer Modulkonfiguration erstellen
-- [ ] Admin-Server-Action zum Zurücksetzen einer Modulkonfiguration erstellen
-- [ ] Eingaben mit Zod validieren
-- [ ] technische Modul-ID gegen den Katalog validieren
-- [ ] Konfigurationsrichtlinien serverseitig erzwingen
-- [ ] Rollenwerte gegen das Prisma-Enum validieren
-- [ ] Speicherung von Konfiguration und Rollen in einer Transaktion durchführen
-- [ ] betroffene Routen revalidieren
+- [x] Admin-Server-Action zum Speichern einer Modulkonfiguration erstellen
+- [x] Admin-Server-Action zum Zurücksetzen einer Modulkonfiguration erstellen
+- [x] Eingaben mit Zod validieren
+- [x] technische Modul-ID gegen den Katalog validieren
+- [x] Konfigurationsrichtlinien serverseitig erzwingen
+- [x] Rollenwerte gegen das Prisma-Enum validieren
+- [x] Speicherung von Konfiguration und Rollen in einer Transaktion durchführen
+- [x] betroffene Routen revalidieren
 
 ## Validierungsgrenzen
 
@@ -236,13 +236,13 @@ model ModuleAllowedRole {
 
 ## Aufgaben
 
-- [ ] `ADMIN` für administrative Kernmodule verpflichtend machen
-- [ ] Deaktivierung der Mitgliederverwaltung verhindern
-- [ ] Deaktivierung der Modulverwaltung verhindern
-- [ ] Rollenbearbeitung für administrative Kernmodule sperren
-- [ ] Route und Kategorie niemals aus Datenbankwerten bilden
-- [ ] Dashboard-Sichtbarkeit nicht als alleinigen Zugriffsschutz behandeln
-- [ ] bestehendes Admin-Layout für `/admin/*` beibehalten
+- [x] `ADMIN` für administrative Kernmodule verpflichtend machen
+- [x] Deaktivierung der Mitgliederverwaltung verhindern
+- [x] Deaktivierung der Modulverwaltung verhindern
+- [x] Rollenbearbeitung für administrative Kernmodule sperren
+- [x] Route und Kategorie niemals aus Datenbankwerten bilden
+- [x] Dashboard-Sichtbarkeit nicht als alleinigen Zugriffsschutz behandeln
+- [x] bestehendes Admin-Layout für `/admin/*` beibehalten
 
 ## Akzeptanzkriterien
 
@@ -257,24 +257,24 @@ model ModuleAllowedRole {
 
 ## Aufgaben
 
-- [ ] Anwendung ohne vorhandene Modulkonfiguration testen
-- [ ] Standardwerte aus dem Code testen
-- [ ] Titeländerung testen
-- [ ] Beschreibungsänderung testen
-- [ ] Sortierung testen
-- [ ] Aktivierung und Deaktivierung eines erlaubten Moduls testen
-- [ ] Rollenfreigabe eines konfigurierbaren Moduls testen
-- [ ] verpflichtende Rollen testen
-- [ ] gesperrte Kernmodule testen
-- [ ] Zurücksetzen auf Standardwerte testen
-- [ ] unbekannte Modul-ID testen
-- [ ] ungültige Rolle testen
-- [ ] Desktop- und Mobilansicht prüfen
-- [ ] Migration in einer leeren Datenbank testen
-- [ ] Migration mit bestehenden Benutzerdaten testen
-- [ ] `npm run lint` ausführen
-- [ ] `npm run build` ausführen
-- [ ] `git diff --check` ausführen
+- [x] Anwendung ohne vorhandene Modulkonfiguration testen
+- [x] Standardwerte aus dem Code testen
+- [x] Titeländerung testen
+- [x] Beschreibungsänderung testen
+- [x] Sortierung testen
+- [x] Aktivierung und Deaktivierung eines erlaubten Moduls testen
+- [x] Rollenfreigabe eines konfigurierbaren Moduls testen
+- [x] verpflichtende Rollen testen
+- [x] gesperrte Kernmodule testen
+- [x] Zurücksetzen auf Standardwerte testen
+- [x] unbekannte Modul-ID testen
+- [x] ungültige Rolle testen
+- [x] Desktop- und Mobilansicht prüfen
+- [x] Migration in einer leeren Datenbank testen
+- [x] Migration mit bestehenden Benutzerdaten testen
+- [x] `npm run lint` ausführen
+- [x] `npm run build` ausführen
+- [x] `git diff --check` ausführen
 
 ## Akzeptanzkriterien
 
