@@ -279,18 +279,18 @@ Der Grund:
 
 ## Aufgaben
 
-- [ ] zentrale Zod-Schemas für Gruppeneingaben erstellen
-- [ ] technischen Schlüssel normalisieren
-- [ ] technischen Schlüssel validieren
-- [ ] Anzeigenamen validieren
-- [ ] Beschreibung validieren
+- [x] zentrale Zod-Schemas für Gruppeneingaben erstellen
+- [x] technischen Schlüssel normalisieren
+- [x] technischen Schlüssel validieren
+- [x] Anzeigenamen validieren
+- [x] Beschreibung validieren
 - [ ] eindeutige Schlüsselverletzungen kontrolliert behandeln
-- [ ] aktive und archivierte Gruppen laden können
-- [ ] Gruppendetails mit Benutzer- und Modulanzahl laden können
+- [x] aktive und archivierte Gruppen laden können
+- [x] Gruppendetails mit Benutzer- und Modulanzahl laden können
 - [ ] Gruppen anhand ihrer ID validieren
-- [ ] aktive Gruppen für Auswahlfelder bereitstellen
-- [ ] archivierte Gruppen bei Zugriffsentscheidungen ausschließen
-- [ ] Datenbankzugriffe in einem serverseitigen Gruppen-Service bündeln
+- [x] aktive Gruppen für Auswahlfelder bereitstellen
+- [x] archivierte Gruppen bei Zugriffsentscheidungen ausschließen
+- [x] Datenbankzugriffe in einem serverseitigen Gruppen-Service bündeln
 
 ## Validierungsregeln
 
@@ -306,10 +306,15 @@ Der Grund:
 ^[a-z0-9]+(?:-[a-z0-9]+)*$
 ```
 
+Beispiel für die Normalisierung:
+
+```text
+Org-Leitung → org-leitung
+```
+
 Nicht erlaubt sind unter anderem:
 
 ```text
-Org-Leitung
 org_leitung
 -org-leitung
 org-leitung-
