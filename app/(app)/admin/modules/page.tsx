@@ -1,6 +1,13 @@
-import { TerminalPanel } from '@/components/mobiglas/TerminalPanel';
+import { requireAdminSession } from '@/lib/auth/require-session';
+import { getEffectiveModuleConfigurations } from '@/lib/modules/moduleConfigurationService';
 
-export default function ModuleManagementPage() {
+import { ModuleConfigurationCard } from './_components/ModuleConfigurationCard';
+
+export default async function ModuleManagementPage() {
+    await requireAdminSession();
+
+    const modules = await getEffectiveModuleConfigurations();
+
     return (
         <div className="mx-auto max-w-7xl space-y-8">
             <section className="border-b border-line pb-8">
@@ -13,24 +20,17 @@ export default function ModuleManagementPage() {
                     Modulverwaltung
                 </h1>
 
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-text-dim">
-                    Dashboard-Module aktivieren, konfigurieren und sortieren.
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-text-dim">
+                    Dashboard-Module konfigurieren und ihre sichtbare Reihenfolge festlegen.
+                    Technisch geschützte Eigenschaften können nicht überschrieben werden.
                 </p>
             </section>
 
-            <TerminalPanel className="max-w-none">
-                <div className="px-4 py-8 text-center sm:px-8">
-                    <p className="font-mono text-xs uppercase tracking-[0.08em] text-cyan">
-                        Modulverwaltung vorbereitet
-                    </p>
-
-                    <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-text-dim">
-                        Die Oberfläche ist angelegt. Im nächsten Schritt ergänzen wir das
-                        Datenmodell sowie die Konfiguration für Status, Bezeichnung, Beschreibung,
-                        Reihenfolge und Rollenfreigaben.
-                    </p>
-                </div>
-            </TerminalPanel>
+            <div className="space-y-6">
+                {modules.map((module) => (
+                    <ModuleConfigurationCard key={module.id} module={module} />
+                ))}
+            </div>
         </div>
     );
 }
